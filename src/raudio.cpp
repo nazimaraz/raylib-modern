@@ -240,7 +240,7 @@ typedef struct tagBITMAPINFOHEADER {
 
     #define QOA_IMPLEMENTATION
     #include "external/qoa.h"           // QOA loading and saving functions
-    #include "external/qoaplay.c"       // QOA stream playing helper functions
+    #include "external/qoaplay.h"       // QOA stream playing helper functions
 
     #if defined(_MSC_VER)
         #pragma warning(pop)        // Disable MSVC warning suppression
@@ -1091,7 +1091,7 @@ bool ExportWave(Wave wave, const char *fileName)
             qoa.samplerate = wave.sampleRate;
             qoa.samples = wave.frameCount;
 
-            int bytesWritten = qoa_write(fileName, wave.data, &qoa);
+            int bytesWritten = qoa_write(fileName, static_cast<const short *>(wave.data), &qoa);
             if (bytesWritten > 0) success = true;
         }
         else TRACELOG(LOG_WARNING, "AUDIO: Wave data must be 16 bit per sample for QOA format export");
@@ -2079,7 +2079,7 @@ float GetMusicTimePlayed(Music music)
         {
             uint64_t framesPlayed = 0;
 
-            jar_xm_get_position(music.ctxData, NULL, NULL, NULL, &framesPlayed);
+            jar_xm_get_position(static_cast<jar_xm_context_t *>(music.ctxData), NULL, NULL, NULL, &framesPlayed);
             secondsPlayed = (float)framesPlayed/music.stream.sampleRate;
         }
         else
