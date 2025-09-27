@@ -437,13 +437,13 @@ Matrix GetCameraProjectionMatrix(Camera *camera, float aspect)
 #if !defined(RCAMERA_STANDALONE)
 // Update camera position for selected mode
 // Camera mode: CAMERA_FREE, CAMERA_FIRST_PERSON, CAMERA_THIRD_PERSON, CAMERA_ORBITAL or CUSTOM
-void UpdateCamera(Camera *camera, int mode)
+void UpdateCamera(Camera *camera, const CameraMode mode)
 {
     Vector2 mousePositionDelta = GetMouseDelta();
 
-    bool moveInWorldPlane = ((mode == CAMERA_FIRST_PERSON) || (mode == CAMERA_THIRD_PERSON));
-    bool rotateAroundTarget = ((mode == CAMERA_THIRD_PERSON) || (mode == CAMERA_ORBITAL));
-    bool lockView = ((mode == CAMERA_FREE) || (mode == CAMERA_FIRST_PERSON) || (mode == CAMERA_THIRD_PERSON) || (mode == CAMERA_ORBITAL));
+    bool moveInWorldPlane = ((mode == CameraMode::CAMERA_FIRST_PERSON) || (mode == CameraMode::CAMERA_THIRD_PERSON));
+    bool rotateAroundTarget = ((mode == CameraMode::CAMERA_THIRD_PERSON) || (mode == CameraMode::CAMERA_ORBITAL));
+    bool lockView = ((mode == CameraMode::CAMERA_FREE) || (mode == CameraMode::CAMERA_FIRST_PERSON) || (mode == CameraMode::CAMERA_THIRD_PERSON) || (mode == CameraMode::CAMERA_ORBITAL));
     bool rotateUp = false;
 
     // Camera speeds based on frame time
@@ -452,8 +452,8 @@ void UpdateCamera(Camera *camera, int mode)
     float cameraPanSpeed = CAMERA_PAN_SPEED*GetFrameTime();
     float cameraOrbitalSpeed = CAMERA_ORBITAL_SPEED*GetFrameTime();
 
-    if (mode == CAMERA_CUSTOM) {}
-    else if (mode == CAMERA_ORBITAL)
+    if (mode == CameraMode::CAMERA_CUSTOM) {}
+    else if (mode == CameraMode::CAMERA_ORBITAL)
     {
         // Orbital can just orbit
         Matrix rotation = MatrixRotate(GetCameraUp(camera), cameraOrbitalSpeed);
@@ -473,7 +473,7 @@ void UpdateCamera(Camera *camera, int mode)
 
         // Camera movement
         // Camera pan (for CAMERA_FREE)
-        if ((mode == CAMERA_FREE) && (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE)))
+        if ((mode == CameraMode::CAMERA_FREE) && (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE)))
         {
             const Vector2 mouseDelta = GetMouseDelta();
             if (mouseDelta.x > 0.0f) CameraMoveRight(camera, cameraPanSpeed, moveInWorldPlane);
@@ -507,14 +507,14 @@ void UpdateCamera(Camera *camera, int mode)
             if (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X) >= 0.25f) CameraMoveRight(camera, cameraMoveSpeed, moveInWorldPlane);
         }
 
-        if (mode == CAMERA_FREE)
+        if (mode == CameraMode::CAMERA_FREE)
         {
             if (IsKeyDown(KEY_SPACE)) CameraMoveUp(camera, cameraMoveSpeed);
             if (IsKeyDown(KEY_LEFT_CONTROL)) CameraMoveUp(camera, -cameraMoveSpeed);
         }
     }
 
-    if ((mode == CAMERA_THIRD_PERSON) || (mode == CAMERA_ORBITAL) || (mode == CAMERA_FREE))
+    if ((mode == CameraMode::CAMERA_THIRD_PERSON) || (mode == CameraMode::CAMERA_ORBITAL) || (mode == CameraMode::CAMERA_FREE))
     {
         // Zoom target distance
         CameraMoveToTarget(camera, -GetMouseWheelMove());

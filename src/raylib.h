@@ -925,13 +925,14 @@ typedef enum {
 } Gesture;
 
 // Camera system modes
-typedef enum {
+enum class CameraMode
+{
     CAMERA_CUSTOM = 0,              // Camera custom, controlled by user (UpdateCamera() does nothing)
     CAMERA_FREE,                    // Camera free mode
     CAMERA_ORBITAL,                 // Camera orbital, around target, zoom supported
     CAMERA_FIRST_PERSON,            // Camera first person
     CAMERA_THIRD_PERSON             // Camera third person
-} CameraMode;
+};
 
 // Camera projection
 typedef enum {
@@ -1239,7 +1240,7 @@ RLAPI float GetGesturePinchAngle(void);                       // Get gesture pin
 //------------------------------------------------------------------------------------
 // Camera System Functions (Module: rcamera)
 //------------------------------------------------------------------------------------
-RLAPI void UpdateCamera(Camera *camera, int mode);            // Update camera position for selected mode
+RLAPI void UpdateCamera(Camera *camera, CameraMode mode);            // Update camera position for selected mode
 RLAPI void UpdateCameraPro(Camera *camera, Vector3 movement, Vector3 rotation, float zoom); // Update camera movement/rotation
 
 //------------------------------------------------------------------------------------
