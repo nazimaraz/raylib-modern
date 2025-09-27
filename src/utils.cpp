@@ -59,6 +59,9 @@
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
+namespace raylib
+{
+
 static int logTypeLevel = LOG_INFO;                 // Minimum log type level
 
 static TraceLogCallback traceLog = NULL;            // TraceLog callback function pointer
@@ -507,3 +510,5 @@ static int android_close(void *cookie)
     return 0;
 }
 #endif  // PLATFORM_ANDROID
+
+}

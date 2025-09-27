@@ -91,6 +91,9 @@ typedef enum {
 } Gesture;
 #endif
 
+namespace raylib
+{
+
 typedef enum {
     TOUCH_ACTION_UP = 0,
     TOUCH_ACTION_DOWN,
@@ -550,6 +553,8 @@ static double rgGetCurrentTime(void)
 #endif
 
     return time;
+}
+
 }
 
 #endif // RGESTURES_IMPLEMENTATION

@@ -274,6 +274,9 @@ __declspec(dllimport) unsigned int __stdcall timeEndPeriod(unsigned int uPeriod)
 #define FLAG_TOGGLE(n, f) ((n) ^= (f))
 #define FLAG_CHECK(n, f) ((n) & (f))
 
+namespace raylib
+{
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
@@ -4301,3 +4304,5 @@ const char *TextFormat(const char *text, ...)
 }
 
 #endif // !SUPPORT_MODULE_RTEXT
+
+}

@@ -127,6 +127,10 @@
 //----------------------------------------------------------------------------------
 // Global variables
 //----------------------------------------------------------------------------------
+
+namespace raylib
+{
+
 extern bool isGpuReady;
 #if defined(SUPPORT_DEFAULT_FONT)
 // Default font provided by raylib
@@ -2748,5 +2752,7 @@ static GlyphInfo *LoadFontDataBDF(const unsigned char *fileData, int dataSize, c
     return glyphs;
 }
 #endif      // SUPPORT_FILEFORMAT_BDF
+
+}
 
 #endif      // SUPPORT_MODULE_RTEXT

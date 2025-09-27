@@ -380,6 +380,9 @@ typedef struct Matrix {
 #define RL_MATRIX_TYPE
 #endif
 
+namespace raylib
+{
+
 // Dynamic vertex buffers (position + texcoords + colors + indices arrays)
 typedef struct rlVertexBuffer {
     int elementCount;           // Number of elements in the buffer (QUADS)
@@ -817,6 +820,8 @@ RLAPI void rlLoadDrawQuad(void);     // Load and draw a quad
 }
 #endif
 
+}
+
 #endif // RLGL_H
 
 /***********************************************************************************
@@ -893,6 +898,9 @@ RLAPI void rlLoadDrawQuad(void);     // Load and draw a quad
 #include <stdlib.h>                     // Required for: calloc(), free()
 #include <string.h>                     // Required for: strcmp(), strlen() [Used in rlglInit(), on extensions loading]
 #include <math.h>                       // Required for: sqrtf(), sinf(), cosf(), floor(), log()
+
+namespace raylib
+{
 
 //----------------------------------------------------------------------------------
 // Defines and Macros
@@ -5291,5 +5299,7 @@ static Matrix rlMatrixInvert(Matrix mat)
     return result;
 }
 #endif
+
+}
 
 #endif  // RLGL_IMPLEMENTATION

@@ -64,6 +64,9 @@
     #define RLAPI       // Functions defined as 'extern' by default (implicit specifiers)
 #endif
 
+namespace raylib
+{
+
 #if defined(RCAMERA_STANDALONE)
     #define CAMERA_CULL_DISTANCE_NEAR      0.05
     #define CAMERA_CULL_DISTANCE_FAR    4000.0
@@ -550,6 +553,8 @@ void UpdateCameraPro(Camera *camera, Vector3 movement, Vector3 rotation, float z
 
     // Zoom target distance
     CameraMoveToTarget(camera, zoom);
+}
+
 }
 
 #endif // RCAMERA_IMPLEMENTATION

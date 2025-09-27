@@ -184,6 +184,9 @@ typedef struct tagBITMAPINFOHEADER {
 #include <stdio.h>                      // Required for: FILE, fopen(), fclose(), fread()
 #include <string.h>                     // Required for: strcmp() [Used in IsFileExtension(), LoadWaveFromMemory(), LoadMusicStreamFromMemory()]
 
+namespace raylib
+{
+
 #if defined(RAUDIO_STANDALONE)
     #ifndef TRACELOG
         #define TRACELOG(level, ...)    printf(__VA_ARGS__)
@@ -2892,3 +2895,5 @@ static bool SaveFileText(const char *fileName, char *text)
 #undef AudioBuffer
 
 #endif      // SUPPORT_MODULE_RAUDIO
+
+}

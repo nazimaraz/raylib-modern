@@ -146,6 +146,9 @@
 //----------------------------------------------------------------------------------
 // Module Internal Functions Declaration
 //----------------------------------------------------------------------------------
+namespace raylib
+{
+
 #if defined(SUPPORT_FILEFORMAT_OBJ)
 static Model LoadOBJ(const char *fileName);     // Load OBJ mesh data
 #endif
@@ -6979,3 +6982,5 @@ static ModelAnimation *LoadModelAnimationsM3D(const char *fileName, int *animCou
 #endif
 
 #endif      // SUPPORT_MODULE_RMODELS
+
+}

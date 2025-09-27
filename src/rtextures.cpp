@@ -78,6 +78,9 @@
 #include <math.h>               // Required for: fabsf() [Used in DrawTextureRec()]
 #include <stdio.h>              // Required for: sprintf() [Used in ExportImageAsCode()]
 
+namespace raylib
+{
+
 // Support only desired texture formats on stb_image
 #if !defined(SUPPORT_FILEFORMAT_BMP)
     #define STBI_NO_BMP
@@ -5588,3 +5591,5 @@ static Vector4 *LoadImageDataNormalized(Image image)
 }
 
 #endif      // SUPPORT_MODULE_RTEXTURES
+
+}

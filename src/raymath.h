@@ -54,6 +54,11 @@
 #ifndef RAYMATH_H
 #define RAYMATH_H
 
+#include <cmath>       // Required for: sinf(), cosf(), tan(), atan2f(), sqrtf(), floor(), fminf(), fmaxf(), fabsf()
+
+namespace raylib
+{
+
 #if defined(RAYMATH_IMPLEMENTATION) && defined(RAYMATH_STATIC_INLINE)
     #error "Specifying both RAYMATH_IMPLEMENTATION and RAYMATH_STATIC_INLINE is contradictory"
 #endif
@@ -167,8 +172,6 @@ typedef struct float3 {
 typedef struct float16 {
     float v[16];
 } float16;
-
-#include <cmath>       // Required for: sinf(), cosf(), tan(), atan2f(), sqrtf(), floor(), fminf(), fmaxf(), fabsf()
 
 //----------------------------------------------------------------------------------
 // Module Functions Definition - Utils math
@@ -2988,5 +2991,7 @@ inline const Matrix& operator *= (Matrix& lhs, const Matrix& rhs)
 }
 //-------------------------------------------------------------------------------
 #endif  // C++ operators
+
+}
 
 #endif  // RAYMATH_H

@@ -87,6 +87,9 @@
 
 #include <stdarg.h>     // Required for: va_list - Only used by TraceLogCallback
 
+namespace raylib
+{
+
 #define RAYLIB_VERSION_MAJOR 5
 #define RAYLIB_VERSION_MINOR 6
 #define RAYLIB_VERSION_PATCH 0
@@ -203,13 +206,6 @@
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
-// Boolean type
-#if (defined(__STDC__) && __STDC_VERSION__ >= 199901L) || (defined(_MSC_VER) && _MSC_VER >= 1800)
-    #include <stdbool.h>
-#elif !defined(__cplusplus) && !defined(bool)
-    typedef enum bool { false = 0, true = !false } bool;
-    #define RL_BOOL_TYPE
-#endif
 
 // Vector2, 2 components
 typedef struct Vector2 {
@@ -1722,5 +1718,7 @@ RLAPI void DetachAudioMixedProcessor(AudioCallback processor); // Detach audio s
 #if defined(__cplusplus)
 }
 #endif
+
+}
 
 #endif // RAYLIB_H
