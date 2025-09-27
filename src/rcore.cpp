@@ -550,19 +550,19 @@ const char *TextFormat(const char *text, ...); // Formatting of text with variab
 
 // Include platform-specific submodules
 #if defined(PLATFORM_DESKTOP_GLFW)
-    #include "platforms/rcore_desktop_glfw.c"
+    #include "platforms/rcore_desktop_glfw.h"
 #elif defined(PLATFORM_DESKTOP_SDL)
-    #include "platforms/rcore_desktop_sdl.c"
+    #include "platforms/rcore_desktop_sdl.h"
 #elif (defined(PLATFORM_DESKTOP_RGFW) || defined(PLATFORM_WEB_RGFW))
-    #include "platforms/rcore_desktop_rgfw.c"
+    #include "platforms/rcore_desktop_rgfw.h"
 #elif defined(PLATFORM_DESKTOP_WIN32)
-    #include "platforms/rcore_desktop_win32.c"
+    #include "platforms/rcore_desktop_win32.h"
 #elif defined(PLATFORM_WEB)
-    #include "platforms/rcore_web.c"
+    #include "platforms/rcore_web.h"
 #elif defined(PLATFORM_DRM)
-    #include "platforms/rcore_drm.c"
+    #include "platforms/rcore_drm.h"
 #elif defined(PLATFORM_ANDROID)
-    #include "platforms/rcore_android.c"
+    #include "platforms/rcore_android.h"
 #else
     // TODO: Include your custom platform backend!
     // i.e software rendering backend or console backend!

@@ -67,7 +67,7 @@
 
 #include <stdlib.h>         // Required for: malloc(), free()
 #include <stdio.h>          // Required for: vsprintf()
-#include <string.h>         // Required for: strcmp(), strstr(), strcpy(), strncpy() [Used in TextReplace()], sscanf() [Used in LoadBMFont()]
+#include <cstring>         // Required for: strcmp(), strstr(), strcpy(), strncpy() [Used in TextReplace()], sscanf() [Used in LoadBMFont()]
 #include <stdarg.h>         // Required for: va_list, va_start(), vsprintf(), va_end() [Used in TextFormat()]
 #include <ctype.h>          // Required for: toupper(), tolower() [Used in TextToUpper(), TextToLower()]
 
@@ -1731,8 +1731,8 @@ char *TextReplace(const char *text, const char *search, const char *replacement)
     //  - 'text' points to the remainder of text after "end of replace"
     while (count--)
     {
-        insertPoint = strstr(text, search);
-        lastReplacePos = (int)(insertPoint - text);
+        const auto insertPoint2 = std::strstr(text, search);
+        lastReplacePos = (int)(insertPoint2 - text);
         temp = strncpy(temp, text, lastReplacePos) + lastReplacePos;
         temp = strcpy(temp, replacement) + replaceLen;
         text += lastReplacePos + searchLen; // Move to next "end of replace"
@@ -1887,7 +1887,7 @@ int TextFindIndex(const char *text, const char *search)
 {
     int position = -1;
 
-    char *ptr = strstr(text, search);
+    const auto ptr = strstr(text, search);
 
     if (ptr != NULL) position = (int)(ptr - text);
 

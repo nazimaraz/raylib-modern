@@ -19,6 +19,9 @@ cmake_policy(SET CMP0054 NEW)
 # See https://cmake.org/cmake/help/latest/policy/CMP0063.html
 cmake_policy(SET CMP0063 NEW)
 
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Directory for easier includes
 # Anywhere you see include(...) you can check <root>/cmake for that file
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)

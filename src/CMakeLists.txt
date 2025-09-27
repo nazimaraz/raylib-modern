@@ -1,5 +1,5 @@
 # Setup the project and settings
-project(raylib C)
+project(raylib CXX)
 set(PROJECT_VERSION 5.5.0)
 set(API_VERSION 550)
 
@@ -30,13 +30,13 @@ set(raylib_public_headers
 
 # Sources to be compiled
 set(raylib_sources
-    raudio.c
-    rcore.c
-    rmodels.c
-    rshapes.c
-    rtext.c
-    rtextures.c
-    utils.c
+    raudio.cpp
+    rcore.cpp
+    rmodels.cpp
+    rshapes.cpp
+    rtext.cpp
+    rtextures.cpp
+    utils.cpp
     )
 
 # <root>/cmake/GlfwImport.cmake handles the details around the inclusion of glfw

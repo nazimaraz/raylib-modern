@@ -99,9 +99,12 @@
 #if defined(__APPLE__)
     #include <unistd.h>                 // Required for: usleep()
 
+extern "C"
+{
     //#define GLFW_EXPOSE_NATIVE_COCOA    // WARNING: Fails due to type redefinition
     void *glfwGetCocoaWindow(GLFWwindow* handle);
     #include "GLFW/glfw3native.h"       // Required for: glfwGetCocoaWindow()
+}
 #endif
 
 #include <stddef.h>  // Required for: size_t
@@ -1707,7 +1710,7 @@ int InitPlatform(void)
 
     // Load OpenGL extensions
     // NOTE: GL procedures address loader is required to load extensions
-    rlLoadExtensions(glfwGetProcAddress);
+    rlLoadExtensions(reinterpret_cast<void*>(glfwGetProcAddress));
     //----------------------------------------------------------------------------
 
     // Initialize input events callbacks
