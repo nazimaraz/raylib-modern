@@ -86,6 +86,7 @@
 #define RAYLIB_H
 
 #include <stdarg.h>     // Required for: va_list - Only used by TraceLogCallback
+#include <utility>
 
 namespace raylib
 {
@@ -750,7 +751,8 @@ typedef enum {
 } GamepadAxis;
 
 // Material map index
-typedef enum {
+enum class MaterialMapIndex
+{
     MATERIAL_MAP_ALBEDO = 0,        // Albedo material (same as: MATERIAL_MAP_DIFFUSE)
     MATERIAL_MAP_METALNESS,         // Metalness material (same as: MATERIAL_MAP_SPECULAR)
     MATERIAL_MAP_NORMAL,            // Normal material
@@ -762,10 +764,10 @@ typedef enum {
     MATERIAL_MAP_IRRADIANCE,        // Irradiance material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
     MATERIAL_MAP_PREFILTER,         // Prefilter material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
     MATERIAL_MAP_BRDF               // Brdf material
-} MaterialMapIndex;
+};
 
-#define MATERIAL_MAP_DIFFUSE      MATERIAL_MAP_ALBEDO
-#define MATERIAL_MAP_SPECULAR     MATERIAL_MAP_METALNESS
+static constexpr auto MATERIAL_MAP_DIFFUSE = std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ALBEDO);
+static constexpr auto MATERIAL_MAP_SPECULAR = std::to_underlying(MaterialMapIndex::MATERIAL_MAP_METALNESS);
 
 // Shader location index
 typedef enum {

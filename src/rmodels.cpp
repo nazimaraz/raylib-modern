@@ -1538,9 +1538,9 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
             rlActiveTextureSlot(i);
 
             // Enable texture for active slot
-            if ((i == MATERIAL_MAP_IRRADIANCE) ||
-                (i == MATERIAL_MAP_PREFILTER) ||
-                (i == MATERIAL_MAP_CUBEMAP)) rlEnableTextureCubemap(material.maps[i].texture.id);
+            if ((i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_IRRADIANCE)) ||
+                (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_PREFILTER)) ||
+                (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_CUBEMAP))) rlEnableTextureCubemap(material.maps[i].texture.id);
             else rlEnableTexture(material.maps[i].texture.id);
 
             rlSetUniform(material.shader.locs[SHADER_LOC_MAP_DIFFUSE + i], &i, SHADER_UNIFORM_INT, 1);
@@ -1659,9 +1659,9 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
             rlActiveTextureSlot(i);
 
             // Disable texture for active slot
-            if ((i == MATERIAL_MAP_IRRADIANCE) ||
-                (i == MATERIAL_MAP_PREFILTER) ||
-                (i == MATERIAL_MAP_CUBEMAP)) rlDisableTextureCubemap();
+            if ((i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_IRRADIANCE)) ||
+                (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_PREFILTER)) ||
+                (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_CUBEMAP))) rlDisableTextureCubemap();
             else rlDisableTexture();
         }
     }
@@ -1785,9 +1785,9 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
             rlActiveTextureSlot(i);
 
             // Enable texture for active slot
-            if ((i == MATERIAL_MAP_IRRADIANCE) ||
-                (i == MATERIAL_MAP_PREFILTER) ||
-                (i == MATERIAL_MAP_CUBEMAP)) rlEnableTextureCubemap(material.maps[i].texture.id);
+            if ((i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_IRRADIANCE)) ||
+                (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_PREFILTER)) ||
+                (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_CUBEMAP))) rlEnableTextureCubemap(material.maps[i].texture.id);
             else rlEnableTexture(material.maps[i].texture.id);
 
             rlSetUniform(material.shader.locs[SHADER_LOC_MAP_DIFFUSE + i], &i, SHADER_UNIFORM_INT, 1);
@@ -1904,9 +1904,9 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
             rlActiveTextureSlot(i);
 
             // Disable texture for active slot
-            if ((i == MATERIAL_MAP_IRRADIANCE) ||
-                (i == MATERIAL_MAP_PREFILTER) ||
-                (i == MATERIAL_MAP_CUBEMAP)) rlDisableTextureCubemap();
+            if ((i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_IRRADIANCE)) ||
+                (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_PREFILTER)) ||
+                (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_CUBEMAP))) rlDisableTextureCubemap();
             else rlDisableTexture();
         }
     }
@@ -2150,13 +2150,13 @@ static void ProcessMaterialsOBJ(Material *materials, tinyobj_material_t *mats, i
         materials[m].maps[MATERIAL_MAP_SPECULAR].color = (Color){ (unsigned char)(mats[m].specular[0]*255.0f), (unsigned char)(mats[m].specular[1]*255.0f), (unsigned char)(mats[m].specular[2]*255.0f), 255 }; //float specular[3];
         materials[m].maps[MATERIAL_MAP_SPECULAR].value = 0.0f;
 
-        if (mats[m].bump_texname != NULL) materials[m].maps[MATERIAL_MAP_NORMAL].texture = LoadTexture(mats[m].bump_texname);  //char *bump_texname; // map_bump, bump
-        materials[m].maps[MATERIAL_MAP_NORMAL].color = WHITE;
-        materials[m].maps[MATERIAL_MAP_NORMAL].value = mats[m].shininess;
+        if (mats[m].bump_texname != NULL) materials[m].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_NORMAL)].texture = LoadTexture(mats[m].bump_texname);  //char *bump_texname; // map_bump, bump
+        materials[m].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_NORMAL)].color = WHITE;
+        materials[m].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_NORMAL)].value = mats[m].shininess;
 
-        materials[m].maps[MATERIAL_MAP_EMISSION].color = (Color){ (unsigned char)(mats[m].emission[0]*255.0f), (unsigned char)(mats[m].emission[1]*255.0f), (unsigned char)(mats[m].emission[2]*255.0f), 255 }; //float emission[3];
+        materials[m].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_EMISSION)].color = (Color){ (unsigned char)(mats[m].emission[0]*255.0f), (unsigned char)(mats[m].emission[1]*255.0f), (unsigned char)(mats[m].emission[2]*255.0f), 255 }; //float emission[3];
 
-        if (mats[m].displacement_texname != NULL) materials[m].maps[MATERIAL_MAP_HEIGHT].texture = LoadTexture(mats[m].displacement_texname);  //char *displacement_texname; // disp
+        if (mats[m].displacement_texname != NULL) materials[m].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_HEIGHT)].texture = LoadTexture(mats[m].displacement_texname);  //char *displacement_texname; // disp
     }
 }
 #endif
@@ -4678,7 +4678,7 @@ static Model LoadIQM(const char *fileName)
         memcpy(material, fileDataPtr + iqmHeader->ofs_text + imesh[i].material, MATERIAL_NAME_LENGTH*sizeof(char));
 
         model.materials[i] = LoadMaterialDefault();
-        model.materials[i].maps[MATERIAL_MAP_ALBEDO].texture = LoadTexture(TextFormat("%s/%s", basePath, material));
+        model.materials[i].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ALBEDO)].texture = LoadTexture(TextFormat("%s/%s", basePath, material));
 
         model.meshMaterial[i] = i;
 
@@ -5394,15 +5394,15 @@ static Model LoadGLTF(const char *fileName)
                     Image imAlbedo = LoadImageFromCgltfImage(data->materials[i].pbr_metallic_roughness.base_color_texture.texture->image, texPath);
                     if (imAlbedo.data != NULL)
                     {
-                        model.materials[j].maps[MATERIAL_MAP_ALBEDO].texture = LoadTextureFromImage(imAlbedo);
+                        model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ALBEDO)].texture = LoadTextureFromImage(imAlbedo);
                         UnloadImage(imAlbedo);
                     }
                 }
                 // Load base color factor (tint)
-                model.materials[j].maps[MATERIAL_MAP_ALBEDO].color.r = (unsigned char)(data->materials[i].pbr_metallic_roughness.base_color_factor[0]*255);
-                model.materials[j].maps[MATERIAL_MAP_ALBEDO].color.g = (unsigned char)(data->materials[i].pbr_metallic_roughness.base_color_factor[1]*255);
-                model.materials[j].maps[MATERIAL_MAP_ALBEDO].color.b = (unsigned char)(data->materials[i].pbr_metallic_roughness.base_color_factor[2]*255);
-                model.materials[j].maps[MATERIAL_MAP_ALBEDO].color.a = (unsigned char)(data->materials[i].pbr_metallic_roughness.base_color_factor[3]*255);
+                model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ALBEDO)].color.r = (unsigned char)(data->materials[i].pbr_metallic_roughness.base_color_factor[0]*255);
+                model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ALBEDO)].color.g = (unsigned char)(data->materials[i].pbr_metallic_roughness.base_color_factor[1]*255);
+                model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ALBEDO)].color.b = (unsigned char)(data->materials[i].pbr_metallic_roughness.base_color_factor[2]*255);
+                model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ALBEDO)].color.a = (unsigned char)(data->materials[i].pbr_metallic_roughness.base_color_factor[3]*255);
 
                 // Load metallic/roughness texture
                 if (data->materials[i].pbr_metallic_roughness.metallic_roughness_texture.texture)
@@ -5433,8 +5433,8 @@ static Model LoadGLTF(const char *fileName)
                             }
                         }
 
-                        model.materials[j].maps[MATERIAL_MAP_ROUGHNESS].texture = LoadTextureFromImage(imRoughness);
-                        model.materials[j].maps[MATERIAL_MAP_METALNESS].texture = LoadTextureFromImage(imMetallic);
+                        model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ROUGHNESS)].texture = LoadTextureFromImage(imRoughness);
+                        model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_METALNESS)].texture = LoadTextureFromImage(imMetallic);
 
                         UnloadImage(imRoughness);
                         UnloadImage(imMetallic);
@@ -5443,10 +5443,10 @@ static Model LoadGLTF(const char *fileName)
 
                     // Load metallic/roughness material properties
                     float roughness = data->materials[i].pbr_metallic_roughness.roughness_factor;
-                    model.materials[j].maps[MATERIAL_MAP_ROUGHNESS].value = roughness;
+                    model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ROUGHNESS)].value = roughness;
 
                     float metallic = data->materials[i].pbr_metallic_roughness.metallic_factor;
-                    model.materials[j].maps[MATERIAL_MAP_METALNESS].value = metallic;
+                    model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_METALNESS)].value = metallic;
                 }
 
                 // Load normal texture
@@ -5455,7 +5455,7 @@ static Model LoadGLTF(const char *fileName)
                     Image imNormal = LoadImageFromCgltfImage(data->materials[i].normal_texture.texture->image, texPath);
                     if (imNormal.data != NULL)
                     {
-                        model.materials[j].maps[MATERIAL_MAP_NORMAL].texture = LoadTextureFromImage(imNormal);
+                        model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_NORMAL)].texture = LoadTextureFromImage(imNormal);
                         UnloadImage(imNormal);
                     }
                 }
@@ -5466,7 +5466,7 @@ static Model LoadGLTF(const char *fileName)
                     Image imOcclusion = LoadImageFromCgltfImage(data->materials[i].occlusion_texture.texture->image, texPath);
                     if (imOcclusion.data != NULL)
                     {
-                        model.materials[j].maps[MATERIAL_MAP_OCCLUSION].texture = LoadTextureFromImage(imOcclusion);
+                        model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_OCCLUSION)].texture = LoadTextureFromImage(imOcclusion);
                         UnloadImage(imOcclusion);
                     }
                 }
@@ -5477,15 +5477,15 @@ static Model LoadGLTF(const char *fileName)
                     Image imEmissive = LoadImageFromCgltfImage(data->materials[i].emissive_texture.texture->image, texPath);
                     if (imEmissive.data != NULL)
                     {
-                        model.materials[j].maps[MATERIAL_MAP_EMISSION].texture = LoadTextureFromImage(imEmissive);
+                        model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_EMISSION)].texture = LoadTextureFromImage(imEmissive);
                         UnloadImage(imEmissive);
                     }
 
                     // Load emissive color factor
-                    model.materials[j].maps[MATERIAL_MAP_EMISSION].color.r = (unsigned char)(data->materials[i].emissive_factor[0]*255);
-                    model.materials[j].maps[MATERIAL_MAP_EMISSION].color.g = (unsigned char)(data->materials[i].emissive_factor[1]*255);
-                    model.materials[j].maps[MATERIAL_MAP_EMISSION].color.b = (unsigned char)(data->materials[i].emissive_factor[2]*255);
-                    model.materials[j].maps[MATERIAL_MAP_EMISSION].color.a = 255;
+                    model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_EMISSION)].color.r = (unsigned char)(data->materials[i].emissive_factor[0]*255);
+                    model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_EMISSION)].color.g = (unsigned char)(data->materials[i].emissive_factor[1]*255);
+                    model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_EMISSION)].color.b = (unsigned char)(data->materials[i].emissive_factor[2]*255);
+                    model.materials[j].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_EMISSION)].color.a = 255;
                 }
             }
 
@@ -6753,21 +6753,21 @@ static Model LoadM3D(const char *fileName)
                     } break;
                     case m3dp_Ke:
                     {
-                        memcpy(&model.materials[i + 1].maps[MATERIAL_MAP_EMISSION].color, &prop->value.color, 4);
-                        model.materials[i + 1].maps[MATERIAL_MAP_EMISSION].value = 0.0f;
+                        memcpy(&model.materials[i + 1].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_EMISSION)].color, &prop->value.color, 4);
+                        model.materials[i + 1].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_EMISSION)].value = 0.0f;
                     } break;
                     case m3dp_Pm:
                     {
-                        model.materials[i + 1].maps[MATERIAL_MAP_METALNESS].value = prop->value.fnum;
+                        model.materials[i + 1].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_METALNESS)].value = prop->value.fnum;
                     } break;
                     case m3dp_Pr:
                     {
-                        model.materials[i + 1].maps[MATERIAL_MAP_ROUGHNESS].value = prop->value.fnum;
+                        model.materials[i + 1].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ROUGHNESS)].value = prop->value.fnum;
                     } break;
                     case m3dp_Ps:
                     {
-                        model.materials[i + 1].maps[MATERIAL_MAP_NORMAL].color = WHITE;
-                        model.materials[i + 1].maps[MATERIAL_MAP_NORMAL].value = prop->value.fnum;
+                        model.materials[i + 1].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_NORMAL)].color = WHITE;
+                        model.materials[i + 1].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_NORMAL)].value = prop->value.fnum;
                     } break;
                     default:
                     {
@@ -6786,10 +6786,10 @@ static Model LoadM3D(const char *fileName)
                             {
                                 case m3dp_map_Kd: model.materials[i + 1].maps[MATERIAL_MAP_DIFFUSE].texture = LoadTextureFromImage(image); break;
                                 case m3dp_map_Ks: model.materials[i + 1].maps[MATERIAL_MAP_SPECULAR].texture = LoadTextureFromImage(image); break;
-                                case m3dp_map_Ke: model.materials[i + 1].maps[MATERIAL_MAP_EMISSION].texture = LoadTextureFromImage(image); break;
-                                case m3dp_map_Km: model.materials[i + 1].maps[MATERIAL_MAP_NORMAL].texture = LoadTextureFromImage(image); break;
-                                case m3dp_map_Ka: model.materials[i + 1].maps[MATERIAL_MAP_OCCLUSION].texture = LoadTextureFromImage(image); break;
-                                case m3dp_map_Pm: model.materials[i + 1].maps[MATERIAL_MAP_ROUGHNESS].texture = LoadTextureFromImage(image); break;
+                                case m3dp_map_Ke: model.materials[i + 1].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_EMISSION)].texture = LoadTextureFromImage(image); break;
+                                case m3dp_map_Km: model.materials[i + 1].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_NORMAL)].texture = LoadTextureFromImage(image); break;
+                                case m3dp_map_Ka: model.materials[i + 1].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_OCCLUSION)].texture = LoadTextureFromImage(image); break;
+                                case m3dp_map_Pm: model.materials[i + 1].maps[std::to_underlying(MaterialMapIndex::MATERIAL_MAP_ROUGHNESS)].texture = LoadTextureFromImage(image); break;
                                 default: break;
                             }
                         }
