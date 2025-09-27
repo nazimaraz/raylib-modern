@@ -174,35 +174,43 @@ namespace raylib
 #define RL_QUATERNION_TYPE
 #define RL_MATRIX_TYPE
 
+// Color, 4 components, R8G8B8A8 (32bit)
+struct Color {
+    unsigned char r;        // Color red value
+    unsigned char g;        // Color green value
+    unsigned char b;        // Color blue value
+    unsigned char a;        // Color alpha value
+};
+
 // Some Basic Colors
 // NOTE: Custom raylib color palette for amazing visuals on WHITE background
-#define LIGHTGRAY  CLITERAL(Color){ 200, 200, 200, 255 }   // Light Gray
-#define GRAY       CLITERAL(Color){ 130, 130, 130, 255 }   // Gray
-#define DARKGRAY   CLITERAL(Color){ 80, 80, 80, 255 }      // Dark Gray
-#define YELLOW     CLITERAL(Color){ 253, 249, 0, 255 }     // Yellow
-#define GOLD       CLITERAL(Color){ 255, 203, 0, 255 }     // Gold
-#define ORANGE     CLITERAL(Color){ 255, 161, 0, 255 }     // Orange
-#define PINK       CLITERAL(Color){ 255, 109, 194, 255 }   // Pink
-#define RED        CLITERAL(Color){ 230, 41, 55, 255 }     // Red
-#define MAROON     CLITERAL(Color){ 190, 33, 55, 255 }     // Maroon
-#define GREEN      CLITERAL(Color){ 0, 228, 48, 255 }      // Green
-#define LIME       CLITERAL(Color){ 0, 158, 47, 255 }      // Lime
-#define DARKGREEN  CLITERAL(Color){ 0, 117, 44, 255 }      // Dark Green
-#define SKYBLUE    CLITERAL(Color){ 102, 191, 255, 255 }   // Sky Blue
-#define BLUE       CLITERAL(Color){ 0, 121, 241, 255 }     // Blue
-#define DARKBLUE   CLITERAL(Color){ 0, 82, 172, 255 }      // Dark Blue
-#define PURPLE     CLITERAL(Color){ 200, 122, 255, 255 }   // Purple
-#define VIOLET     CLITERAL(Color){ 135, 60, 190, 255 }    // Violet
-#define DARKPURPLE CLITERAL(Color){ 112, 31, 126, 255 }    // Dark Purple
-#define BEIGE      CLITERAL(Color){ 211, 176, 131, 255 }   // Beige
-#define BROWN      CLITERAL(Color){ 127, 106, 79, 255 }    // Brown
-#define DARKBROWN  CLITERAL(Color){ 76, 63, 47, 255 }      // Dark Brown
+static constexpr auto LIGHTGRAY = Color{200, 200, 200, 255};   // Light Gray
+static constexpr auto GRAY      = Color{130, 130, 130, 255};   // Gray
+static constexpr auto DARKGRAY  = Color{80, 80, 80, 255};      // Dark Gray
+static constexpr auto YELLOW    = Color{253, 249, 0, 255};     // Yellow
+static constexpr auto GOLD      = Color{255, 203, 0, 255};     // Gold
+static constexpr auto ORANGE    = Color{255, 161, 0, 255};     // Orange
+static constexpr auto PINK      = Color{255, 109, 194, 255};   // Pink
+static constexpr auto RED       = Color{230, 41, 55, 255};     // Red
+static constexpr auto MAROON    = Color{190, 33, 55, 255};     // Maroon
+static constexpr auto GREEN     = Color{0, 228, 48, 255};      // Green
+static constexpr auto LIME      = Color{0, 158, 47, 255};      // Lime
+static constexpr auto DARKGREEN = Color{0, 117, 44, 255};      // Dark Green
+static constexpr auto SKYBLUE   = Color{102, 191, 255, 255};   // Sky Blue
+static constexpr auto BLUE      = Color{0, 121, 241, 255};     // Blue
+static constexpr auto DARKBLUE  = Color{0, 82, 172, 255};      // Dark Blue
+static constexpr auto PURPLE    = Color{200, 122, 255, 255};   // Purple
+static constexpr auto VIOLET    = Color{135, 60, 190, 255};    // Violet
+static constexpr auto DARKPURPLE= Color{112, 31, 126, 255};    // Dark Purple
+static constexpr auto BEIGE     = Color{211, 176, 131, 255};   // Beige
+static constexpr auto BROWN     = Color{127, 106, 79, 255};    // Brown
+static constexpr auto DARKBROWN = Color{76, 63, 47, 255};      // Dark Brown
 
-#define WHITE      CLITERAL(Color){ 255, 255, 255, 255 }   // White
-#define BLACK      CLITERAL(Color){ 0, 0, 0, 255 }         // Black
-#define BLANK      CLITERAL(Color){ 0, 0, 0, 0 }           // Blank (Transparent)
-#define MAGENTA    CLITERAL(Color){ 255, 0, 255, 255 }     // Magenta
-#define RAYWHITE   CLITERAL(Color){ 245, 245, 245, 255 }   // My own White (raylib logo)
+static constexpr auto WHITE     = Color{255, 255, 255, 255};   // White
+static constexpr auto BLACK     = Color{0, 0, 0, 255};         // Black
+static constexpr auto BLANK     = Color{0, 0, 0, 0};           // Blank (Transparent)
+static constexpr auto MAGENTA   = Color{255, 0, 255, 255};     // Magenta
+static constexpr auto RAYWHITE  = Color{245, 245, 245, 255};   // My own White (raylib logo)
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
@@ -239,14 +247,6 @@ typedef struct Matrix {
     float m2, m6, m10, m14; // Matrix third row (4 components)
     float m3, m7, m11, m15; // Matrix fourth row (4 components)
 } Matrix;
-
-// Color, 4 components, R8G8B8A8 (32bit)
-typedef struct Color {
-    unsigned char r;        // Color red value
-    unsigned char g;        // Color green value
-    unsigned char b;        // Color blue value
-    unsigned char a;        // Color alpha value
-} Color;
 
 // Rectangle, 4 components
 typedef struct Rectangle {
