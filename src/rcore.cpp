@@ -3560,53 +3560,53 @@ float GetGamepadAxisMovement(int gamepad, int axis)
 //void SetMouseCursor(int cursor)
 
 // Check if a mouse button has been pressed once
-bool IsMouseButtonPressed(int button)
+bool IsMouseButtonPressed(const MouseButton button)
 {
     bool pressed = false;
-
-    if ((CORE.Input.Mouse.currentButtonState[button] == 1) && (CORE.Input.Mouse.previousButtonState[button] == 0)) pressed = true;
+    const auto button_index = std::to_underlying(button);
+    if ((CORE.Input.Mouse.currentButtonState[button_index] == 1) && (CORE.Input.Mouse.previousButtonState[button_index] == 0)) pressed = true;
 
     // Map touches to mouse buttons checking
-    if ((CORE.Input.Touch.currentTouchState[button] == 1) && (CORE.Input.Touch.previousTouchState[button] == 0)) pressed = true;
+    if ((CORE.Input.Touch.currentTouchState[button_index] == 1) && (CORE.Input.Touch.previousTouchState[button_index] == 0)) pressed = true;
 
     return pressed;
 }
 
 // Check if a mouse button is being pressed
-bool IsMouseButtonDown(int button)
+bool IsMouseButtonDown(const MouseButton button)
 {
     bool down = false;
-
-    if (CORE.Input.Mouse.currentButtonState[button] == 1) down = true;
+    const auto button_index = std::to_underlying(button);
+    if (CORE.Input.Mouse.currentButtonState[button_index] == 1) down = true;
 
     // NOTE: Touches are considered like mouse buttons
-    if (CORE.Input.Touch.currentTouchState[button] == 1) down = true;
+    if (CORE.Input.Touch.currentTouchState[button_index] == 1) down = true;
 
     return down;
 }
 
 // Check if a mouse button has been released once
-bool IsMouseButtonReleased(int button)
+bool IsMouseButtonReleased(const MouseButton button)
 {
     bool released = false;
-
-    if ((CORE.Input.Mouse.currentButtonState[button] == 0) && (CORE.Input.Mouse.previousButtonState[button] == 1)) released = true;
+    const auto button_index = std::to_underlying(button);
+    if ((CORE.Input.Mouse.currentButtonState[button_index] == 0) && (CORE.Input.Mouse.previousButtonState[button_index] == 1)) released = true;
 
     // Map touches to mouse buttons checking
-    if ((CORE.Input.Touch.currentTouchState[button] == 0) && (CORE.Input.Touch.previousTouchState[button] == 1)) released = true;
+    if ((CORE.Input.Touch.currentTouchState[button_index] == 0) && (CORE.Input.Touch.previousTouchState[button_index] == 1)) released = true;
 
     return released;
 }
 
 // Check if a mouse button is NOT being pressed
-bool IsMouseButtonUp(int button)
+bool IsMouseButtonUp(const MouseButton button)
 {
     bool up = false;
-
-    if (CORE.Input.Mouse.currentButtonState[button] == 0) up = true;
+    const auto button_index = std::to_underlying(button);
+    if (CORE.Input.Mouse.currentButtonState[button_index] == 0) up = true;
 
     // NOTE: Touches are considered like mouse buttons
-    if (CORE.Input.Touch.currentTouchState[button] == 0) up = true;
+    if (CORE.Input.Touch.currentTouchState[button_index] == 0) up = true;
 
     return up;
 }

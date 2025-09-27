@@ -693,7 +693,8 @@ typedef enum {
 #define MOUSE_MIDDLE_BUTTON MOUSE_BUTTON_MIDDLE
 
 // Mouse buttons
-typedef enum {
+enum class MouseButton
+{
     MOUSE_BUTTON_LEFT    = 0,       // Mouse button left
     MOUSE_BUTTON_RIGHT   = 1,       // Mouse button right
     MOUSE_BUTTON_MIDDLE  = 2,       // Mouse button middle (pressed wheel)
@@ -701,7 +702,7 @@ typedef enum {
     MOUSE_BUTTON_EXTRA   = 4,       // Mouse button extra (advanced mouse device)
     MOUSE_BUTTON_FORWARD = 5,       // Mouse button forward (advanced mouse device)
     MOUSE_BUTTON_BACK    = 6,       // Mouse button back (advanced mouse device)
-} MouseButton;
+};
 
 // Mouse cursor
 typedef enum {
@@ -1203,10 +1204,10 @@ RLAPI int SetGamepadMappings(const char *mappings);           // Set internal ga
 RLAPI void SetGamepadVibration(int gamepad, float leftMotor, float rightMotor, float duration); // Set gamepad vibration for both motors (duration in seconds)
 
 // Input-related functions: mouse
-RLAPI bool IsMouseButtonPressed(int button);                  // Check if a mouse button has been pressed once
-RLAPI bool IsMouseButtonDown(int button);                     // Check if a mouse button is being pressed
-RLAPI bool IsMouseButtonReleased(int button);                 // Check if a mouse button has been released once
-RLAPI bool IsMouseButtonUp(int button);                       // Check if a mouse button is NOT being pressed
+RLAPI bool IsMouseButtonPressed(MouseButton button);                  // Check if a mouse button has been pressed once
+RLAPI bool IsMouseButtonDown(MouseButton button);                     // Check if a mouse button is being pressed
+RLAPI bool IsMouseButtonReleased(MouseButton button);                 // Check if a mouse button has been released once
+RLAPI bool IsMouseButtonUp(MouseButton button);                       // Check if a mouse button is NOT being pressed
 RLAPI int GetMouseX(void);                                    // Get mouse position X
 RLAPI int GetMouseY(void);                                    // Get mouse position Y
 RLAPI Vector2 GetMousePosition(void);                         // Get mouse position XY

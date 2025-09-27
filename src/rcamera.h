@@ -473,7 +473,7 @@ void UpdateCamera(Camera *camera, const CameraMode mode)
 
         // Camera movement
         // Camera pan (for CAMERA_FREE)
-        if ((mode == CameraMode::CAMERA_FREE) && (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE)))
+        if ((mode == CameraMode::CAMERA_FREE) && (IsMouseButtonDown(MouseButton::MOUSE_BUTTON_MIDDLE)))
         {
             const Vector2 mouseDelta = GetMouseDelta();
             if (mouseDelta.x > 0.0f) CameraMoveRight(camera, cameraPanSpeed, moveInWorldPlane);
