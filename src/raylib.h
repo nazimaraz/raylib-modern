@@ -85,8 +85,9 @@
 #ifndef RAYLIB_H
 #define RAYLIB_H
 
-#include <stdarg.h>     // Required for: va_list - Only used by TraceLogCallback
+#include <cstdarg>     // Required for: va_list - Only used by TraceLogCallback
 #include <utility>
+#include <numbers>
 
 namespace raylib
 {
@@ -121,15 +122,10 @@ namespace raylib
 //----------------------------------------------------------------------------------
 // Defines and Macros
 //----------------------------------------------------------------------------------
-#ifndef PI
-    #define PI 3.14159265358979323846f
-#endif
-#ifndef DEG2RAD
-    #define DEG2RAD (PI/180.0f)
-#endif
-#ifndef RAD2DEG
-    #define RAD2DEG (180.0f/PI)
-#endif
+
+static constexpr auto PI = std::numbers::pi;
+static constexpr auto DEG2RAD = PI / 180.;
+static constexpr auto RAD2DEG = 180. / PI;
 
 // Allow custom memory allocators
 // NOTE: Require recompiling raylib sources
