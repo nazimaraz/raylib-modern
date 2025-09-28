@@ -111,6 +111,7 @@
 #define RLGL_H
 
 #define RLGL_VERSION  "5.0"
+#include <array>
 
 // Function specifiers in case library is build/used as a shared library
 // NOTE: Microsoft specifiers to tell compiler that symbols are imported/exported from a .dll
@@ -610,7 +611,7 @@ RLAPI void rlLoadIdentity(void);                        // Reset current matrix 
 RLAPI void rlTranslatef(float x, float y, float z);     // Multiply the current matrix by a translation matrix
 RLAPI void rlRotatef(float angle, float x, float y, float z); // Multiply the current matrix by a rotation matrix
 RLAPI void rlScalef(float x, float y, float z);         // Multiply the current matrix by a scaling matrix
-RLAPI void rlMultMatrixf(const float *matf);            // Multiply the current matrix by another matrix
+RLAPI void rlMultMatrixf(const std::array<float, 16>& matf);            // Multiply the current matrix by another matrix
 RLAPI void rlFrustum(double left, double right, double bottom, double top, double znear, double zfar);
 RLAPI void rlOrtho(double left, double right, double bottom, double top, double znear, double zfar);
 RLAPI void rlViewport(int x, int y, int width, int height); // Set the viewport area
@@ -1212,7 +1213,7 @@ void rlLoadIdentity(void) { glLoadIdentity(); }
 void rlTranslatef(float x, float y, float z) { glTranslatef(x, y, z); }
 void rlRotatef(float angle, float x, float y, float z) { glRotatef(angle, x, y, z); }
 void rlScalef(float x, float y, float z) { glScalef(x, y, z); }
-void rlMultMatrixf(const float *matf) { glMultMatrixf(matf); }
+void rlMultMatrixf(const std::array<float, 16>& matf) { glMultMatrixf(matf.data()); }
 #endif
 #if defined(GRAPHICS_API_OPENGL_33) || defined(GRAPHICS_API_OPENGL_ES2)
 // Choose the current matrix to be transformed
@@ -1337,7 +1338,7 @@ void rlScalef(float x, float y, float z)
 }
 
 // Multiply the current matrix by another matrix
-void rlMultMatrixf(const float *matf)
+void rlMultMatrixf(const std::array<float, 16>& matf)
 {
     // Matrix creation from array
     Matrix mat = { matf[0], matf[4], matf[8], matf[12],

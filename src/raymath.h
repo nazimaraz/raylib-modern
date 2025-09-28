@@ -144,12 +144,12 @@ typedef struct Matrix {
 // NOTE: Helper types to be used instead of array return types for *ToFloat functions
 struct float3
 {
-    float v[3];
+    std::array<float, 3> v;
 };
 
 struct float16
 {
-    float v[16];
+    std::array<float, 16> v;
 };
 
 //----------------------------------------------------------------------------------
@@ -1123,7 +1123,7 @@ RMAPI float3 Vector3ToFloatV(Vector3 v)
     return buffer;
 }
 
-RMAPI float* Vector3ToFloat(const Vector3& vec)
+RMAPI std::array<float, 3> Vector3ToFloat(const Vector3& vec)
 {
     return Vector3ToFloatV(vec).v;
 }
@@ -2015,7 +2015,7 @@ RMAPI float16 MatrixToFloatV(Matrix mat)
 }
 
 // Get float vector for Matrix
-RMAPI float* MatrixToFloat(const Matrix& mat)
+RMAPI std::array<float, 16> MatrixToFloat(const Matrix& mat)
 {
     return MatrixToFloatV(mat).v;
 }
