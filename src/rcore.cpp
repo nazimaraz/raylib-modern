@@ -338,7 +338,7 @@ struct CoreData {
             Vector2 previousPosition;       // Previous mouse position
             Vector2 lockedPosition;         // Mouse position when locked
 
-            int cursor;                     // Tracks current mouse cursor
+            MouseCursor cursor;                     // Tracks current mouse cursor
             bool cursorHidden;              // Track if cursor is hidden
             bool cursorLocked;              // Track if cursor is locked (disabled)
             bool cursorOnScreen;            // Tracks if cursor is inside client area
@@ -691,7 +691,7 @@ void InitWindow(int width, int height, const char *title)
     memset(&CORE.Input, 0, sizeof(CORE.Input));     // Reset CORE.Input structure to 0
     CORE.Input.Keyboard.exitKey = std::to_underlying(KeyboardKey::KEY_ESCAPE);
     CORE.Input.Mouse.scale = (Vector2){ 1.0f, 1.0f };
-    CORE.Input.Mouse.cursor = MOUSE_CURSOR_ARROW;
+    CORE.Input.Mouse.cursor = MouseCursor::MOUSE_CURSOR_ARROW;
     CORE.Input.Gamepad.lastButtonPressed = GAMEPAD_BUTTON_UNKNOWN;
 
     // Initialize platform

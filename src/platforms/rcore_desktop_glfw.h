@@ -1159,14 +1159,14 @@ void SetMousePosition(int x, int y)
 }
 
 // Set mouse cursor
-void SetMouseCursor(int cursor)
+void SetMouseCursor(const MouseCursor cursor)
 {
     CORE.Input.Mouse.cursor = cursor;
-    if (cursor == MOUSE_CURSOR_DEFAULT) glfwSetCursor(platform.handle, nullptr);
+    if (cursor == MouseCursor::MOUSE_CURSOR_DEFAULT) glfwSetCursor(platform.handle, nullptr);
     else
     {
         // NOTE: We are relating internal GLFW enum values to our MouseCursor enum values
-        glfwSetCursor(platform.handle, glfwCreateStandardCursor(0x00036000 + cursor));
+        glfwSetCursor(platform.handle, glfwCreateStandardCursor(0x00036000 + std::to_underlying(cursor)));
     }
 }
 

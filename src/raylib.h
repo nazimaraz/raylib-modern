@@ -692,7 +692,7 @@ static constexpr auto MOUSE_RIGHT_BUTTON = MouseButton::MOUSE_BUTTON_RIGHT;
 static constexpr auto MOUSE_MIDDLE_BUTTON = MouseButton::MOUSE_BUTTON_MIDDLE;
 
 // Mouse cursor
-enum MouseCursor {
+enum class MouseCursor {
     MOUSE_CURSOR_DEFAULT       = 0,     // Default pointer shape
     MOUSE_CURSOR_ARROW         = 1,     // Arrow shape
     MOUSE_CURSOR_IBEAM         = 2,     // Text writing cursor shape
@@ -1201,7 +1201,7 @@ RLAPI void SetMouseOffset(int offsetX, int offsetY);          // Set mouse offse
 RLAPI void SetMouseScale(float scaleX, float scaleY);         // Set mouse scaling
 RLAPI float GetMouseWheelMove();                          // Get mouse wheel movement for X or Y, whichever is larger
 RLAPI Vector2 GetMouseWheelMoveV();                       // Get mouse wheel movement for both X and Y
-RLAPI void SetMouseCursor(int cursor);                        // Set mouse cursor
+RLAPI void SetMouseCursor(MouseCursor cursor);                        // Set mouse cursor
 
 // Input-related functions: touch
 RLAPI int GetTouchX();                                    // Get touch position X for touch point 0 (relative to screen size)
