@@ -49,6 +49,8 @@
 
 #if defined(SUPPORT_MODULE_RMODELS)
 
+#include <cstdio>
+
 #include "utils.h"          // Required for: TRACELOG(), LoadFileData(), LoadFileText(), SaveFileText()
 #include "rlgl.h"           // OpenGL abstraction layer to OpenGL 1.1, 2.1, 3.3+ or ES2
 #include "raymath.h"        // Required for: Vector3, Quaternion and Matrix functionality
@@ -1964,44 +1966,45 @@ bool ExportMesh(Mesh mesh, const char *fileName)
                        mesh.triangleCount*snprintf(NULL, 0, "f %i/%i/%i %i/%i/%i %i/%i/%i\n", vc, vc, vc, vc, vc, vc, vc, vc, vc);
 
         // NOTE: Text data buffer size is estimated considering mesh data size
-        char *txtData = (char *)RL_CALLOC(dataSize + 1000, sizeof(char));
+        const auto bufferSize = dataSize + 1000;
+        char *txtData = (char *)RL_CALLOC(bufferSize, sizeof(char));
 
         int byteCount = 0;
-        byteCount += sprintf(txtData + byteCount, "# //////////////////////////////////////////////////////////////////////////////////\n");
-        byteCount += sprintf(txtData + byteCount, "# //                                                                              //\n");
-        byteCount += sprintf(txtData + byteCount, "# // rMeshOBJ exporter v1.0 - Mesh exported as triangle faces and not optimized   //\n");
-        byteCount += sprintf(txtData + byteCount, "# //                                                                              //\n");
-        byteCount += sprintf(txtData + byteCount, "# // more info and bugs-report:  github.com/raysan5/raylib                        //\n");
-        byteCount += sprintf(txtData + byteCount, "# // feedback and support:       ray[at]raylib.com                                //\n");
-        byteCount += sprintf(txtData + byteCount, "# //                                                                              //\n");
-        byteCount += sprintf(txtData + byteCount, "# // Copyright (c) 2018-2025 Ramon Santamaria (@raysan5)                          //\n");
-        byteCount += sprintf(txtData + byteCount, "# //                                                                              //\n");
-        byteCount += sprintf(txtData + byteCount, "# //////////////////////////////////////////////////////////////////////////////////\n\n");
-        byteCount += sprintf(txtData + byteCount, "# Vertex Count:     %i\n", mesh.vertexCount);
-        byteCount += sprintf(txtData + byteCount, "# Triangle Count:   %i\n\n", mesh.triangleCount);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# //////////////////////////////////////////////////////////////////////////////////\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# //                                                                              //\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# // rMeshOBJ exporter v1.0 - Mesh exported as triangle faces and not optimized   //\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# //                                                                              //\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# // more info and bugs-report:  github.com/raysan5/raylib                        //\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# // feedback and support:       ray[at]raylib.com                                //\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# //                                                                              //\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# // Copyright (c) 2018-2025 Ramon Santamaria (@raysan5)                          //\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# //                                                                              //\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# //////////////////////////////////////////////////////////////////////////////////\n\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# Vertex Count:     %i\n", mesh.vertexCount);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# Triangle Count:   %i\n\n", mesh.triangleCount);
 
-        byteCount += sprintf(txtData + byteCount, "g mesh\n");
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "g mesh\n");
 
         for (int i = 0, v = 0; i < mesh.vertexCount; i++, v += 3)
         {
-            byteCount += sprintf(txtData + byteCount, "v %.6f %.6f %.6f\n", mesh.vertices[v], mesh.vertices[v + 1], mesh.vertices[v + 2]);
+            byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "v %.6f %.6f %.6f\n", mesh.vertices[v], mesh.vertices[v + 1], mesh.vertices[v + 2]);
         }
 
         for (int i = 0, v = 0; i < mesh.vertexCount; i++, v += 2)
         {
-            byteCount += sprintf(txtData + byteCount, "vt %.6f %.6f\n", mesh.texcoords[v], mesh.texcoords[v + 1]);
+            byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "vt %.6f %.6f\n", mesh.texcoords[v], mesh.texcoords[v + 1]);
         }
 
         for (int i = 0, v = 0; i < mesh.vertexCount; i++, v += 3)
         {
-            byteCount += sprintf(txtData + byteCount, "vn %.4f %.4f %.4f\n", mesh.normals[v], mesh.normals[v + 1], mesh.normals[v + 2]);
+            byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "vn %.4f %.4f %.4f\n", mesh.normals[v], mesh.normals[v + 1], mesh.normals[v + 2]);
         }
 
         if (mesh.indices != NULL)
         {
             for (int i = 0, v = 0; i < mesh.triangleCount; i++, v += 3)
             {
-                byteCount += sprintf(txtData + byteCount, "f %i/%i/%i %i/%i/%i %i/%i/%i\n",
+                byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "f %i/%i/%i %i/%i/%i %i/%i/%i\n",
                     mesh.indices[v] + 1, mesh.indices[v] + 1, mesh.indices[v] + 1,
                     mesh.indices[v + 1] + 1, mesh.indices[v + 1] + 1, mesh.indices[v + 1] + 1,
                     mesh.indices[v + 2] + 1, mesh.indices[v + 2] + 1, mesh.indices[v + 2] + 1);
@@ -2011,7 +2014,7 @@ bool ExportMesh(Mesh mesh, const char *fileName)
         {
             for (int i = 0, v = 1; i < mesh.triangleCount; i++, v += 3)
             {
-                byteCount += sprintf(txtData + byteCount, "f %i/%i/%i %i/%i/%i %i/%i/%i\n", v, v, v, v + 1, v + 1, v + 1, v + 2, v + 2, v + 2);
+                byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "f %i/%i/%i %i/%i/%i %i/%i/%i\n", v, v, v, v + 1, v + 1, v + 1, v + 2, v + 2, v + 2);
             }
         }
 
@@ -2038,19 +2041,20 @@ bool ExportMeshAsCode(Mesh mesh, const char *fileName)
 #endif
 
     // NOTE: Text data buffer size is fixed to 64MB
+    constexpr auto bufferSize = 64*1024*1024;
     char *txtData = (char *)RL_CALLOC(64*1024*1024, sizeof(char));  // 64 MB
 
     int byteCount = 0;
-    byteCount += sprintf(txtData + byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// MeshAsCode exporter v1.0 - Mesh vertex data exported as arrays                     //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// more info and bugs-report:  github.com/raysan5/raylib                              //\n");
-    byteCount += sprintf(txtData + byteCount, "// feedback and support:       ray[at]raylib.com                                      //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// Copyright (c) 2023 Ramon Santamaria (@raysan5)                                     //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// MeshAsCode exporter v1.0 - Mesh vertex data exported as arrays                     //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// more info and bugs-report:  github.com/raysan5/raylib                              //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// feedback and support:       ray[at]raylib.com                                      //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// Copyright (c) 2023 Ramon Santamaria (@raysan5)                                     //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
 
     // Get file name from path and convert variable name to uppercase
     char varFileName[256] = { 0 };
@@ -2058,59 +2062,59 @@ bool ExportMeshAsCode(Mesh mesh, const char *fileName)
     for (int i = 0; varFileName[i] != '\0'; i++) if ((varFileName[i] >= 'a') && (varFileName[i] <= 'z')) { varFileName[i] = varFileName[i] - 32; }
 
     // Add image information
-    byteCount += sprintf(txtData + byteCount, "// Mesh basic information\n");
-    byteCount += sprintf(txtData + byteCount, "#define %s_VERTEX_COUNT    %i\n", varFileName, mesh.vertexCount);
-    byteCount += sprintf(txtData + byteCount, "#define %s_TRIANGLE_COUNT   %i\n\n", varFileName, mesh.triangleCount);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// Mesh basic information\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#define %s_VERTEX_COUNT    %i\n", varFileName, mesh.vertexCount);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#define %s_TRIANGLE_COUNT   %i\n\n", varFileName, mesh.triangleCount);
 
     // Define vertex attributes data as separate arrays
     //-----------------------------------------------------------------------------------------
     if (mesh.vertices != NULL)      // Vertex position (XYZ - 3 components per vertex - float)
     {
-        byteCount += sprintf(txtData + byteCount, "static float %s_VERTEX_DATA[%i] = { ", varFileName, mesh.vertexCount*3);
-        for (int i = 0; i < mesh.vertexCount*3 - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.3ff,\n" : "%.3ff, "), mesh.vertices[i]);
-        byteCount += sprintf(txtData + byteCount, "%.3ff };\n\n", mesh.vertices[mesh.vertexCount*3 - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static float %s_VERTEX_DATA[%i] = { ", varFileName, mesh.vertexCount*3);
+        for (int i = 0; i < mesh.vertexCount*3 - 1; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.3ff,\n" : "%.3ff, "), mesh.vertices[i]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "%.3ff };\n\n", mesh.vertices[mesh.vertexCount*3 - 1]);
     }
 
     if (mesh.texcoords != NULL)      // Vertex texture coordinates (UV - 2 components per vertex - float)
     {
-        byteCount += sprintf(txtData + byteCount, "static float %s_TEXCOORD_DATA[%i] = { ", varFileName, mesh.vertexCount*2);
-        for (int i = 0; i < mesh.vertexCount*2 - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.3ff,\n" : "%.3ff, "), mesh.texcoords[i]);
-        byteCount += sprintf(txtData + byteCount, "%.3ff };\n\n", mesh.texcoords[mesh.vertexCount*2 - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static float %s_TEXCOORD_DATA[%i] = { ", varFileName, mesh.vertexCount*2);
+        for (int i = 0; i < mesh.vertexCount*2 - 1; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.3ff,\n" : "%.3ff, "), mesh.texcoords[i]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "%.3ff };\n\n", mesh.texcoords[mesh.vertexCount*2 - 1]);
     }
 
     if (mesh.texcoords2 != NULL)      // Vertex texture coordinates (UV - 2 components per vertex - float)
     {
-        byteCount += sprintf(txtData + byteCount, "static float %s_TEXCOORD2_DATA[%i] = { ", varFileName, mesh.vertexCount*2);
-        for (int i = 0; i < mesh.vertexCount*2 - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.3ff,\n" : "%.3ff, "), mesh.texcoords2[i]);
-        byteCount += sprintf(txtData + byteCount, "%.3ff };\n\n", mesh.texcoords2[mesh.vertexCount*2 - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static float %s_TEXCOORD2_DATA[%i] = { ", varFileName, mesh.vertexCount*2);
+        for (int i = 0; i < mesh.vertexCount*2 - 1; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.3ff,\n" : "%.3ff, "), mesh.texcoords2[i]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "%.3ff };\n\n", mesh.texcoords2[mesh.vertexCount*2 - 1]);
     }
 
     if (mesh.normals != NULL)      // Vertex normals (XYZ - 3 components per vertex - float)
     {
-        byteCount += sprintf(txtData + byteCount, "static float %s_NORMAL_DATA[%i] = { ", varFileName, mesh.vertexCount*3);
-        for (int i = 0; i < mesh.vertexCount*3 - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.3ff,\n" : "%.3ff, "), mesh.normals[i]);
-        byteCount += sprintf(txtData + byteCount, "%.3ff };\n\n", mesh.normals[mesh.vertexCount*3 - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static float %s_NORMAL_DATA[%i] = { ", varFileName, mesh.vertexCount*3);
+        for (int i = 0; i < mesh.vertexCount*3 - 1; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.3ff,\n" : "%.3ff, "), mesh.normals[i]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "%.3ff };\n\n", mesh.normals[mesh.vertexCount*3 - 1]);
     }
 
     if (mesh.tangents != NULL)      // Vertex tangents (XYZW - 4 components per vertex - float)
     {
-        byteCount += sprintf(txtData + byteCount, "static float %s_TANGENT_DATA[%i] = { ", varFileName, mesh.vertexCount*4);
-        for (int i = 0; i < mesh.vertexCount*4 - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.3ff,\n" : "%.3ff, "), mesh.tangents[i]);
-        byteCount += sprintf(txtData + byteCount, "%.3ff };\n\n", mesh.tangents[mesh.vertexCount*4 - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static float %s_TANGENT_DATA[%i] = { ", varFileName, mesh.vertexCount*4);
+        for (int i = 0; i < mesh.vertexCount*4 - 1; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.3ff,\n" : "%.3ff, "), mesh.tangents[i]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "%.3ff };\n\n", mesh.tangents[mesh.vertexCount*4 - 1]);
     }
 
     if (mesh.colors != NULL)        // Vertex colors (RGBA - 4 components per vertex - unsigned char)
     {
-        byteCount += sprintf(txtData + byteCount, "static unsigned char %s_COLOR_DATA[%i] = { ", varFileName, mesh.vertexCount*4);
-        for (int i = 0; i < mesh.vertexCount*4 - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n" : "0x%x, "), mesh.colors[i]);
-        byteCount += sprintf(txtData + byteCount, "0x%x };\n\n", mesh.colors[mesh.vertexCount*4 - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static unsigned char %s_COLOR_DATA[%i] = { ", varFileName, mesh.vertexCount*4);
+        for (int i = 0; i < mesh.vertexCount*4 - 1; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n" : "0x%x, "), mesh.colors[i]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "0x%x };\n\n", mesh.colors[mesh.vertexCount*4 - 1]);
     }
 
     if (mesh.indices != NULL)       // Vertex indices (3 index per triangle - unsigned short)
     {
-        byteCount += sprintf(txtData + byteCount, "static unsigned short %s_INDEX_DATA[%i] = { ", varFileName, mesh.triangleCount*3);
-        for (int i = 0; i < mesh.triangleCount*3 - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%i,\n" : "%i, "), mesh.indices[i]);
-        byteCount += sprintf(txtData + byteCount, "%i };\n", mesh.indices[mesh.triangleCount*3 - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static unsigned short %s_INDEX_DATA[%i] = { ", varFileName, mesh.triangleCount*3);
+        for (int i = 0; i < mesh.triangleCount*3 - 1; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%i,\n" : "%i, "), mesh.indices[i]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "%i };\n", mesh.indices[mesh.triangleCount*3 - 1]);
     }
     //-----------------------------------------------------------------------------------------
 

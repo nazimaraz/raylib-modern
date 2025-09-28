@@ -551,6 +551,8 @@ const char *TextFormat(const char *text, ...); // Formatting of text with variab
 
 #endif // SUPPORT_CLIPBOARD_IMAGE
 
+}
+
 // Include platform-specific submodules
 #if defined(PLATFORM_DESKTOP_GLFW)
     #include "platforms/rcore_desktop_glfw.h"
@@ -571,6 +573,9 @@ const char *TextFormat(const char *text, ...); // Formatting of text with variab
     // i.e software rendering backend or console backend!
     #pragma message ("WARNING: No [rcore] platform defined")
 #endif
+
+namespace raylib
+{
 
 //----------------------------------------------------------------------------------
 // Module Functions Definition: Window and Graphics Device
@@ -3196,23 +3201,24 @@ bool ExportAutomationEventList(AutomationEventList list, const char *fileName)
 
     // Export events as text
     // TODO: Save to memory buffer and SaveFileText()
-    char *txtData = (char *)RL_CALLOC(256*list.count + 2048, sizeof(char)); // 256 characters per line plus some header
+    const auto bufferSize = 256*list.count + 2048;
+    char *txtData = (char *)RL_CALLOC(bufferSize, sizeof(char)); // 256 characters per line plus some header
 
     int byteCount = 0;
-    byteCount += sprintf(txtData + byteCount, "#\n");
-    byteCount += sprintf(txtData + byteCount, "# Automation events exporter v1.0 - raylib automation events list\n");
-    byteCount += sprintf(txtData + byteCount, "#\n");
-    byteCount += sprintf(txtData + byteCount, "#    c <events_count>\n");
-    byteCount += sprintf(txtData + byteCount, "#    e <frame> <event_type> <param0> <param1> <param2> <param3> // <event_type_name>\n");
-    byteCount += sprintf(txtData + byteCount, "#\n");
-    byteCount += sprintf(txtData + byteCount, "# more info and bugs-report:  github.com/raysan5/raylib\n");
-    byteCount += sprintf(txtData + byteCount, "# feedback and support:       ray[at]raylib.com\n");
-    byteCount += sprintf(txtData + byteCount, "#\n");
-    byteCount += sprintf(txtData + byteCount, "# Copyright (c) 2023-2025 Ramon Santamaria (@raysan5)\n");
-    byteCount += sprintf(txtData + byteCount, "#\n\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# Automation events exporter v1.0 - raylib automation events list\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#    c <events_count>\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#    e <frame> <event_type> <param0> <param1> <param2> <param3> // <event_type_name>\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# more info and bugs-report:  github.com/raysan5/raylib\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# feedback and support:       ray[at]raylib.com\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "# Copyright (c) 2023-2025 Ramon Santamaria (@raysan5)\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#\n\n");
 
     // Add events data
-    byteCount += sprintf(txtData + byteCount, "c %i\n", list.count);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "c %i\n", list.count);
     for (unsigned int i = 0; i < list.count; i++)
     {
         byteCount += snprintf(txtData + byteCount, 256, "e %i %i %i %i %i %i // Event: %s\n", list.events[i].frame, list.events[i].type,

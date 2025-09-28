@@ -78,9 +78,6 @@
 #include <math.h>               // Required for: fabsf() [Used in DrawTextureRec()]
 #include <stdio.h>              // Required for: sprintf() [Used in ExportImageAsCode()]
 
-namespace raylib
-{
-
 // Support only desired texture formats on stb_image
 #if !defined(SUPPORT_FILEFORMAT_BMP)
     #define STBI_NO_BMP
@@ -174,7 +171,7 @@ namespace raylib
 
     #define RL_GPUTEX_MALLOC RL_MALLOC
     #define RL_GPUTEX_FREE RL_FREE
-    #define RL_GPUTEX_LOG(...) TRACELOG(LOG_WARNING, "IMAGE: " __VA_ARGS__)
+    #define RL_GPUTEX_LOG(...) TRACELOG(raylib::LOG_WARNING, "IMAGE: " __VA_ARGS__)
     #define RL_GPUTEX_SHOW_LOG_INFO
     #define RL_GPUTEX_IMPLEMENTATION
     #include "external/rl_gputex.h"         // Required for: rl_load_xxx_from_memory()
@@ -233,6 +230,9 @@ namespace raylib
 #if defined(__GNUC__) // GCC and Clang
     #pragma GCC diagnostic pop
 #endif
+
+namespace raylib
+{
 
 //----------------------------------------------------------------------------------
 // Defines and Macros
@@ -758,19 +758,20 @@ bool ExportImageAsCode(Image image, const char *fileName)
 
     // NOTE: Text data buffer size is estimated considering image data size in bytes
     // and requiring 6 char bytes for every byte: "0x00, "
-    char *txtData = (char *)RL_CALLOC(dataSize*6 + 2000, sizeof(char));
+    const auto bufferSize = dataSize*6 + 2000;
+    char *txtData = (char *)RL_CALLOC(bufferSize, sizeof(char));
 
     int byteCount = 0;
-    byteCount += sprintf(txtData + byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// ImageAsCode exporter v1.0 - Image pixel data exported as an array of bytes         //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// more info and bugs-report:  github.com/raysan5/raylib                              //\n");
-    byteCount += sprintf(txtData + byteCount, "// feedback and support:       ray[at]raylib.com                                      //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// Copyright (c) 2018-2025 Ramon Santamaria (@raysan5)                                //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// ImageAsCode exporter v1.0 - Image pixel data exported as an array of bytes         //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// more info and bugs-report:  github.com/raysan5/raylib                              //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// feedback and support:       ray[at]raylib.com                                      //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// Copyright (c) 2018-2025 Ramon Santamaria (@raysan5)                                //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
 
     // Get file name from path and convert variable name to uppercase
     char varFileName[256] = { 0 };
@@ -778,14 +779,14 @@ bool ExportImageAsCode(Image image, const char *fileName)
     for (int i = 0; varFileName[i] != '\0'; i++) if ((varFileName[i] >= 'a') && (varFileName[i] <= 'z')) { varFileName[i] = varFileName[i] - 32; }
 
     // Add image information
-    byteCount += sprintf(txtData + byteCount, "// Image data information\n");
-    byteCount += sprintf(txtData + byteCount, "#define %s_WIDTH    %i\n", varFileName, image.width);
-    byteCount += sprintf(txtData + byteCount, "#define %s_HEIGHT   %i\n", varFileName, image.height);
-    byteCount += sprintf(txtData + byteCount, "#define %s_FORMAT   %i          // raylib internal pixel format\n\n", varFileName, image.format);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// Image data information\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#define %s_WIDTH    %i\n", varFileName, image.width);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#define %s_HEIGHT   %i\n", varFileName, image.height);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#define %s_FORMAT   %i          // raylib internal pixel format\n\n", varFileName, image.format);
 
-    byteCount += sprintf(txtData + byteCount, "static unsigned char %s_DATA[%i] = { ", varFileName, dataSize);
-    for (int i = 0; i < dataSize - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n" : "0x%x, "), ((unsigned char *)image.data)[i]);
-    byteCount += sprintf(txtData + byteCount, "0x%x };\n", ((unsigned char *)image.data)[dataSize - 1]);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static unsigned char %s_DATA[%i] = { ", varFileName, dataSize);
+    for (int i = 0; i < dataSize - 1; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n" : "0x%x, "), ((unsigned char *)image.data)[i]);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "0x%x };\n", ((unsigned char *)image.data)[dataSize - 1]);
 
     // NOTE: Text data size exported is determined by '\0' (NULL) character
     success = SaveFileText(fileName, txtData);

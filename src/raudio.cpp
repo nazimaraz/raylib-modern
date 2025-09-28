@@ -69,6 +69,7 @@
 *
 **********************************************************************************************/
 
+#include <cstdio>
 #if defined(RAUDIO_STANDALONE)
     #include "raudio.h"
 #else
@@ -1127,19 +1128,20 @@ bool ExportWaveAsCode(Wave wave, const char *fileName)
     // NOTE: Text data buffer size is estimated considering wave data size in bytes
     // and requiring 12 char bytes for every byte; the actual size varies, but
     // the longest possible char being appended is "%.4ff,\n    ", which is 12 bytes
+    const auto bufferSize = waveDataSize*12 + 2000;
     char *txtData = (char *)RL_CALLOC(waveDataSize*12 + 2000, sizeof(char));
 
     int byteCount = 0;
-    byteCount += sprintf(txtData + byteCount, "\n//////////////////////////////////////////////////////////////////////////////////\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                              //\n");
-    byteCount += sprintf(txtData + byteCount, "// WaveAsCode exporter v1.1 - Wave data exported as an array of bytes           //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                              //\n");
-    byteCount += sprintf(txtData + byteCount, "// more info and bugs-report:  github.com/raysan5/raylib                        //\n");
-    byteCount += sprintf(txtData + byteCount, "// feedback and support:       ray[at]raylib.com                                //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                              //\n");
-    byteCount += sprintf(txtData + byteCount, "// Copyright (c) 2018-2025 Ramon Santamaria (@raysan5)                          //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                              //\n");
-    byteCount += sprintf(txtData + byteCount, "//////////////////////////////////////////////////////////////////////////////////\n\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "\n//////////////////////////////////////////////////////////////////////////////////\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                              //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// WaveAsCode exporter v1.1 - Wave data exported as an array of bytes           //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                              //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// more info and bugs-report:  github.com/raysan5/raylib                        //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// feedback and support:       ray[at]raylib.com                                //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                              //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// Copyright (c) 2018-2025 Ramon Santamaria (@raysan5)                          //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                              //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//////////////////////////////////////////////////////////////////////////////////\n\n");
 
     // Get file name from path and convert variable name to uppercase
     char varFileName[256] = { 0 };
@@ -1147,26 +1149,26 @@ bool ExportWaveAsCode(Wave wave, const char *fileName)
     for (int i = 0; varFileName[i] != '\0'; i++) if (varFileName[i] >= 'a' && varFileName[i] <= 'z') { varFileName[i] = varFileName[i] - 32; }
 
     // Add wave information
-    byteCount += sprintf(txtData + byteCount, "// Wave data information\n");
-    byteCount += sprintf(txtData + byteCount, "#define %s_FRAME_COUNT      %u\n", varFileName, wave.frameCount);
-    byteCount += sprintf(txtData + byteCount, "#define %s_SAMPLE_RATE      %u\n", varFileName, wave.sampleRate);
-    byteCount += sprintf(txtData + byteCount, "#define %s_SAMPLE_SIZE      %u\n", varFileName, wave.sampleSize);
-    byteCount += sprintf(txtData + byteCount, "#define %s_CHANNELS         %u\n\n", varFileName, wave.channels);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// Wave data information\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#define %s_FRAME_COUNT      %u\n", varFileName, wave.frameCount);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#define %s_SAMPLE_RATE      %u\n", varFileName, wave.sampleRate);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#define %s_SAMPLE_SIZE      %u\n", varFileName, wave.sampleSize);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#define %s_CHANNELS         %u\n\n", varFileName, wave.channels);
 
     // Write wave data as an array of values
     // Wave data is exported as byte array for 8/16bit and float array for 32bit float data
     // NOTE: Frame data exported is channel-interlaced: frame01[sampleChannel1, sampleChannel2, ...], frame02[], frame03[]
     if (wave.sampleSize == 32)
     {
-        byteCount += sprintf(txtData + byteCount, "static float %s_DATA[%i] = {\n", varFileName, waveDataSize/4);
-        for (int i = 1; i < waveDataSize/4; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.4ff,\n    " : "%.4ff, "), ((float *)wave.data)[i - 1]);
-        byteCount += sprintf(txtData + byteCount, "%.4ff };\n", ((float *)wave.data)[waveDataSize/4 - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static float %s_DATA[%i] = {\n", varFileName, waveDataSize/4);
+        for (int i = 1; i < waveDataSize/4; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "%.4ff,\n    " : "%.4ff, "), ((float *)wave.data)[i - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "%.4ff };\n", ((float *)wave.data)[waveDataSize/4 - 1]);
     }
     else
     {
-        byteCount += sprintf(txtData + byteCount, "static unsigned char %s_DATA[%i] = { ", varFileName, waveDataSize);
-        for (int i = 1; i < waveDataSize; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n    " : "0x%x, "), ((unsigned char *)wave.data)[i - 1]);
-        byteCount += sprintf(txtData + byteCount, "0x%x };\n", ((unsigned char *)wave.data)[waveDataSize - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static unsigned char %s_DATA[%i] = { ", varFileName, waveDataSize);
+        for (int i = 1; i < waveDataSize; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n    " : "0x%x, "), ((unsigned char *)wave.data)[i - 1]);
+        byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "0x%x };\n", ((unsigned char *)wave.data)[waveDataSize - 1]);
     }
 
     // NOTE: Text data length exported is determined by '\0' (NULL) character

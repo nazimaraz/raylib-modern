@@ -38,6 +38,8 @@
 
 #include "utils.h"
 
+#include <cstdio>
+
 #if defined(PLATFORM_ANDROID)
     #include <errno.h>                  // Required for: Android error types
     #include <android/log.h>            // Required for: Android log system: __android_log_vprint()
@@ -300,19 +302,20 @@ bool ExportDataAsCode(const unsigned char *data, int dataSize, const char *fileN
 
     // NOTE: Text data buffer size is estimated considering raw data size in bytes
     // and requiring 6 char bytes for every byte: "0x00, "
-    char *txtData = (char *)RL_CALLOC(dataSize*6 + 2000, sizeof(char));
+    const int bufferSize = dataSize * 6 + 2000;
+    char *txtData = (char *)RL_CALLOC(bufferSize, sizeof(char));
 
     int byteCount = 0;
-    byteCount += sprintf(txtData + byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// DataAsCode exporter v1.0 - Raw data exported as an array of bytes                  //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// more info and bugs-report:  github.com/raysan5/raylib                              //\n");
-    byteCount += sprintf(txtData + byteCount, "// feedback and support:       ray[at]raylib.com                                      //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// Copyright (c) 2022-2025 Ramon Santamaria (@raysan5)                                //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// DataAsCode exporter v1.0 - Raw data exported as an array of bytes                  //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// more info and bugs-report:  github.com/raysan5/raylib                              //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// feedback and support:       ray[at]raylib.com                                      //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "// Copyright (c) 2022-2025 Ramon Santamaria (@raysan5)                                //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
 
     // Get file name from path
     char varFileName[256] = { 0 };
@@ -325,11 +328,11 @@ bool ExportDataAsCode(const unsigned char *data, int dataSize, const char *fileN
         else if (varFileName[i] == '.' || varFileName[i] == '-' || varFileName[i] == '?' || varFileName[i] == '!' || varFileName[i] == '+') { varFileName[i] = '_'; }
     }
 
-    byteCount += sprintf(txtData + byteCount, "#define %s_DATA_SIZE     %i\n\n", varFileName, dataSize);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "#define %s_DATA_SIZE     %i\n\n", varFileName, dataSize);
 
-    byteCount += sprintf(txtData + byteCount, "static unsigned char %s_DATA[%s_DATA_SIZE] = { ", varFileName, varFileName);
-    for (int i = 0; i < (dataSize - 1); i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n" : "0x%x, "), data[i]);
-    byteCount += sprintf(txtData + byteCount, "0x%x };\n", data[dataSize - 1]);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "static unsigned char %s_DATA[%s_DATA_SIZE] = { ", varFileName, varFileName);
+    for (int i = 0; i < (dataSize - 1); i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n" : "0x%x, "), data[i]);
+    byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "0x%x };\n", data[dataSize - 1]);
 
     // NOTE: Text data size exported is determined by '\0' (NULL) character
     success = SaveFileText(fileName, txtData);

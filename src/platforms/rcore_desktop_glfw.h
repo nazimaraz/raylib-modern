@@ -108,6 +108,11 @@ extern "C"
 #endif
 
 #include <stddef.h>  // Required for: size_t
+#include <cstdio>  // Required for: size_t
+#include <string>  // Required for: size_t
+
+namespace raylib
+{
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
@@ -1113,13 +1118,13 @@ void OpenURL(const char *url)
     {
         char *cmd = (char *)RL_CALLOC(strlen(url) + 32, sizeof(char));
 #if defined(_WIN32)
-        sprintf(cmd, "explorer \"%s\"", url);
+        std::snprintf(cmd, strlen(url) + 32, "explorer \"%s\"", url);
 #endif
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__)
-        sprintf(cmd, "xdg-open '%s'", url); // Alternatives: firefox, x-www-browser
+        std::snprintf(cmd, strlen(url) + 32, "xdg-open '%s'", url); // Alternatives: firefox, x-www-browser
 #endif
 #if defined(__APPLE__)
-        sprintf(cmd, "open '%s'", url);
+        std::snprintf(cmd, strlen(url) + 32, "open '%s'", url);
 #endif
         int result = system(cmd);
         if (result == -1) TRACELOG(LOG_WARNING, "OpenURL() child process could not be created");
@@ -1760,9 +1765,9 @@ int InitPlatform(void)
 
 #if defined(__NetBSD__)
     // Workaround for NetBSD
-    char *glfwPlatform = "X11 (NetBSD)";
+    std::string glfwPlatform = "X11 (NetBSD)";
 #else
-    char *glfwPlatform = "";
+    std::string glfwPlatform;
     switch (glfwGetPlatform())
     {
         case GLFW_PLATFORM_WIN32: glfwPlatform = "Win32"; break;
@@ -1774,7 +1779,7 @@ int InitPlatform(void)
     }
 #endif
 
-    TRACELOG(LOG_INFO, "PLATFORM: DESKTOP (GLFW - %s): Initialized successfully", glfwPlatform);
+    TRACELOG(LOG_INFO, "PLATFORM: DESKTOP (GLFW - %s): Initialized successfully", glfwPlatform.c_str());
 
     return 0;
 }
@@ -2042,6 +2047,8 @@ static void SetDimensionsFromMonitor(GLFWmonitor *monitor)
     // Set screen width/height to the display width/height if they are 0
     if (CORE.Window.screen.width == 0) CORE.Window.screen.width = CORE.Window.display.width;
     if (CORE.Window.screen.height == 0) CORE.Window.screen.height = CORE.Window.display.height;
+}
+
 }
 
 #ifdef _WIN32

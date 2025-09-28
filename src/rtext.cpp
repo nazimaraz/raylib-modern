@@ -62,6 +62,8 @@
 
 #if defined(SUPPORT_MODULE_RTEXT)
 
+#include <cstdio>
+
 #include "utils.h"          // Required for: LoadFile*()
 #include "rlgl.h"           // OpenGL abstraction layer to OpenGL 1.1, 2.1, 3.3+ or ES2 -> Only DrawTextPro()
 
@@ -1039,24 +1041,24 @@ bool ExportFontAsCode(Font font, const char *fileName)
     char *txtData = (char *)RL_CALLOC(MAX_FONT_DATA_SIZE, sizeof(char));
 
     int byteCount = 0;
-    byteCount += sprintf(txtData + byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// FontAsCode exporter v1.0 - Font data exported as an array of bytes                 //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// more info and bugs-report:  github.com/raysan5/raylib                              //\n");
-    byteCount += sprintf(txtData + byteCount, "// feedback and support:       ray[at]raylib.com                                      //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// Copyright (c) 2018-2025 Ramon Santamaria (@raysan5)                                //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// ---------------------------------------------------------------------------------- //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// TODO: Fill the information and license of the exported font here:                  //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "// Font name:    ....                                                                 //\n");
-    byteCount += sprintf(txtData + byteCount, "// Font creator: ....                                                                 //\n");
-    byteCount += sprintf(txtData + byteCount, "// Font LICENSE: ....                                                                 //\n");
-    byteCount += sprintf(txtData + byteCount, "//                                                                                    //\n");
-    byteCount += sprintf(txtData + byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// FontAsCode exporter v1.0 - Font data exported as an array of bytes                 //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// more info and bugs-report:  github.com/raysan5/raylib                              //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// feedback and support:       ray[at]raylib.com                                      //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// Copyright (c) 2018-2025 Ramon Santamaria (@raysan5)                                //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// ---------------------------------------------------------------------------------- //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// TODO: Fill the information and license of the exported font here:                  //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// Font name:    ....                                                                 //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// Font creator: ....                                                                 //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// Font LICENSE: ....                                                                 //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "//                                                                                    //\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
 
     // Support font export and initialization
     // NOTE: This mechanism is highly coupled to raylib
@@ -1078,63 +1080,63 @@ bool ExportFontAsCode(Font font, const char *fileName)
     unsigned char *compData = CompressData((const unsigned char *)image.data, imageDataSize, &compDataSize);
 
     // Save font image data (compressed)
-    byteCount += sprintf(txtData + byteCount, "#define COMPRESSED_DATA_SIZE_FONT_%s %i\n\n", TextToUpper(fileNamePascal), compDataSize);
-    byteCount += sprintf(txtData + byteCount, "// Font image pixels data compressed (DEFLATE)\n");
-    byteCount += sprintf(txtData + byteCount, "// NOTE: Original pixel data simplified to GRAYSCALE\n");
-    byteCount += sprintf(txtData + byteCount, "static unsigned char fontData_%s[COMPRESSED_DATA_SIZE_FONT_%s] = { ", fileNamePascal, TextToUpper(fileNamePascal));
-    for (int i = 0; i < compDataSize - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%02x,\n    " : "0x%02x, "), compData[i]);
-    byteCount += sprintf(txtData + byteCount, "0x%02x };\n\n", compData[compDataSize - 1]);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "#define COMPRESSED_DATA_SIZE_FONT_%s %i\n\n", TextToUpper(fileNamePascal), compDataSize);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// Font image pixels data compressed (DEFLATE)\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// NOTE: Original pixel data simplified to GRAYSCALE\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "static unsigned char fontData_%s[COMPRESSED_DATA_SIZE_FONT_%s] = { ", fileNamePascal, TextToUpper(fileNamePascal));
+    for (int i = 0; i < compDataSize - 1; i++) byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%02x,\n    " : "0x%02x, "), compData[i]);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "0x%02x };\n\n", compData[compDataSize - 1]);
     RL_FREE(compData);
 #else
     // Save font image data (uncompressed)
-    byteCount += sprintf(txtData + byteCount, "// Font image pixels data\n");
-    byteCount += sprintf(txtData + byteCount, "// NOTE: 2 bytes per pixel, GRAY + ALPHA channels\n");
-    byteCount += sprintf(txtData + byteCount, "static unsigned char fontImageData_%s[%i] = { ", fileNamePascal, imageDataSize);
-    for (int i = 0; i < imageDataSize - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%02x,\n    " : "0x%02x, "), ((unsigned char *)imFont.data)[i]);
-    byteCount += sprintf(txtData + byteCount, "0x%02x };\n\n", ((unsigned char *)imFont.data)[imageDataSize - 1]);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// Font image pixels data\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// NOTE: 2 bytes per pixel, GRAY + ALPHA channels\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "static unsigned char fontImageData_%s[%i] = { ", fileNamePascal, imageDataSize);
+    for (int i = 0; i < imageDataSize - 1; i++) byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%02x,\n    " : "0x%02x, "), ((unsigned char *)imFont.data)[i]);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "0x%02x };\n\n", ((unsigned char *)imFont.data)[imageDataSize - 1]);
 #endif
 
     // Save font recs data
-    byteCount += sprintf(txtData + byteCount, "// Font characters rectangles data\n");
-    byteCount += sprintf(txtData + byteCount, "static Rectangle fontRecs_%s[%i] = {\n", fileNamePascal, font.glyphCount);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// Font characters rectangles data\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "static Rectangle fontRecs_%s[%i] = {\n", fileNamePascal, font.glyphCount);
     for (int i = 0; i < font.glyphCount; i++)
     {
-        byteCount += sprintf(txtData + byteCount, "    { %1.0f, %1.0f, %1.0f , %1.0f },\n", font.recs[i].x, font.recs[i].y, font.recs[i].width, font.recs[i].height);
+        byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    { %1.0f, %1.0f, %1.0f , %1.0f },\n", font.recs[i].x, font.recs[i].y, font.recs[i].width, font.recs[i].height);
     }
-    byteCount += sprintf(txtData + byteCount, "};\n\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "};\n\n");
 
     // Save font glyphs data
     // NOTE: Glyphs image data not saved (grayscale pixels),
     // it could be generated from image and recs
-    byteCount += sprintf(txtData + byteCount, "// Font glyphs info data\n");
-    byteCount += sprintf(txtData + byteCount, "// NOTE: No glyphs.image data provided\n");
-    byteCount += sprintf(txtData + byteCount, "static GlyphInfo fontGlyphs_%s[%i] = {\n", fileNamePascal, font.glyphCount);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// Font glyphs info data\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// NOTE: No glyphs.image data provided\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "static GlyphInfo fontGlyphs_%s[%i] = {\n", fileNamePascal, font.glyphCount);
     for (int i = 0; i < font.glyphCount; i++)
     {
-        byteCount += sprintf(txtData + byteCount, "    { %i, %i, %i, %i, { 0 }},\n", font.glyphs[i].value, font.glyphs[i].offsetX, font.glyphs[i].offsetY, font.glyphs[i].advanceX);
+        byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    { %i, %i, %i, %i, { 0 }},\n", font.glyphs[i].value, font.glyphs[i].offsetX, font.glyphs[i].offsetY, font.glyphs[i].advanceX);
     }
-    byteCount += sprintf(txtData + byteCount, "};\n\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "};\n\n");
 
     // Custom font loading function
-    byteCount += sprintf(txtData + byteCount, "// Font loading function: %s\n", fileNamePascal);
-    byteCount += sprintf(txtData + byteCount, "static Font LoadFont_%s(void)\n{\n", fileNamePascal);
-    byteCount += sprintf(txtData + byteCount, "    Font font = { 0 };\n\n");
-    byteCount += sprintf(txtData + byteCount, "    font.baseSize = %i;\n", font.baseSize);
-    byteCount += sprintf(txtData + byteCount, "    font.glyphCount = %i;\n", font.glyphCount);
-    byteCount += sprintf(txtData + byteCount, "    font.glyphPadding = %i;\n\n", font.glyphPadding);
-    byteCount += sprintf(txtData + byteCount, "    // Custom font loading\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "// Font loading function: %s\n", fileNamePascal);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "static Font LoadFont_%s(void)\n{\n", fileNamePascal);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    Font font = { 0 };\n\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    font.baseSize = %i;\n", font.baseSize);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    font.glyphCount = %i;\n", font.glyphCount);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    font.glyphPadding = %i;\n\n", font.glyphPadding);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    // Custom font loading\n");
 #if defined(SUPPORT_COMPRESSED_FONT_ATLAS)
-    byteCount += sprintf(txtData + byteCount, "    // NOTE: Compressed font image data (DEFLATE), it requires DecompressData() function\n");
-    byteCount += sprintf(txtData + byteCount, "    int fontDataSize_%s = 0;\n", fileNamePascal);
-    byteCount += sprintf(txtData + byteCount, "    unsigned char *data = DecompressData(fontData_%s, COMPRESSED_DATA_SIZE_FONT_%s, &fontDataSize_%s);\n", fileNamePascal, TextToUpper(fileNamePascal), fileNamePascal);
-    byteCount += sprintf(txtData + byteCount, "    Image imFont = { data, %i, %i, 1, %i };\n\n", image.width, image.height, image.format);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    // NOTE: Compressed font image data (DEFLATE), it requires DecompressData() function\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    int fontDataSize_%s = 0;\n", fileNamePascal);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    unsigned char *data = DecompressData(fontData_%s, COMPRESSED_DATA_SIZE_FONT_%s, &fontDataSize_%s);\n", fileNamePascal, TextToUpper(fileNamePascal), fileNamePascal);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    Image imFont = { data, %i, %i, 1, %i };\n\n", image.width, image.height, image.format);
 #else
-    byteCount += sprintf(txtData + byteCount, "    Image imFont = { fontImageData_%s, %i, %i, 1, %i };\n\n", styleName, image.width, image.height, image.format);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    Image imFont = { fontImageData_%s, %i, %i, 1, %i };\n\n", styleName, image.width, image.height, image.format);
 #endif
-    byteCount += sprintf(txtData + byteCount, "    // Load texture from image\n");
-    byteCount += sprintf(txtData + byteCount, "    font.texture = LoadTextureFromImage(imFont);\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    // Load texture from image\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    font.texture = LoadTextureFromImage(imFont);\n");
 #if defined(SUPPORT_COMPRESSED_FONT_ATLAS)
-    byteCount += sprintf(txtData + byteCount, "    UnloadImage(imFont);  // Uncompressed data can be unloaded from memory\n\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    UnloadImage(imFont);  // Uncompressed data can be unloaded from memory\n\n");
 #endif
     // We have two possible mechanisms to assign font.recs and font.glyphs data,
     // that data is already available as global arrays, we two options to assign that data:
@@ -1142,23 +1144,23 @@ bool ExportFontAsCode(Font font, const char *fileName)
     //  - 2. Data assignment. This option consumes less memory and Font MUST NOT be unloaded by user because data is on protected DATA segment
 //#define SUPPORT_FONT_DATA_COPY
 #if defined(SUPPORT_FONT_DATA_COPY)
-    byteCount += sprintf(txtData + byteCount, "    // Copy glyph recs data from global fontRecs\n");
-    byteCount += sprintf(txtData + byteCount, "    // NOTE: Required to avoid issues if trying to free font\n");
-    byteCount += sprintf(txtData + byteCount, "    font.recs = (Rectangle *)malloc(font.glyphCount*sizeof(Rectangle));\n");
-    byteCount += sprintf(txtData + byteCount, "    memcpy(font.recs, fontRecs_%s, font.glyphCount*sizeof(Rectangle));\n\n", fileNamePascal);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    // Copy glyph recs data from global fontRecs\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    // NOTE: Required to avoid issues if trying to free font\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    font.recs = (Rectangle *)malloc(font.glyphCount*sizeof(Rectangle));\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    memcpy(font.recs, fontRecs_%s, font.glyphCount*sizeof(Rectangle));\n\n", fileNamePascal);
 
-    byteCount += sprintf(txtData + byteCount, "    // Copy font glyph info data from global fontChars\n");
-    byteCount += sprintf(txtData + byteCount, "    // NOTE: Required to avoid issues if trying to free font\n");
-    byteCount += sprintf(txtData + byteCount, "    font.glyphs = (GlyphInfo *)malloc(font.glyphCount*sizeof(GlyphInfo));\n");
-    byteCount += sprintf(txtData + byteCount, "    memcpy(font.glyphs, fontGlyphs_%s, font.glyphCount*sizeof(GlyphInfo));\n\n", fileNamePascal);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    // Copy font glyph info data from global fontChars\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    // NOTE: Required to avoid issues if trying to free font\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    font.glyphs = (GlyphInfo *)malloc(font.glyphCount*sizeof(GlyphInfo));\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    memcpy(font.glyphs, fontGlyphs_%s, font.glyphCount*sizeof(GlyphInfo));\n\n", fileNamePascal);
 #else
-    byteCount += sprintf(txtData + byteCount, "    // Assign glyph recs and info data directly\n");
-    byteCount += sprintf(txtData + byteCount, "    // WARNING: This font data must not be unloaded\n");
-    byteCount += sprintf(txtData + byteCount, "    font.recs = fontRecs_%s;\n", fileNamePascal);
-    byteCount += sprintf(txtData + byteCount, "    font.glyphs = fontGlyphs_%s;\n\n", fileNamePascal);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    // Assign glyph recs and info data directly\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    // WARNING: This font data must not be unloaded\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    font.recs = fontRecs_%s;\n", fileNamePascal);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    font.glyphs = fontGlyphs_%s;\n\n", fileNamePascal);
 #endif
-    byteCount += sprintf(txtData + byteCount, "    return font;\n");
-    byteCount += sprintf(txtData + byteCount, "}\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    return font;\n");
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "}\n");
 
     UnloadImage(image);
 
@@ -1528,7 +1530,7 @@ const char *TextFormat(const char *text, ...)
     {
         // Inserting "..." at the end of the string to mark as truncated
         char *truncBuffer = buffers[index] + MAX_TEXT_BUFFER_LENGTH - 4; // Adding 4 bytes = "...\0"
-        sprintf(truncBuffer, "...");
+        std::snprintf(truncBuffer, 4, "...");
     }
 
     index += 1;     // Move to next buffer for next function call
