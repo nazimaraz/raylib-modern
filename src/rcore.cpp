@@ -689,7 +689,7 @@ void InitWindow(int width, int height, const char *title)
 
     // Initialize global input state
     memset(&CORE.Input, 0, sizeof(CORE.Input));     // Reset CORE.Input structure to 0
-    CORE.Input.Keyboard.exitKey = KEY_ESCAPE;
+    CORE.Input.Keyboard.exitKey = std::to_underlying(KeyboardKey::KEY_ESCAPE);
     CORE.Input.Mouse.scale = (Vector2){ 1.0f, 1.0f };
     CORE.Input.Mouse.cursor = MOUSE_CURSOR_ARROW;
     CORE.Input.Gamepad.lastButtonPressed = GAMEPAD_BUTTON_UNKNOWN;
@@ -997,10 +997,10 @@ void EndDrawing(void)
 #endif
 
 #if defined(SUPPORT_SCREEN_CAPTURE)
-    if (IsKeyPressed(KEY_F12))
+    if (IsKeyPressed(KeyboardKey::KEY_F12))
     {
 #if defined(SUPPORT_GIF_RECORDING)
-        if (IsKeyDown(KEY_LEFT_CONTROL))
+        if (IsKeyDown(KeyboardKey::KEY_LEFT_CONTROL))
         {
             if (gifRecording)
             {
@@ -3347,14 +3347,14 @@ void PlayAutomationEvent(AutomationEvent event)
 //----------------------------------------------------------------------------------
 
 // Check if a key has been pressed once
-bool IsKeyPressed(int key)
+bool IsKeyPressed(const KeyboardKey key)
 {
 
     bool pressed = false;
-
-    if ((key > 0) && (key < MAX_KEYBOARD_KEYS))
+    const auto keyIndex = std::to_underlying(key);
+    if ((key > KeyboardKey::KEY_NULL) && (keyIndex < MAX_KEYBOARD_KEYS))
     {
-        if ((CORE.Input.Keyboard.previousKeyState[key] == 0) && (CORE.Input.Keyboard.currentKeyState[key] == 1)) pressed = true;
+        if ((CORE.Input.Keyboard.previousKeyState[keyIndex] == 0) && (CORE.Input.Keyboard.currentKeyState[keyIndex] == 1)) pressed = true;
     }
 
     return pressed;
@@ -3374,13 +3374,14 @@ bool IsKeyPressedRepeat(int key)
 }
 
 // Check if a key is being pressed (key held down)
-bool IsKeyDown(int key)
+bool IsKeyDown(const KeyboardKey key)
 {
     bool down = false;
 
-    if ((key > 0) && (key < MAX_KEYBOARD_KEYS))
+    const auto keyIndex = std::to_underlying(key);
+    if ((key > KeyboardKey::KEY_NULL) && (keyIndex < MAX_KEYBOARD_KEYS))
     {
-        if (CORE.Input.Keyboard.currentKeyState[key] == 1) down = true;
+        if (CORE.Input.Keyboard.currentKeyState[keyIndex] == 1) down = true;
     }
 
     return down;

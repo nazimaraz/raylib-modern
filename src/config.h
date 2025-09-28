@@ -100,7 +100,7 @@
 #define MAX_FILEPATH_CAPACITY        8192       // Maximum file paths capacity
 #define MAX_FILEPATH_LENGTH          4096       // Maximum length for filepaths (Linux PATH_MAX default value)
 
-#define MAX_KEYBOARD_KEYS             512       // Maximum number of keyboard keys supported
+static constexpr auto MAX_KEYBOARD_KEYS = 512;       // Maximum number of keyboard keys supported
 #define MAX_MOUSE_BUTTONS               8       // Maximum number of mouse buttons supported
 #define MAX_GAMEPADS                    4       // Maximum number of gamepads supported
 #define MAX_GAMEPAD_AXES                8       // Maximum number of axes supported (per gamepad)

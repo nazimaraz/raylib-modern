@@ -557,7 +557,7 @@ enum class TraceLogLevel {
 // Keyboard keys (US keyboard layout)
 // NOTE: Use GetKeyPressed() to allow redefining
 // required keys for alternative layouts
-enum KeyboardKey {
+enum class KeyboardKey {
     KEY_NULL            = 0,        // Key: nullptr, used for no key pressed
     // Alphanumeric keys
     KEY_APOSTROPHE      = 39,       // Key: '
@@ -1164,9 +1164,9 @@ RLAPI void PlayAutomationEvent(AutomationEvent event);            // Play a reco
 //------------------------------------------------------------------------------------
 
 // Input-related functions: keyboard
-RLAPI bool IsKeyPressed(int key);                             // Check if a key has been pressed once
+RLAPI bool IsKeyPressed(KeyboardKey key);                             // Check if a key has been pressed once
 RLAPI bool IsKeyPressedRepeat(int key);                       // Check if a key has been pressed again
-RLAPI bool IsKeyDown(int key);                                // Check if a key is being pressed
+RLAPI bool IsKeyDown(KeyboardKey key);                                // Check if a key is being pressed
 RLAPI bool IsKeyReleased(int key);                            // Check if a key has been released once
 RLAPI bool IsKeyUp(int key);                                  // Check if a key is NOT being pressed
 RLAPI int GetKeyPressed();                                // Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty

@@ -464,12 +464,12 @@ void UpdateCamera(Camera *camera, const CameraMode mode)
     else
     {
         // Camera rotation
-        if (IsKeyDown(KEY_DOWN)) CameraPitch(camera, -cameraRotationSpeed, lockView, rotateAroundTarget, rotateUp);
-        if (IsKeyDown(KEY_UP)) CameraPitch(camera, cameraRotationSpeed, lockView, rotateAroundTarget, rotateUp);
-        if (IsKeyDown(KEY_RIGHT)) CameraYaw(camera, -cameraRotationSpeed, rotateAroundTarget);
-        if (IsKeyDown(KEY_LEFT)) CameraYaw(camera, cameraRotationSpeed, rotateAroundTarget);
-        if (IsKeyDown(KEY_Q)) CameraRoll(camera, -cameraRotationSpeed);
-        if (IsKeyDown(KEY_E)) CameraRoll(camera, cameraRotationSpeed);
+        if (IsKeyDown(KeyboardKey::KEY_DOWN)) CameraPitch(camera, -cameraRotationSpeed, lockView, rotateAroundTarget, rotateUp);
+        if (IsKeyDown(KeyboardKey::KEY_UP)) CameraPitch(camera, cameraRotationSpeed, lockView, rotateAroundTarget, rotateUp);
+        if (IsKeyDown(KeyboardKey::KEY_RIGHT)) CameraYaw(camera, -cameraRotationSpeed, rotateAroundTarget);
+        if (IsKeyDown(KeyboardKey::KEY_LEFT)) CameraYaw(camera, cameraRotationSpeed, rotateAroundTarget);
+        if (IsKeyDown(KeyboardKey::KEY_Q)) CameraRoll(camera, -cameraRotationSpeed);
+        if (IsKeyDown(KeyboardKey::KEY_E)) CameraRoll(camera, cameraRotationSpeed);
 
         // Camera movement
         // Camera pan (for CAMERA_FREE)
@@ -489,10 +489,10 @@ void UpdateCamera(Camera *camera, const CameraMode mode)
         }
 
         // Keyboard support
-        if (IsKeyDown(KEY_W)) CameraMoveForward(camera, cameraMoveSpeed, moveInWorldPlane);
-        if (IsKeyDown(KEY_A)) CameraMoveRight(camera, -cameraMoveSpeed, moveInWorldPlane);
-        if (IsKeyDown(KEY_S)) CameraMoveForward(camera, -cameraMoveSpeed, moveInWorldPlane);
-        if (IsKeyDown(KEY_D)) CameraMoveRight(camera, cameraMoveSpeed, moveInWorldPlane);
+        if (IsKeyDown(KeyboardKey::KEY_W)) CameraMoveForward(camera, cameraMoveSpeed, moveInWorldPlane);
+        if (IsKeyDown(KeyboardKey::KEY_A)) CameraMoveRight(camera, -cameraMoveSpeed, moveInWorldPlane);
+        if (IsKeyDown(KeyboardKey::KEY_S)) CameraMoveForward(camera, -cameraMoveSpeed, moveInWorldPlane);
+        if (IsKeyDown(KeyboardKey::KEY_D)) CameraMoveRight(camera, cameraMoveSpeed, moveInWorldPlane);
 
         // Gamepad movement
         if (IsGamepadAvailable(0))
@@ -509,8 +509,8 @@ void UpdateCamera(Camera *camera, const CameraMode mode)
 
         if (mode == CameraMode::CAMERA_FREE)
         {
-            if (IsKeyDown(KEY_SPACE)) CameraMoveUp(camera, cameraMoveSpeed);
-            if (IsKeyDown(KEY_LEFT_CONTROL)) CameraMoveUp(camera, -cameraMoveSpeed);
+            if (IsKeyDown(KeyboardKey::KEY_SPACE)) CameraMoveUp(camera, cameraMoveSpeed);
+            if (IsKeyDown(KeyboardKey::KEY_LEFT_CONTROL)) CameraMoveUp(camera, -cameraMoveSpeed);
         }
     }
 
@@ -518,8 +518,8 @@ void UpdateCamera(Camera *camera, const CameraMode mode)
     {
         // Zoom target distance
         CameraMoveToTarget(camera, -GetMouseWheelMove());
-        if (IsKeyPressed(KEY_KP_SUBTRACT)) CameraMoveToTarget(camera, 2.0f);
-        if (IsKeyPressed(KEY_KP_ADD)) CameraMoveToTarget(camera, -2.0f);
+        if (IsKeyPressed(KeyboardKey::KEY_KP_SUBTRACT)) CameraMoveToTarget(camera, 2.0f);
+        if (IsKeyPressed(KeyboardKey::KEY_KP_ADD)) CameraMoveToTarget(camera, -2.0f);
     }
 }
 #endif // !RCAMERA_STANDALONE
