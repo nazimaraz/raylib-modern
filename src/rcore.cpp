@@ -280,11 +280,11 @@ namespace raylib
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
-typedef struct { int x; int y; } Point;
-typedef struct { unsigned int width; unsigned int height; } Size;
+struct Point { int x; int y; };
+struct Size { unsigned int width; unsigned int height; };
 
 // Core global state context data
-typedef struct CoreData {
+struct CoreData {
     struct {
         const char *title;                  // Window text title const pointer
         unsigned int flags;                 // Configuration flags (bit based), keeps window state
@@ -379,7 +379,7 @@ typedef struct CoreData {
         unsigned int frameCounter;          // Frame counter
 
     } Time;
-} CoreData;
+};
 
 //----------------------------------------------------------------------------------
 // Global Variables Definition
@@ -405,7 +405,7 @@ static MsfGifState gifState = { 0 };        // MSGIF context state
 
 #if defined(SUPPORT_AUTOMATION_EVENTS)
 // Automation events type
-typedef enum AutomationEventType {
+enum AutomationEventType {
     EVENT_NONE = 0,
     // Input events
     INPUT_KEY_UP,                   // param[0]: key
@@ -433,11 +433,11 @@ typedef enum AutomationEventType {
     // Custom events
     ACTION_TAKE_SCREENSHOT,         // no params
     ACTION_SETTARGETFPS             // param[0]: fps
-} AutomationEventType;
+};
 
 // Event type to config events flags
 // TODO: Not used at the moment
-typedef enum {
+enum EventType {
     EVENT_INPUT_KEYBOARD    = 0,
     EVENT_INPUT_MOUSE       = 1,
     EVENT_INPUT_GAMEPAD     = 2,
@@ -445,7 +445,7 @@ typedef enum {
     EVENT_INPUT_GESTURE     = 8,
     EVENT_WINDOW            = 16,
     EVENT_CUSTOM            = 32
-} EventType;
+};
 
 // Event type name strings, required for export
 static const char *autoEventTypeName[] = {

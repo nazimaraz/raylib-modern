@@ -132,7 +132,7 @@
 #define NOMCX             // Modem Configuration Extensions
 
 // Type required before windows.h inclusion
-typedef struct tagMSG *LPMSG;
+struct tagMSG *LPMSG;
 
 #include <windows.h>        // Windows functionality (miniaudio)
 
@@ -309,7 +309,7 @@ namespace raylib
 #if defined(RAUDIO_STANDALONE)
 // Trace log level
 // NOTE: Organized by priority level
-typedef enum {
+enum TraceLogLevel {
     LOG_ALL = 0,        // Display all logs
     LOG_TRACE,          // Trace logging, intended for internal use only
     LOG_DEBUG,          // Debug logging, used for internal debugging, it should be disabled on release builds
@@ -318,13 +318,13 @@ typedef enum {
     LOG_ERROR,          // Error logging, used on unrecoverable failures
     LOG_FATAL,          // Fatal logging, used to abort program: exit(EXIT_FAILURE)
     LOG_NONE            // Disable logging
-} TraceLogLevel;
+};
 #endif
 
 // Music context type
 // NOTE: Depends on data structure provided by the library
 // in charge of reading the different file types
-typedef enum {
+enum MusicContextType {
     MUSIC_AUDIO_NONE = 0,   // No audio context loaded
     MUSIC_AUDIO_WAV,        // WAV audio context
     MUSIC_AUDIO_OGG,        // OGG audio context
@@ -333,14 +333,14 @@ typedef enum {
     MUSIC_AUDIO_QOA,        // QOA audio context
     MUSIC_MODULE_XM,        // XM module audio context
     MUSIC_MODULE_MOD        // MOD module audio context
-} MusicContextType;
+};
 
 // NOTE: Different logic is used when feeding data to the playback device
 // depending on whether data is streamed (Music vs Sound)
-typedef enum {
+enum AudioBufferUsage {
     AUDIO_BUFFER_USAGE_STATIC = 0,
     AUDIO_BUFFER_USAGE_STREAM
-} AudioBufferUsage;
+};
 
 // Audio buffer struct
 struct rAudioBuffer {
@@ -380,7 +380,7 @@ struct rAudioProcessor {
 #define AudioBuffer rAudioBuffer    // HACK: To avoid CoreAudio (macOS) symbol collision
 
 // Audio data context
-typedef struct AudioData {
+struct AudioData {
     struct {
         ma_context context;         // miniaudio context data
         ma_device device;           // miniaudio device
@@ -395,7 +395,7 @@ typedef struct AudioData {
         int defaultSize;            // Default audio buffer size for audio streams
     } Buffer;
     rAudioProcessor *mixedProcessor;
-} AudioData;
+};
 
 //----------------------------------------------------------------------------------
 // Global Variables Definition

@@ -3271,12 +3271,12 @@ Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
     Vector3 n6 = { 0.0f, 0.0f, 1.0f };
 
     // NOTE: We use texture rectangles to define different textures for top-bottom-front-back-right-left (6)
-    typedef struct RectangleF {
+    struct RectangleF {
         float x;
         float y;
         float width;
         float height;
-    } RectangleF;
+    };
 
     RectangleF rightTexUV = { 0.0f, 0.0f, 0.5f, 0.5f };
     RectangleF leftTexUV = { 0.5f, 0.0f, 0.5f, 0.5f };
@@ -4536,7 +4536,7 @@ static Model LoadIQM(const char *fileName)
 
     // IQM file structs
     //-----------------------------------------------------------------------------------
-    typedef struct IQMHeader {
+    struct IQMHeader {
         char magic[16];
         unsigned int version;
         unsigned int dataSize;
@@ -4551,57 +4551,57 @@ static Model LoadIQM(const char *fileName)
         unsigned int num_frames, num_framechannels, ofs_frames, ofs_bounds;
         unsigned int num_comment, ofs_comment;
         unsigned int num_extensions, ofs_extensions;
-    } IQMHeader;
+    };
 
-    typedef struct IQMMesh {
+    struct IQMMesh {
         unsigned int name;
         unsigned int material;
         unsigned int first_vertex, num_vertexes;
         unsigned int first_triangle, num_triangles;
-    } IQMMesh;
+    };
 
-    typedef struct IQMTriangle {
+    struct IQMTriangle {
         unsigned int vertex[3];
-    } IQMTriangle;
+    };
 
-    typedef struct IQMJoint {
+    struct IQMJoint {
         unsigned int name;
         int parent;
         float translate[3], rotate[4], scale[3];
-    } IQMJoint;
+    };
 
-    typedef struct IQMVertexArray {
+    struct IQMVertexArray {
         unsigned int type;
         unsigned int flags;
         unsigned int format;
         unsigned int size;
         unsigned int offset;
-    } IQMVertexArray;
+    };
 
     // NOTE: Below IQM structures are not used but listed for reference
     /*
-    typedef struct IQMAdjacency {
+    struct IQMAdjacency {
         unsigned int triangle[3];
-    } IQMAdjacency;
+    };
 
-    typedef struct IQMPose {
+    struct IQMPose {
         int parent;
         unsigned int mask;
         float channeloffset[10];
         float channelscale[10];
-    } IQMPose;
+    };
 
-    typedef struct IQMAnim {
+    struct IQMAnim {
         unsigned int name;
         unsigned int first_frame, num_frames;
         float framerate;
         unsigned int flags;
-    } IQMAnim;
+    };
 
-    typedef struct IQMBounds {
+    struct IQMBounds {
         float bbmin[3], bbmax[3];
         float xyradius, radius;
-    } IQMBounds;
+    };
     */
     //-----------------------------------------------------------------------------------
 
@@ -4919,7 +4919,7 @@ static ModelAnimation *LoadModelAnimationsIQM(const char *fileName, int *animCou
     unsigned char *fileData = LoadFileData(fileName, &dataSize);
     unsigned char *fileDataPtr = fileData;
 
-    typedef struct IQMHeader {
+    struct IQMHeader {
         char magic[16];
         unsigned int version;
         unsigned int dataSize;
@@ -4934,27 +4934,27 @@ static ModelAnimation *LoadModelAnimationsIQM(const char *fileName, int *animCou
         unsigned int num_frames, num_framechannels, ofs_frames, ofs_bounds;
         unsigned int num_comment, ofs_comment;
         unsigned int num_extensions, ofs_extensions;
-    } IQMHeader;
+    };
 
-    typedef struct IQMJoint {
+    struct IQMJoint {
         unsigned int name;
         int parent;
         float translate[3], rotate[4], scale[3];
-    } IQMJoint;
+    };
 
-    typedef struct IQMPose {
+    struct IQMPose {
         int parent;
         unsigned int mask;
         float channeloffset[10];
         float channelscale[10];
-    } IQMPose;
+    };
 
-    typedef struct IQMAnim {
+    struct IQMAnim {
         unsigned int name;
         unsigned int first_frame, num_frames;
         float framerate;
         unsigned int flags;
-    } IQMAnim;
+    };
 
     // In case file can not be read, return an empty model
     if (fileDataPtr == nullptr) return nullptr;
