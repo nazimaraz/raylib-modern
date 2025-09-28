@@ -66,11 +66,11 @@ namespace raylib
 
 static int logTypeLevel = LOG_INFO;                 // Minimum log type level
 
-static TraceLogCallback traceLog = NULL;            // TraceLog callback function pointer
-static LoadFileDataCallback loadFileData = NULL;    // LoadFileData callback function pointer
-static SaveFileDataCallback saveFileData = NULL;    // SaveFileText callback function pointer
-static LoadFileTextCallback loadFileText = NULL;    // LoadFileText callback function pointer
-static SaveFileTextCallback saveFileText = NULL;    // SaveFileText callback function pointer
+static TraceLogCallback traceLog = nullptr;            // TraceLog callback function pointer
+static LoadFileDataCallback loadFileData = nullptr;    // LoadFileData callback function pointer
+static SaveFileDataCallback saveFileData = nullptr;    // SaveFileText callback function pointer
+static LoadFileTextCallback loadFileText = nullptr;    // LoadFileText callback function pointer
+static SaveFileTextCallback saveFileText = nullptr;    // SaveFileText callback function pointer
 
 //----------------------------------------------------------------------------------
 // Functions to set internal callbacks
@@ -82,8 +82,8 @@ void SetLoadFileTextCallback(LoadFileTextCallback callback) { loadFileText = cal
 void SetSaveFileTextCallback(SaveFileTextCallback callback) { saveFileText = callback; }  // Set custom file text saver
 
 #if defined(PLATFORM_ANDROID)
-static AAssetManager *assetManager = NULL;          // Android assets manager pointer
-static const char *internalDataPath = NULL;         // Android internal data path
+static AAssetManager *assetManager = nullptr;          // Android assets manager pointer
+static const char *internalDataPath = nullptr;         // Android internal data path
 #endif
 
 //----------------------------------------------------------------------------------
@@ -185,10 +185,10 @@ void MemFree(void *ptr)
 // Load data from file into a buffer
 unsigned char *LoadFileData(const char *fileName, int *dataSize)
 {
-    unsigned char *data = NULL;
+    unsigned char *data = nullptr;
     *dataSize = 0;
 
-    if (fileName != NULL)
+    if (fileName != nullptr)
     {
         if (loadFileData)
         {
@@ -198,7 +198,7 @@ unsigned char *LoadFileData(const char *fileName, int *dataSize)
 #if defined(SUPPORT_STANDARD_FILEIO)
         FILE *file = fopen(fileName, "rb");
 
-        if (file != NULL)
+        if (file != nullptr)
         {
             // WARNING: On binary streams SEEK_END could not be found,
             // using fseek() and ftell() could not work in some (rare) cases
@@ -210,7 +210,7 @@ unsigned char *LoadFileData(const char *fileName, int *dataSize)
             {
                 data = (unsigned char *)RL_CALLOC(size, sizeof(unsigned char));
 
-                if (data != NULL)
+                if (data != nullptr)
                 {
                     // NOTE: fread() returns number of read elements instead of bytes, so we read [1 byte, size elements]
                     size_t count = fread(data, sizeof(unsigned char), size, file);
@@ -222,7 +222,7 @@ unsigned char *LoadFileData(const char *fileName, int *dataSize)
                         TRACELOG(LOG_WARNING, "FILEIO: [%s] File is bigger than 2147483647 bytes, avoid using LoadFileData()", fileName);
 
                         RL_FREE(data);
-                        data = NULL;
+                        data = nullptr;
                     }
                     else
                     {
@@ -259,7 +259,7 @@ bool SaveFileData(const char *fileName, void *data, int dataSize)
 {
     bool success = false;
 
-    if (fileName != NULL)
+    if (fileName != nullptr)
     {
         if (saveFileData)
         {
@@ -268,7 +268,7 @@ bool SaveFileData(const char *fileName, void *data, int dataSize)
 #if defined(SUPPORT_STANDARD_FILEIO)
         FILE *file = fopen(fileName, "wb");
 
-        if (file != NULL)
+        if (file != nullptr)
         {
             // WARNING: fwrite() returns a size_t value, usually 'unsigned int' (32bit compilation) and 'unsigned long long' (64bit compilation)
             // and expects a size_t input value but as dataSize is limited to INT_MAX (2147483647 bytes), there shouldn't be a problem
@@ -334,7 +334,7 @@ bool ExportDataAsCode(const unsigned char *data, int dataSize, const char *fileN
     for (int i = 0; i < (dataSize - 1); i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n" : "0x%x, "), data[i]);
     byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "0x%x };\n", data[dataSize - 1]);
 
-    // NOTE: Text data size exported is determined by '\0' (NULL) character
+    // NOTE: Text data size exported is determined by '\0' (nullptr) character
     success = SaveFileText(fileName, txtData);
 
     RL_FREE(txtData);
@@ -349,9 +349,9 @@ bool ExportDataAsCode(const unsigned char *data, int dataSize, const char *fileN
 // NOTE: text chars array should be freed manually
 char *LoadFileText(const char *fileName)
 {
-    char *text = NULL;
+    char *text = nullptr;
 
-    if (fileName != NULL)
+    if (fileName != nullptr)
     {
         if (loadFileText)
         {
@@ -361,7 +361,7 @@ char *LoadFileText(const char *fileName)
 #if defined(SUPPORT_STANDARD_FILEIO)
         FILE *file = fopen(fileName, "rt");
 
-        if (file != NULL)
+        if (file != nullptr)
         {
             // WARNING: When reading a file as 'text' file,
             // text mode causes carriage return-linefeed translation...
@@ -374,7 +374,7 @@ char *LoadFileText(const char *fileName)
             {
                 text = (char *)RL_CALLOC(size + 1, sizeof(char));
 
-                if (text != NULL)
+                if (text != nullptr)
                 {
                     unsigned int count = (unsigned int)fread(text, sizeof(char), size, file);
 
@@ -414,7 +414,7 @@ bool SaveFileText(const char *fileName, const char *text)
 {
     bool success = false;
 
-    if (fileName != NULL)
+    if (fileName != nullptr)
     {
         if (saveFileText)
         {
@@ -423,7 +423,7 @@ bool SaveFileText(const char *fileName, const char *text)
 #if defined(SUPPORT_STANDARD_FILEIO)
         FILE *file = fopen(fileName, "wt");
 
-        if (file != NULL)
+        if (file != nullptr)
         {
             int count = fprintf(file, "%s", text);
 
@@ -470,7 +470,7 @@ FILE *android_fopen(const char *fileName, const char *mode)
         // NOTE: AAsset provides access to read-only asset
         AAsset *asset = AAssetManager_open(assetManager, fileName, AASSET_MODE_UNKNOWN);
 
-        if (asset != NULL)
+        if (asset != nullptr)
         {
             // Get pointer to file in the assets
             return funopen(asset, android_read, android_write, android_seek, android_close);

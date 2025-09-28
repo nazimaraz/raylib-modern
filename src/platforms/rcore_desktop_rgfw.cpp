@@ -571,23 +571,23 @@ void SetWindowIcon(Image image)
 // Set icon for window
 void SetWindowIcons(Image *images, int count)
 {
-    if ((images == NULL) || (count <= 0))
+    if ((images == nullptr) || (count <= 0))
     {
-        RGFW_window_setIcon(platform.window, NULL, RGFW_AREA(0, 0), 0);
+        RGFW_window_setIcon(platform.window, nullptr, RGFW_AREA(0, 0), 0);
     }
     else
     {
-        Image *bigIcon = NULL;
-        Image *smallIcon = NULL;
+        Image *bigIcon = nullptr;
+        Image *smallIcon = nullptr;
 
         for (int i = 0; i < count; i++)
         {
-            if ((bigIcon == NULL) || ((images[i].width > bigIcon->width) && (images[i].height > bigIcon->height))) bigIcon = &images[i];
-            if ((smallIcon == NULL) || ((images[i].width < smallIcon->width) && (images[i].height > smallIcon->height))) smallIcon = &images[i];
+            if ((bigIcon == nullptr) || ((images[i].width > bigIcon->width) && (images[i].height > bigIcon->height))) bigIcon = &images[i];
+            if ((smallIcon == nullptr) || ((images[i].width < smallIcon->width) && (images[i].height > smallIcon->height))) smallIcon = &images[i];
         }
 
-        if (smallIcon != NULL) RGFW_window_setIconEx(platform.window, smallIcon->data, RGFW_AREA(smallIcon->width, smallIcon->height), RGFW_formatToChannels(smallIcon->format), RGFW_iconWindow);
-        if (bigIcon != NULL) RGFW_window_setIconEx(platform.window, bigIcon->data, RGFW_AREA(bigIcon->width, bigIcon->height), RGFW_formatToChannels(bigIcon->format), RGFW_iconTaskbar);
+        if (smallIcon != nullptr) RGFW_window_setIconEx(platform.window, smallIcon->data, RGFW_AREA(smallIcon->width, smallIcon->height), RGFW_formatToChannels(smallIcon->format), RGFW_iconWindow);
+        if (bigIcon != nullptr) RGFW_window_setIconEx(platform.window, bigIcon->data, RGFW_AREA(bigIcon->width, bigIcon->height), RGFW_formatToChannels(bigIcon->format), RGFW_iconTaskbar);
     }
 }
 
@@ -607,7 +607,7 @@ void SetWindowPosition(int x, int y)
 // Set monitor for the current window
 void SetWindowMonitor(int monitor)
 {
-    RGFW_window_moveToMonitor(platform.window, RGFW_getMonitors(NULL)[monitor]);
+    RGFW_window_moveToMonitor(platform.window, RGFW_getMonitors(nullptr)[monitor]);
 }
 
 // Set window minimum dimensions (FLAG_WINDOW_RESIZABLE)
@@ -650,7 +650,7 @@ void SetWindowFocused(void)
 // Get native window handle
 void *GetWindowHandle(void)
 {
-    if (platform.window == NULL) return NULL;
+    if (platform.window == nullptr) return nullptr;
 #ifdef RGFW_WASM
     return (void *)platform.window->src.ctx;
 #else
@@ -664,7 +664,7 @@ int GetMonitorCount(void)
     #define MAX_MONITORS_SUPPORTED 6
 
     int count = MAX_MONITORS_SUPPORTED;
-    RGFW_monitor *mons = RGFW_getMonitors(NULL);
+    RGFW_monitor *mons = RGFW_getMonitors(nullptr);
 
     for (int i = 0; i < 6; i++)
     {
@@ -681,7 +681,7 @@ int GetMonitorCount(void)
 // Get current monitor where window is placed
 int GetCurrentMonitor(void)
 {
-    RGFW_monitor *mons = RGFW_getMonitors(NULL);
+    RGFW_monitor *mons = RGFW_getMonitors(nullptr);
     RGFW_monitor mon = { 0 };
 
     if (platform.window) mon = RGFW_window_getMonitor(platform.window);
@@ -698,7 +698,7 @@ int GetCurrentMonitor(void)
 // Get selected monitor position
 Vector2 GetMonitorPosition(int monitor)
 {
-    RGFW_monitor *mons = RGFW_getMonitors(NULL);
+    RGFW_monitor *mons = RGFW_getMonitors(nullptr);
 
     return (Vector2){ (float)mons[monitor].x, (float)mons[monitor].y };
 }
@@ -706,7 +706,7 @@ Vector2 GetMonitorPosition(int monitor)
 // Get selected monitor width (currently used by monitor)
 int GetMonitorWidth(int monitor)
 {
-    RGFW_monitor *mons = RGFW_getMonitors(NULL);
+    RGFW_monitor *mons = RGFW_getMonitors(nullptr);
 
     return mons[monitor].mode.area.w;
 }
@@ -714,7 +714,7 @@ int GetMonitorWidth(int monitor)
 // Get selected monitor height (currently used by monitor)
 int GetMonitorHeight(int monitor)
 {
-    RGFW_monitor *mons = RGFW_getMonitors(NULL);
+    RGFW_monitor *mons = RGFW_getMonitors(nullptr);
 
     return mons[monitor].mode.area.h;
 }
@@ -722,7 +722,7 @@ int GetMonitorHeight(int monitor)
 // Get selected monitor physical width in millimetres
 int GetMonitorPhysicalWidth(int monitor)
 {
-    RGFW_monitor *mons = RGFW_getMonitors(NULL);
+    RGFW_monitor *mons = RGFW_getMonitors(nullptr);
 
     return mons[monitor].physW;
 }
@@ -730,7 +730,7 @@ int GetMonitorPhysicalWidth(int monitor)
 // Get selected monitor physical height in millimetres
 int GetMonitorPhysicalHeight(int monitor)
 {
-    RGFW_monitor *mons = RGFW_getMonitors(NULL);
+    RGFW_monitor *mons = RGFW_getMonitors(nullptr);
 
     return (int)mons[monitor].physH;
 }
@@ -738,7 +738,7 @@ int GetMonitorPhysicalHeight(int monitor)
 // Get selected monitor refresh rate
 int GetMonitorRefreshRate(int monitor)
 {
-    RGFW_monitor *mons = RGFW_getMonitors(NULL);
+    RGFW_monitor *mons = RGFW_getMonitors(nullptr);
 
     return (int)mons[monitor].mode.refreshRate;
 }
@@ -746,7 +746,7 @@ int GetMonitorRefreshRate(int monitor)
 // Get the human-readable, UTF-8 encoded name of the selected monitor
 const char *GetMonitorName(int monitor)
 {
-    RGFW_monitor *mons = RGFW_getMonitors(NULL);
+    RGFW_monitor *mons = RGFW_getMonitors(nullptr);
 
     return mons[monitor].name;
 }
@@ -754,7 +754,7 @@ const char *GetMonitorName(int monitor)
 // Get window position XY on monitor
 Vector2 GetWindowPosition(void)
 {
-    if (platform.window == NULL) return (Vector2){ 0.0f, 0.0f };
+    if (platform.window == nullptr) return (Vector2){ 0.0f, 0.0f };
     return (Vector2){ (float)platform.window->r.x, (float)platform.window->r.y };
 }
 
@@ -779,7 +779,7 @@ void SetClipboardText(const char *text)
 // NOTE: returned string is allocated and freed by RGFW
 const char *GetClipboardText(void)
 {
-    return RGFW_readClipboard(NULL);
+    return RGFW_readClipboard(nullptr);
 }
 
 #if defined(SUPPORT_CLIPBOARD_IMAGE)
@@ -797,7 +797,7 @@ Image GetClipboardImage(void)
 {
     Image image = { 0 };
     unsigned long long int dataSize = 0;
-    void *fileData = NULL;
+    void *fileData = nullptr;
 
 #if defined(SUPPORT_CLIPBOARD_IMAGE)
 #if defined(_WIN32)
@@ -805,7 +805,7 @@ Image GetClipboardImage(void)
     int height = 0;
     fileData  = (void *)Win32GetClipboardImageData(&width, &height, &dataSize);
 
-    if (fileData == NULL) TRACELOG(LOG_WARNING, "Clipboard image: Couldn't get clipboard data");
+    if (fileData == nullptr) TRACELOG(LOG_WARNING, "Clipboard image: Couldn't get clipboard data");
     else image = LoadImageFromMemory(".bmp", fileData, dataSize);
 #else
     TRACELOG(LOG_WARNING, "Clipboard image: PLATFORM_DESKTOP_RGFW doesn't implement GetClipboardImage() for this OS");
@@ -873,7 +873,7 @@ double GetTime(void)
 void OpenURL(const char *url)
 {
     // Security check to (partially) avoid malicious code on target platform
-    if (strchr(url, '\'') != NULL) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
+    if (strchr(url, '\'') != nullptr) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
     else
     {
         // TODO: Open URL implementation
@@ -1321,7 +1321,7 @@ int InitPlatform(void)
     platform.window = RGFW_createWindow(CORE.Window.title, RGFW_RECT(0, 0, CORE.Window.screen.width, CORE.Window.screen.height), flags);
     platform.mon.mode.area.w = 0;
 
-    if (platform.window != NULL)
+    if (platform.window != nullptr)
     {
         // NOTE: RGFW's exit key is distinct from raylib's exit key (which can
         // be set with SetExitKey()) and defaults to Escape
@@ -1344,7 +1344,7 @@ int InitPlatform(void)
     RGFW_window_makeCurrent(platform.window);
 
     // Check surface and context activation
-    if (platform.window != NULL)
+    if (platform.window != nullptr)
     {
         CORE.Window.ready = true;
 

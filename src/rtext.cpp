@@ -171,7 +171,7 @@ extern void LoadFontDefault(void)
     #define BIT_CHECK(a,b) ((a) & (1u << (b)))
 
     // check to see if we have allready allocated the font for an image, and if we don't need to upload, then just return
-    if (defaultFont.glyphs != NULL && !isGpuReady)
+    if (defaultFont.glyphs != nullptr && !isGpuReady)
         return;
 
     // NOTE: Using UTF-8 encoding table for Unicode U+0000..U+00FF Basic Latin + Latin-1 Supplement
@@ -276,7 +276,7 @@ extern void LoadFontDefault(void)
 
         // we have already loaded the font glyph data an image, and the GPU is ready, we are done
         // if we don't do this, we will leak memory by reallocating the glyphs and rects
-        if (defaultFont.glyphs != NULL)
+        if (defaultFont.glyphs != nullptr)
         {
             UnloadImage(imFont);
             return;
@@ -341,8 +341,8 @@ extern void UnloadFontDefault(void)
     RL_FREE(defaultFont.glyphs);
     RL_FREE(defaultFont.recs);
     defaultFont.glyphCount = 0;
-    defaultFont.glyphs = NULL;
-    defaultFont.recs = NULL;
+    defaultFont.glyphs = nullptr;
+    defaultFont.recs = nullptr;
 }
 #endif      // SUPPORT_DEFAULT_FONT
 
@@ -377,7 +377,7 @@ Font LoadFont(const char *fileName)
     Font font = { 0 };
 
 #if defined(SUPPORT_FILEFORMAT_TTF)
-    if (IsFileExtension(fileName, ".ttf") || IsFileExtension(fileName, ".otf")) font = LoadFontEx(fileName, FONT_TTF_DEFAULT_SIZE, NULL, FONT_TTF_DEFAULT_NUMCHARS);
+    if (IsFileExtension(fileName, ".ttf") || IsFileExtension(fileName, ".otf")) font = LoadFontEx(fileName, FONT_TTF_DEFAULT_SIZE, nullptr, FONT_TTF_DEFAULT_NUMCHARS);
     else
 #endif
 #if defined(SUPPORT_FILEFORMAT_FNT)
@@ -385,12 +385,12 @@ Font LoadFont(const char *fileName)
     else
 #endif
 #if defined(SUPPORT_FILEFORMAT_BDF)
-    if (IsFileExtension(fileName, ".bdf")) font = LoadFontEx(fileName, FONT_TTF_DEFAULT_SIZE, NULL, FONT_TTF_DEFAULT_NUMCHARS);
+    if (IsFileExtension(fileName, ".bdf")) font = LoadFontEx(fileName, FONT_TTF_DEFAULT_SIZE, nullptr, FONT_TTF_DEFAULT_NUMCHARS);
     else
 #endif
     {
         Image image = LoadImage(fileName);
-        if (image.data != NULL) font = LoadFontFromImage(image, MAGENTA, FONT_TTF_DEFAULT_FIRST_CHAR);
+        if (image.data != nullptr) font = LoadFontFromImage(image, MAGENTA, FONT_TTF_DEFAULT_FIRST_CHAR);
         UnloadImage(image);
     }
 
@@ -409,7 +409,7 @@ Font LoadFont(const char *fileName)
 
 // Load Font from TTF or BDF font file with generation parameters
 // NOTE: You can pass an array with desired characters, those characters should be available in the font
-// if array is NULL, default char set is selected 32..126
+// if array is nullptr, default char set is selected 32..126
 Font LoadFontEx(const char *fileName, int fontSize, const int *codepoints, int codepointCount)
 {
     Font font = { 0 };
@@ -418,7 +418,7 @@ Font LoadFontEx(const char *fileName, int fontSize, const int *codepoints, int c
     int dataSize = 0;
     unsigned char *fileData = LoadFileData(fileName, &dataSize);
 
-    if (fileData != NULL)
+    if (fileData != nullptr)
     {
         // Loading font from memory data
         font = LoadFontFromMemory(GetFileExtension(fileName), fileData, dataSize, fontSize, codepoints, codepointCount);
@@ -582,11 +582,11 @@ Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int
     else
 #endif
     {
-        font.glyphs = NULL;
+        font.glyphs = nullptr;
     }
 
 #if defined(SUPPORT_FILEFORMAT_TTF) || defined(SUPPORT_FILEFORMAT_BDF)
-    if (font.glyphs != NULL)
+    if (font.glyphs != nullptr)
     {
         font.glyphPadding = FONT_TTF_DEFAULT_CHARS_PADDING;
 
@@ -618,8 +618,8 @@ bool IsFontValid(Font font)
 {
     return ((font.baseSize > 0) &&      // Validate font size
             (font.glyphCount > 0) &&    // Validate font contains some glyph
-            (font.recs != NULL) &&      // Validate font recs defining glyphs on texture atlas
-            (font.glyphs != NULL));     // Validate glyph data is loaded
+            (font.recs != nullptr) &&      // Validate font recs defining glyphs on texture atlas
+            (font.glyphs != nullptr));     // Validate glyph data is loaded
 
     // NOTE: Further validations could be done to verify if recs and glyphs contain valid data (glyphs values, metrics...)
 }
@@ -643,13 +643,13 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
     #define FONT_BITMAP_ALPHA_THRESHOLD     80      // Bitmap (B&W) font generation alpha threshold
 #endif
 
-    GlyphInfo *glyphs = NULL;
+    GlyphInfo *glyphs = nullptr;
     int glyphCounter = 0;
 
 #if defined(SUPPORT_FILEFORMAT_TTF)
     // Load font data (including pixel data) from TTF memory file
     // NOTE: Loaded information should be enough to generate font image atlas, using any packaging method
-    if (fileData != NULL)
+    if (fileData != nullptr)
     {
         bool genFontChars = false;
         stbtt_fontinfo fontInfo = { 0 };
@@ -670,7 +670,7 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
 
             // Fill fontChars in case not provided externally
             // NOTE: By default we fill glyphCount consecutively, starting at 32 (Space)
-            if (requiredCodepoints == NULL)
+            if (requiredCodepoints == nullptr)
             {
                 requiredCodepoints = (int *)RL_MALLOC(codepointCount*sizeof(int));
                 for (int i = 0; i < codepointCount; i++) requiredCodepoints[i] = i + 32;
@@ -725,9 +725,9 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
                         default: break;
                     }
 
-                    if (glyphs[k].image.data != NULL)    // Glyph data has been found in the font
+                    if (glyphs[k].image.data != nullptr)    // Glyph data has been found in the font
                     {
-                        stbtt_GetCodepointHMetrics(&fontInfo, cp, &glyphs[k].advanceX, NULL);
+                        stbtt_GetCodepointHMetrics(&fontInfo, cp, &glyphs[k].advanceX, nullptr);
                         glyphs[k].advanceX = (int)((float)glyphs[k].advanceX*scaleFactor);
 
                         if (cpHeight > fontSize) TRACELOG(LOG_WARNING, "FONT: [0x%04x] Glyph height is bigger than requested font size: %i > %i", cp, cpHeight, (int)fontSize);
@@ -746,7 +746,7 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
                     // NOTE: Another space to consider: 0x3000 (CJK - Ideographic Space)
                     if ((cp == 0x20) || (cp == 0x3000))
                     {
-                        stbtt_GetCodepointHMetrics(&fontInfo, cp, &glyphs[k].advanceX, NULL);
+                        stbtt_GetCodepointHMetrics(&fontInfo, cp, &glyphs[k].advanceX, nullptr);
                         glyphs[k].advanceX = (int)((float)glyphs[k].advanceX*scaleFactor);
 
                         Image imSpace = {
@@ -800,13 +800,13 @@ Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyp
 {
     Image atlas = { 0 };
 
-    if (glyphs == NULL)
+    if (glyphs == nullptr)
     {
         TRACELOG(LOG_WARNING, "FONT: Provided chars info not valid, returning empty image atlas");
         return atlas;
     }
 
-    *glyphRecs = NULL;
+    *glyphRecs = nullptr;
 
     // In case no chars count provided we suppose default of 95
     glyphCount = (glyphCount > 0)? glyphCount : 95;
@@ -999,7 +999,7 @@ Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyp
 // Unload font glyphs info data (RAM)
 void UnloadFontData(GlyphInfo *glyphs, int glyphCount)
 {
-    if (glyphs != NULL)
+    if (glyphs != nullptr)
     {
         for (int i = 0; i < glyphCount; i++) UnloadImage(glyphs[i].image);
 
@@ -1164,7 +1164,7 @@ bool ExportFontAsCode(Font font, const char *fileName)
 
     UnloadImage(image);
 
-    // NOTE: Text data size exported is determined by '\0' (NULL) character
+    // NOTE: Text data size exported is determined by '\0' (nullptr) character
     success = SaveFileText(fileName, txtData);
 
     RL_FREE(txtData);
@@ -1346,7 +1346,7 @@ Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing
     Vector2 textSize = { 0 };
 
     if ((isGpuReady && (font.texture.id == 0)) ||
-        (text == NULL) || (text[0] == '\0')) return textSize; // Security check
+        (text == nullptr) || (text[0] == '\0')) return textSize; // Security check
 
     int size = TextLength(text);    // Get size in bytes of text
     int tempByteCounter = 0;        // Used to count longer text line num chars
@@ -1495,7 +1495,7 @@ unsigned int TextLength(const char *text)
 {
     unsigned int length = 0;
 
-    if (text != NULL)
+    if (text != nullptr)
     {
         // NOTE: Alternative: use strlen(text)
 
@@ -1593,7 +1593,7 @@ int TextCopy(char *dst, const char *src)
 {
     int bytes = 0;
 
-    if ((src != NULL) && (dst != NULL))
+    if ((src != nullptr) && (dst != nullptr))
     {
         // NOTE: Alternative: use strcpy(dst, src)
 
@@ -1618,7 +1618,7 @@ bool TextIsEqual(const char *text1, const char *text2)
 {
     bool result = false;
 
-    if ((text1 != NULL) && (text2 != NULL))
+    if ((text1 != nullptr) && (text2 != nullptr))
     {
         if (strcmp(text1, text2) == 0) result = true;
     }
@@ -1661,7 +1661,7 @@ const char *TextRemoveSpaces(const char *text)
     static char buffer[MAX_TEXT_BUFFER_LENGTH] = { 0 };
     memset(buffer, 0, MAX_TEXT_BUFFER_LENGTH);
 
-    if (text != NULL)
+    if (text != nullptr)
     {
         // Avoid copying the ' ' characters
         for (int i = 0, j = 0; (i < MAX_TEXT_BUFFER_LENGTH - 1) && (text[j] != '\0'); i++)
@@ -1702,23 +1702,23 @@ char *GetTextBetween(const char *text, const char *begin, const char *end)
 
 // Replace text string
 // REQUIRES: strstr(), strncpy(), strcpy()
-// TODO: If (replacement == NULL) remove "search" text
+// TODO: If (replacement == nullptr) remove "search" text
 // WARNING: Allocated memory must be manually freed
 char *TextReplace(const char *text, const char *search, const char *replacement)
 {
-    char *result = NULL;
+    char *result = nullptr;
     
-    if (!text || !search) return NULL; // Sanity check
+    if (!text || !search) return nullptr; // Sanity check
     
-    char *insertPoint = NULL;   // Next insert point
-    char *temp = NULL;          // Temp pointer
+    char *insertPoint = nullptr;   // Next insert point
+    char *temp = nullptr;          // Temp pointer
     int searchLen = 0;          // Search string length of (the string to remove)
     int replaceLen = 0;         // Replacement length (the string to replace by)
     int lastReplacePos = 0;     // Distance between next search and end of last replace
     int count = 0;              // Number of replacements
 
     searchLen = TextLength(search);
-    if (searchLen == 0) return NULL;  // Empty search causes infinite loop during count
+    if (searchLen == 0) return nullptr;  // Empty search causes infinite loop during count
 
     replaceLen = TextLength(replacement);
 
@@ -1729,7 +1729,7 @@ char *TextReplace(const char *text, const char *search, const char *replacement)
     // Allocate returning string and point temp to it
     temp = result = (char *)RL_MALLOC(TextLength(text) + (replaceLen - searchLen)*count + 1);
 
-    if (!result) return NULL;   // Memory could not be allocated
+    if (!result) return nullptr;   // Memory could not be allocated
 
     // First time through the loop, all the variable are set correctly from here on,
     //  - 'temp' points to the end of the result string
@@ -1752,13 +1752,13 @@ char *TextReplace(const char *text, const char *search, const char *replacement)
 
 // Replace text between two specific strings
 // REQUIRES: strlen(), strncpy()
-// NOTE: If (replacement == NULL) remove "begin"[ ]"end" text
+// NOTE: If (replacement == nullptr) remove "begin"[ ]"end" text
 // WARNING: Returned string must be freed by user
 char *TextReplaceBetween(const char *text, const char *begin, const char *end, const char *replacement)
 {
-    char *result = NULL;
+    char *result = nullptr;
 
-    if (!text || !begin || !end) return NULL; // Sanity check
+    if (!text || !begin || !end) return nullptr; // Sanity check
     
     int beginIndex = TextFindIndex(text, begin);
 
@@ -1772,12 +1772,12 @@ char *TextReplaceBetween(const char *text, const char *begin, const char *end, c
             endIndex += (beginIndex + beginLen);
 
             int textLen = strlen(text);
-            int replaceLen = (replacement == NULL)? 0 : strlen(replacement);
+            int replaceLen = (replacement == nullptr)? 0 : strlen(replacement);
             int toreplaceLen = endIndex - beginIndex - beginLen;
             result = (char *)RL_CALLOC(textLen + replaceLen - toreplaceLen + 1, sizeof(char));
 
             strncpy(result, text, beginIndex + beginLen); // Copy first text part
-            if (replacement != NULL) strncpy(result + beginIndex + beginLen, replacement, replaceLen); // Copy replacement (if provided)
+            if (replacement != nullptr) strncpy(result + beginIndex + beginLen, replacement, replaceLen); // Copy replacement (if provided)
             strncpy(result + beginIndex + beginLen + replaceLen, text + endIndex, textLen - endIndex); // Copy end text part
         }
     }
@@ -1847,14 +1847,14 @@ char **TextSplit(const char *text, char delimiter, int *count)
     //      1. Maximum number of possible split strings is set by MAX_TEXTSPLIT_COUNT
     //      2. Maximum size of text to split is MAX_TEXT_BUFFER_LENGTH
 
-    static char *buffers[MAX_TEXTSPLIT_COUNT] = { NULL }; // Pointers to buffer[] text data
+    static char *buffers[MAX_TEXTSPLIT_COUNT] = { nullptr }; // Pointers to buffer[] text data
     static char buffer[MAX_TEXT_BUFFER_LENGTH] = { 0 }; // Text data with '\0' separators
     memset(buffer, 0, MAX_TEXT_BUFFER_LENGTH);
 
     buffers[0] = buffer;
     int counter = 0;
 
-    if (text != NULL)
+    if (text != nullptr)
     {
         counter = 1;
 
@@ -1895,7 +1895,7 @@ int TextFindIndex(const char *text, const char *search)
 
     const auto ptr = strstr(text, search);
 
-    if (ptr != NULL) position = (int)(ptr - text);
+    if (ptr != nullptr) position = (int)(ptr - text);
 
     return position;
 }
@@ -1908,7 +1908,7 @@ char *TextToUpper(const char *text)
     static char buffer[MAX_TEXT_BUFFER_LENGTH] = { 0 };
     memset(buffer, 0, MAX_TEXT_BUFFER_LENGTH);
 
-    if (text != NULL)
+    if (text != nullptr)
     {
         for (int i = 0; (i < MAX_TEXT_BUFFER_LENGTH - 1) && (text[i] != '\0'); i++)
         {
@@ -1927,7 +1927,7 @@ char *TextToLower(const char *text)
     static char buffer[MAX_TEXT_BUFFER_LENGTH] = { 0 };
     memset(buffer, 0, MAX_TEXT_BUFFER_LENGTH);
 
-    if (text != NULL)
+    if (text != nullptr)
     {
         for (int i = 0; (i < MAX_TEXT_BUFFER_LENGTH - 1) && (text[i] != '\0'); i++)
         {
@@ -1946,7 +1946,7 @@ char *TextToPascal(const char *text)
     static char buffer[MAX_TEXT_BUFFER_LENGTH] = { 0 };
     memset(buffer, 0, MAX_TEXT_BUFFER_LENGTH);
 
-    if (text != NULL)
+    if (text != nullptr)
     {
         // Upper case first character
         if ((text[0] >= 'a') && (text[0] <= 'z')) buffer[0] = text[0] - 32;
@@ -1974,7 +1974,7 @@ char *TextToSnake(const char *text)
     static char buffer[MAX_TEXT_BUFFER_LENGTH] = { 0 };
     memset(buffer, 0, MAX_TEXT_BUFFER_LENGTH);
 
-    if (text != NULL)
+    if (text != nullptr)
     {
         // Check for next separator to upper case another character
         for (int i = 0, j = 0; (i < MAX_TEXT_BUFFER_LENGTH - 1) && (text[j] != '\0'); i++, j++)
@@ -2002,7 +2002,7 @@ char *TextToCamel(const char *text)
     static char buffer[MAX_TEXT_BUFFER_LENGTH] = { 0 };
     memset(buffer, 0, MAX_TEXT_BUFFER_LENGTH);
 
-    if (text != NULL)
+    if (text != nullptr)
     {
         // Lower case first character
         if ((text[0] >= 'A') && (text[0] <= 'Z')) buffer[0] = text[0] + 32;
@@ -2031,7 +2031,7 @@ char *LoadUTF8(const int *codepoints, int length)
     // We allocate enough memory to fit all possible codepoints
     // NOTE: 5 bytes for every codepoint should be enough
     char *text = (char *)RL_CALLOC(length*5, 1);
-    const char *utf8 = NULL;
+    const char *utf8 = nullptr;
     int size = 0;
 
     for (int i = 0, bytes = 0; i < length; i++)
@@ -2345,7 +2345,7 @@ static Font LoadBMFont(const char *fileName)
     Font font = { 0 };
 
     char buffer[MAX_BUFFER_SIZE] = { 0 };
-    char *searchPoint = NULL;
+    char *searchPoint = nullptr;
 
     int fontSize = 0;
     int glyphCount = 0;
@@ -2361,7 +2361,7 @@ static Font LoadBMFont(const char *fileName)
 
     char *fileText = LoadFileText(fileName);
 
-    if (fileText == NULL) return font;
+    if (fileText == nullptr) return font;
 
     char *fileTextPtr = fileText;
 
@@ -2521,7 +2521,7 @@ static GlyphInfo *LoadFontDataBDF(const unsigned char *fileData, int dataSize, c
 
     char buffer[MAX_BUFFER_SIZE] = { 0 };
 
-    GlyphInfo *glyphs = NULL;
+    GlyphInfo *glyphs = nullptr;
     bool genFontChars = false;
 
     int totalReadBytes = 0;         // Data bytes read (total)
@@ -2550,17 +2550,17 @@ static GlyphInfo *LoadFontDataBDF(const unsigned char *fileData, int dataSize, c
     int charDWidthX = 0;            // Character advance X
     int charDWidthY = 0;            // Character advance Y (unused)
 
-    GlyphInfo *glyphs = NULL;       // Pointer to output glyph info (NULL if not set)
+    GlyphInfo *glyphs = nullptr;       // Pointer to output glyph info (nullptr if not set)
     int *requiredCodepoints = codepoints;
 
-    if (fileData == NULL) return glyphs;
+    if (fileData == nullptr) return glyphs;
 
     // In case no chars count provided, default to 95
     codepointCount = (codepointCount > 0)? codepointCount : 95;
 
     // Fill fontChars in case not provided externally
     // NOTE: By default we fill glyphCount consecutively, starting at 32 (Space)
-    if (requiredCodepoints == NULL)
+    if (requiredCodepoints == nullptr)
     {
         requiredCodepoints = (int *)RL_MALLOC(codepointCount*sizeof(int));
         for (int i = 0; i < codepointCount; i++) requiredCodepoints[i] = i + 32;
@@ -2576,12 +2576,12 @@ static GlyphInfo *LoadFontDataBDF(const unsigned char *fileData, int dataSize, c
         fileTextPtr += (readBytes + 1);
 
         // Line: COMMENT
-        if (strstr(buffer, "COMMENT") != NULL) continue; // Ignore line
+        if (strstr(buffer, "COMMENT") != nullptr) continue; // Ignore line
 
         if (charStarted)
         {
             // Line: ENDCHAR
-            if (strstr(buffer, "ENDCHAR") != NULL)
+            if (strstr(buffer, "ENDCHAR") != nullptr)
             {
                 charStarted = false;
                 continue;
@@ -2589,7 +2589,7 @@ static GlyphInfo *LoadFontDataBDF(const unsigned char *fileData, int dataSize, c
 
             if (charBitmapStarted)
             {
-                if (glyphs != NULL)
+                if (glyphs != nullptr)
                 {
                     int pixelY = charBitmapNextRow++;
 
@@ -2613,31 +2613,31 @@ static GlyphInfo *LoadFontDataBDF(const unsigned char *fileData, int dataSize, c
             }
 
             // Line: ENCODING
-            if (strstr(buffer, "ENCODING") != NULL)
+            if (strstr(buffer, "ENCODING") != nullptr)
             {
                 readVars = sscanf(buffer, "ENCODING %i", &charEncoding);
                 continue;
             }
 
             // Line: BBX
-            if (strstr(buffer, "BBX") != NULL)
+            if (strstr(buffer, "BBX") != nullptr)
             {
                 readVars = sscanf(buffer, "BBX %i %i %i %i", &charBBw, &charBBh, &charBBxoff0, &charBByoff0);
                 continue;
             }
 
             // Line: DWIDTH
-            if (strstr(buffer, "DWIDTH") != NULL)
+            if (strstr(buffer, "DWIDTH") != nullptr)
             {
                 readVars = sscanf(buffer, "DWIDTH %i %i", &charDWidthX, &charDWidthY);
                 continue;
             }
 
             // Line: BITMAP
-            if (strstr(buffer, "BITMAP") != NULL)
+            if (strstr(buffer, "BITMAP") != nullptr)
             {
                 // Search for glyph index in codepoints
-                glyphs = NULL;
+                glyphs = nullptr;
 
                 for (int codepointIndex = 0; codepointIndex < codepointCount; codepointIndex++)
                 {
@@ -2649,7 +2649,7 @@ static GlyphInfo *LoadFontDataBDF(const unsigned char *fileData, int dataSize, c
                 }
 
                 // Init glyph info
-                if (glyphs != NULL)
+                if (glyphs != nullptr)
                 {
                     glyphs->value = charEncoding;
                     glyphs->offsetX = charBBxoff0 + fontBByoff0;
@@ -2672,53 +2672,53 @@ static GlyphInfo *LoadFontDataBDF(const unsigned char *fileData, int dataSize, c
         else if (fontStarted)
         {
             // Line: ENDFONT
-            if (strstr(buffer, "ENDFONT") != NULL)
+            if (strstr(buffer, "ENDFONT") != nullptr)
             {
                 fontStarted = false;
                 break;
             }
 
             // Line: SIZE
-            if (strstr(buffer, "SIZE") != NULL)
+            if (strstr(buffer, "SIZE") != nullptr)
             {
-                if (outFontSize != NULL) readVars = sscanf(buffer, "SIZE %i", outFontSize);
+                if (outFontSize != nullptr) readVars = sscanf(buffer, "SIZE %i", outFontSize);
                 continue;
             }
 
             // PIXEL_SIZE
-            if (strstr(buffer, "PIXEL_SIZE") != NULL)
+            if (strstr(buffer, "PIXEL_SIZE") != nullptr)
             {
-                if (outFontSize != NULL) readVars = sscanf(buffer, "PIXEL_SIZE %i", outFontSize);
+                if (outFontSize != nullptr) readVars = sscanf(buffer, "PIXEL_SIZE %i", outFontSize);
                 continue;
             }
 
             // FONTBOUNDINGBOX
-            if (strstr(buffer, "FONTBOUNDINGBOX") != NULL)
+            if (strstr(buffer, "FONTBOUNDINGBOX") != nullptr)
             {
                 readVars = sscanf(buffer, "FONTBOUNDINGBOX %i %i %i %i", &fontBBw, &fontBBh, &fontBBxoff0, &fontBByoff0);
                 continue;
             }
 
             // FONT_ASCENT
-            if (strstr(buffer, "FONT_ASCENT") != NULL)
+            if (strstr(buffer, "FONT_ASCENT") != nullptr)
             {
                 readVars = sscanf(buffer, "FONT_ASCENT %i", &fontAscent);
                 continue;
             }
 
             // STARTCHAR
-            if (strstr(buffer, "STARTCHAR") != NULL)
+            if (strstr(buffer, "STARTCHAR") != nullptr)
             {
                 charStarted = true;
                 charEncoding = -1;
-                glyphs = NULL;
+                glyphs = nullptr;
                 charBBw = 0;
                 charBBh = 0;
                 charBBxoff0 = 0;
                 charBByoff0 = 0;
                 charDWidthX = 0;
                 charDWidthY = 0;
-                glyphs = NULL;
+                glyphs = nullptr;
                 charBitmapStarted = false;
                 charBitmapNextRow = 0;
                 continue;
@@ -2727,7 +2727,7 @@ static GlyphInfo *LoadFontDataBDF(const unsigned char *fileData, int dataSize, c
         else
         {
             // STARTFONT
-            if (strstr(buffer, "STARTFONT") != NULL)
+            if (strstr(buffer, "STARTFONT") != nullptr)
             {
                 if (fontStarted)
                 {
@@ -2748,7 +2748,7 @@ static GlyphInfo *LoadFontDataBDF(const unsigned char *fileData, int dataSize, c
     if (fontMalformed)
     {
         RL_FREE(glyphs);
-        glyphs = NULL;
+        glyphs = nullptr;
     }
 
     return glyphs;

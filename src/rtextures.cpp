@@ -293,7 +293,7 @@ Image LoadImage(const char *fileName)
     unsigned char *fileData = LoadFileData(fileName, &dataSize);
 
     // Loading image from memory data
-    if (fileData != NULL)
+    if (fileData != nullptr)
     {
         image = LoadImageFromMemory(GetFileExtension(fileName), fileData, dataSize);
 
@@ -311,7 +311,7 @@ Image LoadImageRaw(const char *fileName, int width, int height, int format, int 
     int dataSize = 0;
     unsigned char *fileData = LoadFileData(fileName, &dataSize);
 
-    if (fileData != NULL)
+    if (fileData != nullptr)
     {
         unsigned char *dataPtr = fileData;
         int size = GetPixelDataSize(width, height, format);
@@ -351,10 +351,10 @@ Image LoadImageAnim(const char *fileName, int *frames)
         int dataSize = 0;
         unsigned char *fileData = LoadFileData(fileName, &dataSize);
 
-        if (fileData != NULL)
+        if (fileData != nullptr)
         {
             int comp = 0;
-            int *delays = NULL;
+            int *delays = nullptr;
             image.data = stbi_load_gif_from_memory(fileData, dataSize, &delays, &image.width, &image.height, &frameCount, &comp, 4);
 
             image.mipmaps = 1;
@@ -388,15 +388,15 @@ Image LoadImageAnimFromMemory(const char *fileType, const unsigned char *fileDat
     int frameCount = 0;
 
     // Security check for input data
-    if ((fileType == NULL) || (fileData == NULL) || (dataSize == 0)) return image;
+    if ((fileType == nullptr) || (fileData == nullptr) || (dataSize == 0)) return image;
 
 #if defined(SUPPORT_FILEFORMAT_GIF)
     if ((strcmp(fileType, ".gif") == 0) || (strcmp(fileType, ".GIF") == 0))
     {
-        if (fileData != NULL)
+        if (fileData != nullptr)
         {
             int comp = 0;
-            int *delays = NULL;
+            int *delays = nullptr;
             image.data = stbi_load_gif_from_memory(fileData, dataSize, &delays, &image.width, &image.height, &frameCount, &comp, 4);
 
             image.mipmaps = 1;
@@ -425,12 +425,12 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
     Image image = { 0 };
 
     // Security checks for input data
-    if ((fileData == NULL) || (dataSize == 0))
+    if ((fileData == nullptr) || (dataSize == 0))
     {
         TRACELOG(LOG_WARNING, "IMAGE: Invalid file data");
         return image;
     }
-    if (fileType == NULL)
+    if (fileType == nullptr)
     {
         TRACELOG(LOG_WARNING, "IMAGE: Missing file extension");
         return image;
@@ -468,12 +468,12 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
 #if defined(STBI_REQUIRED)
         // NOTE: Using stb_image to load images (Supports multiple image formats)
 
-        if (fileData != NULL)
+        if (fileData != nullptr)
         {
             int comp = 0;
             image.data = stbi_load_from_memory(fileData, dataSize, &image.width, &image.height, &comp, 0);
 
-            if (image.data != NULL)
+            if (image.data != nullptr)
             {
                 image.mipmaps = 1;
 
@@ -489,7 +489,7 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
     else if ((strcmp(fileType, ".hdr") == 0) || (strcmp(fileType, ".HDR") == 0))
     {
 #if defined(STBI_REQUIRED)
-        if (fileData != NULL)
+        if (fileData != nullptr)
         {
             int comp = 0;
             image.data = stbi_loadf_from_memory(fileData, dataSize, &image.width, &image.height, &comp, 0);
@@ -511,7 +511,7 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
 #if defined(SUPPORT_FILEFORMAT_QOI)
     else if ((strcmp(fileType, ".qoi") == 0) || (strcmp(fileType, ".QOI") == 0))
     {
-        if (fileData != NULL)
+        if (fileData != nullptr)
         {
             qoi_desc desc = { 0 };
             image.data = qoi_decode(fileData, dataSize, &desc, (int) fileData[12]);
@@ -554,7 +554,7 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
 #endif
     else TRACELOG(LOG_WARNING, "IMAGE: Data format not supported");
 
-    if (image.data != NULL) TRACELOG(LOG_INFO, "IMAGE: Data loaded successfully (%ix%i | %s | %i mipmaps)", image.width, image.height, rlGetPixelFormatName(image.format), image.mipmaps);
+    if (image.data != nullptr) TRACELOG(LOG_INFO, "IMAGE: Data loaded successfully (%ix%i | %s | %i mipmaps)", image.width, image.height, rlGetPixelFormatName(image.format), image.mipmaps);
     else TRACELOG(LOG_WARNING, "IMAGE: Failed to load image data");
 
     return image;
@@ -570,7 +570,7 @@ Image LoadImageFromTexture(Texture2D texture)
     {
         image.data = rlReadTexturePixels(texture.id, texture.width, texture.height, texture.format);
 
-        if (image.data != NULL)
+        if (image.data != nullptr)
         {
             image.width = texture.width;
             image.height = texture.height;
@@ -611,7 +611,7 @@ bool IsImageValid(Image image)
 {
     bool result = false;
 
-    if ((image.data != NULL) &&     // Validate pixel data available
+    if ((image.data != nullptr) &&     // Validate pixel data available
         (image.width > 0) &&        // Validate image width
         (image.height > 0) &&       // Validate image height
         (image.format > 0) &&       // Validate image format
@@ -633,7 +633,7 @@ bool ExportImage(Image image, const char *fileName)
     int result = 0;
 
     // Security check for input data
-    if ((image.width == 0) || (image.height == 0) || (image.data == NULL)) return result;
+    if ((image.width == 0) || (image.height == 0) || (image.data == nullptr)) return result;
 
 #if defined(SUPPORT_IMAGE_EXPORT)
     int channels = 4;
@@ -717,11 +717,11 @@ bool ExportImage(Image image, const char *fileName)
 // Export image to memory buffer
 unsigned char *ExportImageToMemory(Image image, const char *fileType, int *dataSize)
 {
-    unsigned char *fileData = NULL;
+    unsigned char *fileData = nullptr;
     *dataSize = 0;
 
     // Security check for input data
-    if ((image.width == 0) || (image.height == 0) || (image.data == NULL)) return NULL;
+    if ((image.width == 0) || (image.height == 0) || (image.data == nullptr)) return nullptr;
 
 #if defined(SUPPORT_IMAGE_EXPORT)
     int channels = 4;
@@ -788,7 +788,7 @@ bool ExportImageAsCode(Image image, const char *fileName)
     for (int i = 0; i < dataSize - 1; i++) byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n" : "0x%x, "), ((unsigned char *)image.data)[i]);
     byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "0x%x };\n", ((unsigned char *)image.data)[dataSize - 1]);
 
-    // NOTE: Text data size exported is determined by '\0' (NULL) character
+    // NOTE: Text data size exported is determined by '\0' (nullptr) character
     success = SaveFileText(fileName, txtData);
 
     RL_FREE(txtData);
@@ -1085,7 +1085,7 @@ Image GenImageCellular(int width, int height, int tileSize)
         {
             int tileX = x/tileSize;
 
-            float minDistance = 65536.0f; //(float)strtod("Inf", NULL);
+            float minDistance = 65536.0f; //(float)strtod("Inf", nullptr);
 
             // Check all adjacent tiles
             for (int i = -1; i < 2; i++)
@@ -1170,7 +1170,7 @@ Image ImageCopy(Image image)
 
     newImage.data = RL_CALLOC(size, 1);
 
-    if (newImage.data != NULL)
+    if (newImage.data != nullptr)
     {
         // NOTE: Size must be provided in bytes
         memcpy(newImage.data, image.data, size);
@@ -1210,7 +1210,7 @@ Image ImageFromImage(Image image, Rectangle rec)
 void ImageCrop(Image *image, Rectangle crop)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     // Security checks to validate crop rectangle
     if (crop.x < 0) { crop.width += crop.x; crop.x = 0; }
@@ -1261,7 +1261,7 @@ void ImageCrop(Image *image, Rectangle crop)
 void ImageFormat(Image *image, int newFormat)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if ((newFormat != 0) && (image->format != newFormat))
     {
@@ -1270,7 +1270,7 @@ void ImageFormat(Image *image, int newFormat)
             Vector4 *pixels = LoadImageDataNormalized(*image);     // Supports 8 to 32 bit per channel
 
             RL_FREE(image->data);      // WARNING! We loose mipmaps data --> Regenerated at the end...
-            image->data = NULL;
+            image->data = nullptr;
             image->format = newFormat;
 
             switch (image->format)
@@ -1449,7 +1449,7 @@ void ImageFormat(Image *image, int newFormat)
             }
 
             RL_FREE(pixels);
-            pixels = NULL;
+            pixels = nullptr;
 
             // In case original image had mipmaps, generate mipmaps for formatted image
             // NOTE: Original mipmaps are replaced by new ones, if custom mipmaps were used, they are lost
@@ -1457,7 +1457,7 @@ void ImageFormat(Image *image, int newFormat)
             {
                 image->mipmaps = 1;
             #if defined(SUPPORT_IMAGE_MANIPULATION)
-                if (image->data != NULL) ImageMipmaps(image);
+                if (image->data != nullptr) ImageMipmaps(image);
             #endif
             }
         }
@@ -1552,7 +1552,7 @@ Image ImageFromChannel(Image image, int selectedChannel)
     Image result = { 0 };
 
     // Security check to avoid program crash
-    if ((image.data == NULL) || (image.width == 0) || (image.height == 0)) return result;
+    if ((image.data == nullptr) || (image.width == 0) || (image.height == 0)) return result;
 
     // Check selected channel is valid
     if (selectedChannel < 0)
@@ -1718,7 +1718,7 @@ Image ImageFromChannel(Image image, int selectedChannel)
 void ImageResizeNN(Image *image, int newWidth, int newHeight)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     Color *pixels = LoadImageColors(*image);
     Color *output = (Color *)RL_MALLOC(newWidth*newHeight*sizeof(Color));
@@ -1760,7 +1760,7 @@ void ImageResizeNN(Image *image, int newWidth, int newHeight)
 void ImageResize(Image *image, int newWidth, int newHeight)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     // Check if we can use a fast path on image scaling
     // It can be for 8 bit per channel images with 1 to 4 channels per pixel
@@ -1814,7 +1814,7 @@ void ImageResize(Image *image, int newWidth, int newHeight)
 void ImageResizeCanvas(Image *image, int newWidth, int newHeight, int offsetX, int offsetY, Color fill)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
     if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
@@ -1882,7 +1882,7 @@ void ImageResizeCanvas(Image *image, int newWidth, int newHeight, int offsetX, i
 void ImageToPOT(Image *image, Color fill)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     // Calculate next power-of-two values
     // NOTE: Just add the required amount of pixels at the right and bottom sides of image...
@@ -1898,7 +1898,7 @@ void ImageToPOT(Image *image, Color fill)
 void ImageAlphaCrop(Image *image, float threshold)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     Rectangle crop = GetImageAlphaBorder(*image, threshold);
 
@@ -1911,7 +1911,7 @@ void ImageAlphaCrop(Image *image, float threshold)
 void ImageAlphaClear(Image *image, Color color, float threshold)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
     if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
@@ -2065,7 +2065,7 @@ void ImageAlphaMask(Image *image, Image alphaMask)
 void ImageAlphaPremultiply(Image *image)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     float alpha = 0.0f;
     Color *pixels = LoadImageColors(*image);
@@ -2100,7 +2100,7 @@ void ImageAlphaPremultiply(Image *image)
 void ImageBlurGaussian(Image *image, int blurSize)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     ImageAlphaPremultiply(image);
 
@@ -2244,7 +2244,7 @@ void ImageBlurGaussian(Image *image, int blurSize)
 // NOTE: The convolution kernel matrix is expected to be square
 void ImageKernelConvolution(Image *image, const float *kernel, int kernelSize)
 {
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0) || kernel == NULL) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0) || kernel == nullptr) return;
 
     int kernelWidth = (int)sqrtf((float)kernelSize);
 
@@ -2377,7 +2377,7 @@ void ImageKernelConvolution(Image *image, const float *kernel, int kernelSize)
 void ImageMipmaps(Image *image)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     int mipCount = 1;                   // Required mipmap levels count (including base level)
     int mipWidth = image->width;        // Base image width
@@ -2449,7 +2449,7 @@ void ImageMipmaps(Image *image)
 void ImageDither(Image *image, int rBpp, int gBpp, int bBpp, int aBpp)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB)
     {
@@ -2559,7 +2559,7 @@ void ImageDither(Image *image, int rBpp, int gBpp, int bBpp, int aBpp)
 void ImageFlipVertical(Image *image)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
     if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
@@ -2583,7 +2583,7 @@ void ImageFlipVertical(Image *image)
 void ImageFlipHorizontal(Image *image)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
     if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
@@ -2628,7 +2628,7 @@ void ImageFlipHorizontal(Image *image)
 void ImageRotate(Image *image, int degrees)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
     if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
@@ -2687,7 +2687,7 @@ void ImageRotate(Image *image, int degrees)
 void ImageRotateCW(Image *image)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
     if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
@@ -2719,7 +2719,7 @@ void ImageRotateCW(Image *image)
 void ImageRotateCCW(Image *image)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
     if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
@@ -2751,7 +2751,7 @@ void ImageRotateCCW(Image *image)
 void ImageColorTint(Image *image, Color color)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     Color *pixels = LoadImageColors(*image);
 
@@ -2781,7 +2781,7 @@ void ImageColorTint(Image *image, Color color)
 void ImageColorInvert(Image *image)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     Color *pixels = LoadImageColors(*image);
 
@@ -2812,7 +2812,7 @@ void ImageColorGrayscale(Image *image)
 void ImageColorContrast(Image *image, float contrast)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if (contrast < -100) contrast = -100;
     if (contrast > 100) contrast = 100;
@@ -2867,7 +2867,7 @@ void ImageColorContrast(Image *image, float contrast)
 void ImageColorBrightness(Image *image, int brightness)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     if (brightness < -255) brightness = -255;
     if (brightness > 255) brightness = 255;
@@ -2907,7 +2907,7 @@ void ImageColorBrightness(Image *image, int brightness)
 void ImageColorReplace(Image *image, Color color, Color replace)
 {
     // Security check to avoid program crash
-    if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
+    if ((image->data == nullptr) || (image->width == 0) || (image->height == 0)) return;
 
     Color *pixels = LoadImageColors(*image);
 
@@ -2948,7 +2948,7 @@ void ImageColorReplace(Image *image, Color color, Color replace)
 // NOTE: Memory allocated should be freed using UnloadImageColors();
 Color *LoadImageColors(Image image)
 {
-    if ((image.width == 0) || (image.height == 0)) return NULL;
+    if ((image.width == 0) || (image.height == 0)) return nullptr;
 
     Color *pixels = (Color *)RL_MALLOC(image.width*image.height*sizeof(Color));
 
@@ -3101,10 +3101,10 @@ Color *LoadImagePalette(Image image, int maxPaletteSize, int *colorCount)
     #define COLOR_EQUAL(col1, col2) ((col1.r == col2.r)&&(col1.g == col2.g)&&(col1.b == col2.b)&&(col1.a == col2.a))
 
     int palCount = 0;
-    Color *palette = NULL;
+    Color *palette = nullptr;
     Color *pixels = LoadImageColors(image);
 
-    if (pixels != NULL)
+    if (pixels != nullptr)
     {
         palette = (Color *)RL_MALLOC(maxPaletteSize*sizeof(Color));
 
@@ -3170,7 +3170,7 @@ Rectangle GetImageAlphaBorder(Image image, float threshold)
 
     Color *pixels = LoadImageColors(image);
 
-    if (pixels != NULL)
+    if (pixels != nullptr)
     {
         int xMin = 65536;   // Define a big enough number
         int xMax = 0;
@@ -3337,7 +3337,7 @@ Color GetImageColor(Image image, int x, int y)
 void ImageClearBackground(Image *dst, Color color)
 {
     // Security check to avoid program crash
-    if ((dst->data == NULL) || (dst->width == 0) || (dst->height == 0)) return;
+    if ((dst->data == nullptr) || (dst->width == 0) || (dst->height == 0)) return;
 
     // Fill in first pixel based on image format
     ImageDrawPixel(dst, 0, 0, color);
@@ -3357,7 +3357,7 @@ void ImageClearBackground(Image *dst, Color color)
 void ImageDrawPixel(Image *dst, int x, int y, Color color)
 {
     // Security check to avoid program crash
-    if ((dst->data == NULL) || (x < 0) || (x >= dst->width) || (y < 0) || (y >= dst->height)) return;
+    if ((dst->data == nullptr) || (x < 0) || (x >= dst->width) || (y < 0) || (y >= dst->height)) return;
 
     switch (dst->format)
     {
@@ -3699,7 +3699,7 @@ void ImageDrawRectangleV(Image *dst, Vector2 position, Vector2 size, Color color
 void ImageDrawRectangleRec(Image *dst, Rectangle rec, Color color)
 {
     // Security check to avoid program crash
-    if ((dst->data == NULL) || (dst->width == 0) || (dst->height == 0)) return;
+    if ((dst->data == nullptr) || (dst->width == 0) || (dst->height == 0)) return;
 
     // Security check to avoid drawing out of bounds in case of bad user data
     if (rec.x < 0) { rec.width += rec.x; rec.x = 0; }
@@ -3942,8 +3942,8 @@ void ImageDrawTriangleStrip(Image *dst, const Vector2 *points, int pointCount, C
 void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint)
 {
     // Security check to avoid program crash
-    if ((dst->data == NULL) || (dst->width == 0) || (dst->height == 0) ||
-        (src.data == NULL) || (src.width == 0) || (src.height == 0)) return;
+    if ((dst->data == nullptr) || (dst->width == 0) || (dst->height == 0) ||
+        (src.data == nullptr) || (src.width == 0) || (src.height == 0)) return;
 
     if (dst->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image drawing not supported for compressed formats");
     else
@@ -4126,7 +4126,7 @@ Texture2D LoadTexture(const char *fileName)
 
     Image image = LoadImage(fileName);
 
-    if (image.data != NULL)
+    if (image.data != nullptr)
     {
         texture = LoadTextureFromImage(image);
         UnloadImage(image);
@@ -4276,7 +4276,7 @@ RenderTexture2D LoadRenderTexture(int width, int height)
         rlEnableFramebuffer(target.id);
 
         // Create color texture (default to RGBA)
-        target.texture.id = rlLoadTexture(NULL, width, height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
+        target.texture.id = rlLoadTexture(nullptr, width, height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
         target.texture.width = width;
         target.texture.height = height;
         target.texture.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;

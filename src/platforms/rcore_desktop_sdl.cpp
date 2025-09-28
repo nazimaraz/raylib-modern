@@ -280,7 +280,7 @@ static const int CursorsLUT[] = {
 const char *SDL_GameControllerNameForIndex(int joystickIndex)
 {
     // NOTE: SDL3 uses the IDs itself (SDL_JoystickID) instead of SDL2 joystick_index
-    const char *name = NULL;
+    const char *name = nullptr;
     int numJoysticks = 0;
     SDL_JoystickID *joysticks = SDL_GetJoysticks(&numJoysticks);
 
@@ -303,7 +303,7 @@ int SDL_GetNumVideoDisplays(void)
     int monitorCount = 0;
     SDL_DisplayID *displays = SDL_GetDisplays(&monitorCount);
 
-    // Safe because If 'mem' is NULL, SDL_free does nothing
+    // Safe because If 'mem' is nullptr, SDL_free does nothing
     SDL_free(displays);
 
     return monitorCount;
@@ -329,7 +329,7 @@ void SDL_GetCurrentDisplayMode_Adapter(SDL_DisplayID displayID, SDL_DisplayMode*
 {
     const SDL_DisplayMode *currentMode = SDL_GetCurrentDisplayMode(displayID);
 
-    if (currentMode == NULL) TRACELOG(LOG_WARNING, "SDL: No possible to get current display mode");
+    if (currentMode == nullptr) TRACELOG(LOG_WARNING, "SDL: No possible to get current display mode");
     else *mode = *currentMode;
 }
 
@@ -350,9 +350,9 @@ int SDL_GetDisplayDPI(int displayIndex, float *ddpi, float *hdpi, float *vdpi)
 {
     float dpi = SDL_GetWindowDisplayScale(platform.window)*96.0;
 
-    if (ddpi != NULL) *ddpi = dpi;
-    if (hdpi != NULL) *hdpi = dpi;
-    if (vdpi != NULL) *vdpi = dpi;
+    if (ddpi != nullptr) *ddpi = dpi;
+    if (hdpi != nullptr) *hdpi = dpi;
+    if (vdpi != nullptr) *vdpi = dpi;
 
     return 0;
 }
@@ -424,7 +424,7 @@ void *SDL_GetClipboardData(const char *mime_type, size_t *size)
     TRACELOG(LOG_WARNING, "SDL: Getting clipboard data that is not text not available in SDL2");
 
     // We could possibly implement it ourselves in this case for some easier platforms
-    return NULL;
+    return nullptr;
 }
 
 #endif // USING_VERSION_SDL3
@@ -710,7 +710,7 @@ void ClearWindowState(unsigned int flags)
 // Set icon for window
 void SetWindowIcon(Image image)
 {
-    SDL_Surface *iconSurface = NULL;
+    SDL_Surface *iconSurface = nullptr;
 
     unsigned int rmask = 0, gmask = 0, bmask = 0, amask = 0;
     int depth = 0;  // Depth in bits
@@ -1021,7 +1021,7 @@ int GetMonitorPhysicalWidth(int monitor)
     if ((monitor >= 0) && (monitor < monitorCount))
     {
         float ddpi = 0.0f;
-        SDL_GetDisplayDPI(monitor, &ddpi, NULL, NULL);
+        SDL_GetDisplayDPI(monitor, &ddpi, nullptr, nullptr);
         SDL_DisplayMode mode;
         SDL_GetCurrentDisplayMode(monitor, &mode);
         // Calculate size on inches, then convert to millimeter
@@ -1041,7 +1041,7 @@ int GetMonitorPhysicalHeight(int monitor)
     if ((monitor >= 0) && (monitor < monitorCount))
     {
         float ddpi = 0.0f;
-        SDL_GetDisplayDPI(monitor, &ddpi, NULL, NULL);
+        SDL_GetDisplayDPI(monitor, &ddpi, nullptr, nullptr);
         SDL_DisplayMode mode;
         SDL_GetCurrentDisplayMode(monitor, &mode);
         // Calculate size on inches, then convert to millimeter
@@ -1155,7 +1155,7 @@ Image GetClipboardImage(void)
     };
 
     size_t dataSize = 0;
-    void  *fileData = NULL;
+    void  *fileData = nullptr;
 
     for (int i = 0; i < SDL_arraysize(imageFormats); ++i)
     {
@@ -1252,7 +1252,7 @@ double GetTime(void)
 void OpenURL(const char *url)
 {
     // Security check to (partially) avoid malicious code
-    if (strchr(url, '\'') != NULL) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
+    if (strchr(url, '\'') != nullptr) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
     else SDL_OpenURL(url);
 }
 
@@ -1363,14 +1363,14 @@ void PollInputEvents(void)
     // Poll input events for current platform
     //-----------------------------------------------------------------------------
     // WARNING: Indexes into this array are obtained by using SDL_Scancode values, not SDL_Keycode values
-    //const Uint8 *keys = SDL_GetKeyboardState(NULL);
+    //const Uint8 *keys = SDL_GetKeyboardState(nullptr);
     //for (int i = 0; i < 256; ++i) CORE.Input.Keyboard.currentKeyState[i] = keys[i];
 
     CORE.Window.resizedLastFrame = false;
 
     if ((CORE.Window.eventWaiting) || (((CORE.Window.flags & FLAG_WINDOW_MINIMIZED) > 0) && ((CORE.Window.flags & FLAG_WINDOW_ALWAYS_RUN) == 0)))
     {
-        SDL_WaitEvent(NULL);
+        SDL_WaitEvent(nullptr);
         CORE.Time.previous = GetTime();
     }
 
@@ -1394,7 +1394,7 @@ void PollInputEvents(void)
                     CORE.Window.dropFilepaths[CORE.Window.dropFileCount] = (char *)RL_CALLOC(MAX_FILEPATH_LENGTH, sizeof(char));
 
                 #if defined(USING_VERSION_SDL3)
-                    // const char *data;   /**< The text for SDL_EVENT_DROP_TEXT and the file name for SDL_EVENT_DROP_FILE, NULL for other events */
+                    // const char *data;   /**< The text for SDL_EVENT_DROP_TEXT and the file name for SDL_EVENT_DROP_FILE, nullptr for other events */
                     // Event memory is now managed by SDL, so you should not free the data in SDL_EVENT_DROP_FILE, and if you want to hold onto the text in SDL_EVENT_TEXT_EDITING and SDL_EVENT_TEXT_INPUT events, you should make a copy of it. SDL_TEXTINPUTEVENT_TEXT_SIZE is no longer necessary and has been removed.
                     strcpy(CORE.Window.dropFilepaths[CORE.Window.dropFileCount], event.drop.data);
                 #else
@@ -1973,7 +1973,7 @@ int InitPlatform(void)
     platform.glContext = SDL_GL_CreateContext(platform.window);
 
     // Check window and glContext have been initialized successfully
-    if ((platform.window != NULL) && (platform.glContext != NULL))
+    if ((platform.window != nullptr) && (platform.glContext != nullptr))
     {
         CORE.Window.ready = true;
 

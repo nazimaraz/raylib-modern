@@ -288,7 +288,7 @@ void android_main(struct android_app *app)
     platform.app = app;
 
     // NOTE: Return from main is ignored
-    (void)main(1, (char *[]) { arg0, NULL });
+    (void)main(1, (char *[]) { arg0, nullptr });
 
     // Request to end the native activity
     ANativeActivity_finish(app->activity);
@@ -301,9 +301,9 @@ void android_main(struct android_app *app)
     while (!app->destroyRequested)
     {
         // Poll all events until we reach return value TIMEOUT, meaning no events left to process
-        while ((pollResult = ALooper_pollOnce(0, NULL, &pollEvents, (void **)&platform.source)) > ALOOPER_POLL_TIMEOUT)
+        while ((pollResult = ALooper_pollOnce(0, nullptr, &pollEvents, (void **)&platform.source)) > ALOOPER_POLL_TIMEOUT)
         {
-            if (platform.source != NULL) platform.source->process(app, platform.source);
+            if (platform.source != nullptr) platform.source->process(app, platform.source);
         }
     }
 }
@@ -433,7 +433,7 @@ void SetWindowFocused(void)
 void *GetWindowHandle(void)
 {
     TRACELOG(LOG_WARNING, "GetWindowHandle() not implemented on target platform");
-    return NULL;
+    return nullptr;
 }
 
 // Get number of monitors
@@ -447,9 +447,9 @@ int GetMonitorCount(void)
 int GetCurrentMonitor(void)
 {
     int displayId = -1;
-    JNIEnv *env = NULL;
+    JNIEnv *env = nullptr;
     JavaVM *vm = platform.app->activity->vm;
-    (*vm)->AttachCurrentThread(vm, &env, NULL);
+    (*vm)->AttachCurrentThread(vm, &env, nullptr);
 
     jobject activity = platform.app->activity->clazz;
     jclass activityClass = (*env)->GetObjectClass(env, activity);
@@ -458,7 +458,7 @@ int GetCurrentMonitor(void)
 
     jobject display = (*env)->CallObjectMethod(env, activity, getDisplayMethod);
 
-    if (display == NULL)
+    if (display == nullptr)
     {
         TRACELOG(LOG_ERROR, "GetCurrentMonitor() couldn't get the display object");
     } 
@@ -556,7 +556,7 @@ void SetClipboardText(const char *text)
 const char *GetClipboardText(void)
 {
     TRACELOG(LOG_WARNING, "GetClipboardText() not implemented on target platform");
-    return NULL;
+    return nullptr;
 }
 
 // Get clipboard image
@@ -630,12 +630,12 @@ double GetTime(void)
 void OpenURL(const char *url)
 {
     // Security check to (partially) avoid malicious code
-    if (strchr(url, '\'') != NULL) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
+    if (strchr(url, '\'') != nullptr) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
     else
     {
-        JNIEnv *env = NULL;
+        JNIEnv *env = nullptr;
         JavaVM *vm = platform.app->activity->vm;
-        (*vm)->AttachCurrentThread(vm, &env, NULL);
+        (*vm)->AttachCurrentThread(vm, &env, nullptr);
 
         jstring urlString = (*env)->NewStringUTF(env, url);
         jclass uriClass = (*env)->FindClass(env, "android/net/Uri");
@@ -743,10 +743,10 @@ void PollInputEvents(void)
 
     // Poll Events (registered events) until we reach TIMEOUT which indicates there are no events left to poll
     // NOTE: Activity is paused if not enabled (platform.appEnabled)
-    while ((pollResult = ALooper_pollOnce(platform.appEnabled? 0 : -1, NULL, &pollEvents, ((void **)&platform.source)) > ALOOPER_POLL_TIMEOUT))
+    while ((pollResult = ALooper_pollOnce(platform.appEnabled? 0 : -1, nullptr, &pollEvents, ((void **)&platform.source)) > ALOOPER_POLL_TIMEOUT))
     {
         // Process this event
-        if (platform.source != NULL) platform.source->process(platform.app, platform.source);
+        if (platform.source != nullptr) platform.source->process(platform.app, platform.source);
 
         // NOTE: Allow closing the window in case a configuration change happened.
         // The android_main function should be allowed to return to its caller in order for the
@@ -830,10 +830,10 @@ int InitPlatform(void)
     while (!CORE.Window.ready)
     {
         // Process events until we reach TIMEOUT, which indicates no more events queued.
-        while ((pollResult = ALooper_pollOnce(0, NULL, &pollEvents, ((void **)&platform.source)) > ALOOPER_POLL_TIMEOUT))
+        while ((pollResult = ALooper_pollOnce(0, nullptr, &pollEvents, ((void **)&platform.source)) > ALOOPER_POLL_TIMEOUT))
         {
             // Process this event
-            if (platform.source != NULL) platform.source->process(platform.app, platform.source);
+            if (platform.source != nullptr) platform.source->process(platform.app, platform.source);
 
             // NOTE: It's highly likely destroyRequested will never be non-zero at the start of the activity lifecycle.
             //if (platform.app->destroyRequested != 0) CORE.Window.shouldClose = true;
@@ -923,7 +923,7 @@ static int InitGraphicsDevice(void)
     }
 
     // Initialize the EGL device connection
-    if (eglInitialize(platform.device, NULL, NULL) == EGL_FALSE)
+    if (eglInitialize(platform.device, nullptr, nullptr) == EGL_FALSE)
     {
         // If all of the calls to eglInitialize returned EGL_FALSE then an error has occurred.
         TRACELOG(LOG_WARNING, "DISPLAY: Failed to initialize EGL device");
@@ -962,7 +962,7 @@ static int InitGraphicsDevice(void)
     ANativeWindow_setBuffersGeometry(platform.app->window, CORE.Window.render.width, CORE.Window.render.height, displayFormat);
     //ANativeWindow_setBuffersGeometry(platform.app->window, 0, 0, displayFormat);       // Force use of native display size
 
-    platform.surface = eglCreateWindowSurface(platform.device, platform.config, platform.app->window, NULL);
+    platform.surface = eglCreateWindowSurface(platform.device, platform.config, platform.app->window, nullptr);
 
     // There must be at least one frame displayed before the buffers are swapped
     //eglSwapInterval(platform.device, 1);
@@ -1009,7 +1009,7 @@ static void AndroidCommandCallback(struct android_app *app, int32_t cmd)
         case APP_CMD_RESUME: break;
         case APP_CMD_INIT_WINDOW:
         {
-            if (app->window != NULL)
+            if (app->window != nullptr)
             {
                 if (platform.contextRebindRequired)
                 {
@@ -1026,7 +1026,7 @@ static void AndroidCommandCallback(struct android_app *app, int32_t cmd)
                         displayFormat);
 
                     // Recreate display surface and re-attach OpenGL context
-                    platform.surface = eglCreateWindowSurface(platform.device, platform.config, app->window, NULL);
+                    platform.surface = eglCreateWindowSurface(platform.device, platform.config, app->window, nullptr);
                     eglMakeCurrent(platform.device, platform.surface, platform.surface, platform.context);
 
                     platform.contextRebindRequired = false;
@@ -1080,7 +1080,7 @@ static void AndroidCommandCallback(struct android_app *app, int32_t cmd)
                 #endif
 
                     // Initialize random seed
-                    SetRandomSeed((unsigned int)time(NULL));
+                    SetRandomSeed((unsigned int)time(nullptr));
 
                     // TODO: GPU assets reload in case of lost focus (lost context)
                     // NOTE: This problem has been solved just unbinding and rebinding context from display

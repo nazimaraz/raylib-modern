@@ -731,7 +731,7 @@ RLAPI int *rlGetShaderLocsDefault(void);                // Get default shader lo
 RLAPI rlRenderBatch rlLoadRenderBatch(int numBuffers, int bufferElements); // Load a render batch system
 RLAPI void rlUnloadRenderBatch(rlRenderBatch batch);    // Unload render batch system
 RLAPI void rlDrawRenderBatch(rlRenderBatch *batch);     // Draw render batch data (Update->Draw->Reset)
-RLAPI void rlSetRenderBatchActive(rlRenderBatch *batch); // Set the active render batch for rlgl (NULL for default internal)
+RLAPI void rlSetRenderBatchActive(rlRenderBatch *batch); // Set the active render batch for rlgl (nullptr for default internal)
 RLAPI void rlDrawRenderBatchActive(void);               // Update and draw internal render batch
 RLAPI bool rlCheckRenderBatchLimit(int vCount);         // Check internal buffer overflow for a given number of vertex
 
@@ -1145,14 +1145,14 @@ static rlglData RLGL = { 0 };
 
 #if defined(GRAPHICS_API_OPENGL_ES2) && !defined(GRAPHICS_API_OPENGL_ES3)
 // NOTE: VAO functionality is exposed through extensions (OES)
-static PFNGLGENVERTEXARRAYSOESPROC glGenVertexArrays = NULL;
-static PFNGLBINDVERTEXARRAYOESPROC glBindVertexArray = NULL;
-static PFNGLDELETEVERTEXARRAYSOESPROC glDeleteVertexArrays = NULL;
+static PFNGLGENVERTEXARRAYSOESPROC glGenVertexArrays = nullptr;
+static PFNGLBINDVERTEXARRAYOESPROC glBindVertexArray = nullptr;
+static PFNGLDELETEVERTEXARRAYSOESPROC glDeleteVertexArrays = nullptr;
 
 // NOTE: Instancing functionality could also be available through extension
-static PFNGLDRAWARRAYSINSTANCEDEXTPROC glDrawArraysInstanced = NULL;
-static PFNGLDRAWELEMENTSINSTANCEDEXTPROC glDrawElementsInstanced = NULL;
-static PFNGLVERTEXATTRIBDIVISOREXTPROC glVertexAttribDivisor = NULL;
+static PFNGLDRAWARRAYSINSTANCEDEXTPROC glDrawArraysInstanced = nullptr;
+static PFNGLDRAWELEMENTSINSTANCEDEXTPROC glDrawElementsInstanced = nullptr;
+static PFNGLVERTEXATTRIBDIVISOREXTPROC glVertexAttribDivisor = nullptr;
 #endif
 
 //----------------------------------------------------------------------------------
@@ -2202,7 +2202,7 @@ static void GLAPIENTRY rlDebugMessageCallback(GLenum source, GLenum type, GLuint
     //             a defined base level and cannot be used for texture mapping. (severity: low)
     if ((id == 131169) || (id == 131185) || (id == 131218) || (id == 131204)) return;
 
-    const char *msgSource = NULL;
+    const char *msgSource = nullptr;
     switch (source)
     {
         case GL_DEBUG_SOURCE_API: msgSource = "API"; break;
@@ -2214,7 +2214,7 @@ static void GLAPIENTRY rlDebugMessageCallback(GLenum source, GLenum type, GLuint
         default: break;
     }
 
-    const char *msgType = NULL;
+    const char *msgType = nullptr;
     switch (type)
     {
         case GL_DEBUG_TYPE_ERROR: msgType = "ERROR"; break;
@@ -2255,7 +2255,7 @@ void rlglInit(int width, int height)
 {
     // Enable OpenGL debug context if required
 #if defined(RLGL_ENABLE_OPENGL_DEBUG_CONTEXT) && defined(GRAPHICS_API_OPENGL_43)
-    if ((glDebugMessageCallback != NULL) && (glDebugMessageControl != NULL))
+    if ((glDebugMessageCallback != nullptr) && (glDebugMessageControl != nullptr))
     {
         glDebugMessageCallback(rlDebugMessageCallback, 0);
         // glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_ERROR, GL_DEBUG_SEVERITY_HIGH, 0, 0, GL_TRUE);
@@ -2486,11 +2486,11 @@ void rlLoadExtensions(void *loader)
             glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSOESPROC)((rlglLoadProc)loader)("glDeleteVertexArraysOES");
             //glIsVertexArray = (PFNGLISVERTEXARRAYOESPROC)loader("glIsVertexArrayOES");     // NOTE: Fails in WebGL, omitted
 
-            if ((glGenVertexArrays != NULL) && (glBindVertexArray != NULL) && (glDeleteVertexArrays != NULL)) RLGL.ExtSupported.vao = true;
+            if ((glGenVertexArrays != nullptr) && (glBindVertexArray != nullptr) && (glDeleteVertexArrays != nullptr)) RLGL.ExtSupported.vao = true;
         }
 
         // Check instanced rendering support
-        if (strstr(extList[i], (const char *)"instanced_arrays") != NULL)   // Broad check for instanced_arrays
+        if (strstr(extList[i], (const char *)"instanced_arrays") != nullptr)   // Broad check for instanced_arrays
         {
             // Specific check
             if (strcmp(extList[i], (const char *)"GL_ANGLE_instanced_arrays") == 0)      // ANGLE
@@ -2513,9 +2513,9 @@ void rlLoadExtensions(void *loader)
             }
 
             // The feature will only be marked as supported if the elements from GL_XXX_instanced_arrays are present
-            if ((glDrawArraysInstanced != NULL) && (glDrawElementsInstanced != NULL) && (glVertexAttribDivisor != NULL)) RLGL.ExtSupported.instancing = true;
+            if ((glDrawArraysInstanced != nullptr) && (glDrawElementsInstanced != nullptr) && (glVertexAttribDivisor != nullptr)) RLGL.ExtSupported.instancing = true;
         }
-        else if (strstr(extList[i], (const char *)"draw_instanced") != NULL)
+        else if (strstr(extList[i], (const char *)"draw_instanced") != nullptr)
         {
             // GL_ANGLE_draw_instanced doesn't exist
             if (strcmp(extList[i], (const char *)"GL_EXT_draw_instanced") == 0)
@@ -2530,7 +2530,7 @@ void rlLoadExtensions(void *loader)
             }
 
             // But the functions will at least be loaded if only GL_XX_EXT_draw_instanced exist
-            if ((glDrawArraysInstanced != NULL) && (glDrawElementsInstanced != NULL) && (glVertexAttribDivisor != NULL)) RLGL.ExtSupported.instancing = true;
+            if ((glDrawArraysInstanced != nullptr) && (glDrawElementsInstanced != nullptr) && (glVertexAttribDivisor != nullptr)) RLGL.ExtSupported.instancing = true;
         }
 
         // Check NPOT textures support
@@ -2651,7 +2651,7 @@ void rlLoadExtensions(void *loader)
 // Get OpenGL procedure address
 void *rlGetProcAddress(const char *procName)
 {
-    void *func = NULL;
+    void *func = nullptr;
 #if defined(GRAPHICS_API_OPENGL_33) || defined(GRAPHICS_API_OPENGL_ES2)
     func = RLGL.loader(procName);
 #endif
@@ -2741,7 +2741,7 @@ unsigned int rlGetShaderIdDefault(void)
 // Get default shader locs
 int *rlGetShaderLocsDefault(void)
 {
-    int *locs = NULL;
+    int *locs = nullptr;
 #if defined(GRAPHICS_API_OPENGL_33) || defined(GRAPHICS_API_OPENGL_ES2)
     locs = RLGL.State.defaultShaderLocs;
 #endif
@@ -2965,7 +2965,7 @@ void rlDrawRenderBatch(rlRenderBatch *batch)
 
         // NOTE: glMapBuffer() causes sync issue
         // If GPU is working with this buffer, glMapBuffer() will wait(stall) until GPU to finish its job
-        // To avoid waiting (idle), you can call first glBufferData() with NULL pointer before glMapBuffer()
+        // To avoid waiting (idle), you can call first glBufferData() with nullptr pointer before glMapBuffer()
         // If you do that, the previous data in PBO will be discarded and glMapBuffer() returns a new
         // allocated pointer immediately even if GPU is still working with the previous data
 
@@ -3161,7 +3161,7 @@ void rlSetRenderBatchActive(rlRenderBatch *batch)
 #if defined(GRAPHICS_API_OPENGL_33) || defined(GRAPHICS_API_OPENGL_ES2)
     rlDrawRenderBatch(RLGL.currentBatch);
 
-    if (batch != NULL) RLGL.currentBatch = batch;
+    if (batch != nullptr) RLGL.currentBatch = batch;
     else RLGL.currentBatch = &RLGL.defaultBatch;
 #endif
 }
@@ -3263,8 +3263,8 @@ unsigned int rlLoadTexture(const void *data, int width, int height, int format, 
     (void)mipOffset;            // Used to avoid gcc warnings about unused variable
 
     // NOTE: Added pointer math separately from function to avoid UBSAN complaining
-    unsigned char *dataPtr = NULL;
-    if (data != NULL) dataPtr = (unsigned char *)data;
+    unsigned char *dataPtr = nullptr;
+    if (data != nullptr) dataPtr = (unsigned char *)data;
 
     // Load the different mipmap levels
     for (int i = 0; i < mipmapCount; i++)
@@ -3304,7 +3304,7 @@ unsigned int rlLoadTexture(const void *data, int width, int height, int format, 
         mipWidth /= 2;
         mipHeight /= 2;
         mipOffset += mipSize;       // Increment offset position to next mipmap
-        if (data != NULL) dataPtr += mipSize;         // Increment data pointer to next mipmap
+        if (data != nullptr) dataPtr += mipSize;         // Increment data pointer to next mipmap
 
         // Security check for NPOT textures
         if (mipWidth < 1) mipWidth = 1;
@@ -3387,7 +3387,7 @@ unsigned int rlLoadTextureDepth(int width, int height, bool useRenderBuffer)
     {
         glGenTextures(1, &id);
         glBindTexture(GL_TEXTURE_2D, id);
-        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, nullptr);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -3426,8 +3426,8 @@ unsigned int rlLoadTextureCubemap(const void *data, int size, int format, int mi
     int mipSize = size;
 
     // NOTE: Added pointer math separately from function to avoid UBSAN complaining
-    unsigned char *dataPtr = NULL;
-    if (data != NULL) dataPtr = (unsigned char *)data;
+    unsigned char *dataPtr = nullptr;
+    if (data != nullptr) dataPtr = (unsigned char *)data;
 
     unsigned int dataSize = rlGetPixelDataSize(size, size, format);
 
@@ -3445,7 +3445,7 @@ unsigned int rlLoadTextureCubemap(const void *data, int size, int format, int mi
             int mipmapLevel = i/6;
             int face = i%6;
 
-            if (data == NULL)
+            if (data == nullptr)
             {
                 if (format < RL_PIXELFORMAT_COMPRESSED_DXT1_RGB)
                 {
@@ -3453,7 +3453,7 @@ unsigned int rlLoadTextureCubemap(const void *data, int size, int format, int mi
                         (format == RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32A32) ||
                         (format == RL_PIXELFORMAT_UNCOMPRESSED_R16) ||
                         (format == RL_PIXELFORMAT_UNCOMPRESSED_R16G16B16A16)) TRACELOG(RL_LOG_WARNING, "TEXTURES: Cubemap requested format not supported");
-                    else glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, mipmapLevel, glInternalFormat, mipSize, mipSize, 0, glFormat, glType, NULL);
+                    else glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, mipmapLevel, glInternalFormat, mipSize, mipSize, 0, glFormat, glType, nullptr);
                 }
                 else TRACELOG(RL_LOG_WARNING, "TEXTURES: Empty cubemap creation does not support compressed format");
             }
@@ -3482,7 +3482,7 @@ unsigned int rlLoadTextureCubemap(const void *data, int size, int format, int mi
             if (face == 5)
             {
                 mipSize /= 2;
-                if (data != NULL) dataPtr += dataSize*6; // Increment data pointer to next mipmap
+                if (data != nullptr) dataPtr += dataSize*6; // Increment data pointer to next mipmap
 
                 // Security check for NPOT textures
                 if (mipSize < 1) mipSize = 1;
@@ -3642,7 +3642,7 @@ void rlGenTextureMipmaps(unsigned int id, int width, int height, int format, int
 // Read texture pixel data
 void *rlReadTexturePixels(unsigned int id, int width, int height, int format)
 {
-    void *pixels = NULL;
+    void *pixels = nullptr;
 
 #if defined(GRAPHICS_API_OPENGL_11) || defined(GRAPHICS_API_OPENGL_33)
     glBindTexture(GL_TEXTURE_2D, id);
@@ -4016,14 +4016,14 @@ void rlDrawVertexArrayElementsInstanced(int offset, int count, const void *buffe
 // Enable vertex state pointer
 void rlEnableStatePointer(int vertexAttribType, void *buffer)
 {
-    if (buffer != NULL) glEnableClientState(vertexAttribType);
+    if (buffer != nullptr) glEnableClientState(vertexAttribType);
     switch (vertexAttribType)
     {
         case GL_VERTEX_ARRAY: glVertexPointer(3, GL_FLOAT, 0, buffer); break;
         case GL_TEXTURE_COORD_ARRAY: glTexCoordPointer(2, GL_FLOAT, 0, buffer); break;
-        case GL_NORMAL_ARRAY: if (buffer != NULL) glNormalPointer(GL_FLOAT, 0, buffer); break;
-        case GL_COLOR_ARRAY: if (buffer != NULL) glColorPointer(4, GL_UNSIGNED_BYTE, 0, buffer); break;
-        //case GL_INDEX_ARRAY: if (buffer != NULL) glIndexPointer(GL_SHORT, 0, buffer); break; // Indexed colors
+        case GL_NORMAL_ARRAY: if (buffer != nullptr) glNormalPointer(GL_FLOAT, 0, buffer); break;
+        case GL_COLOR_ARRAY: if (buffer != nullptr) glColorPointer(4, GL_UNSIGNED_BYTE, 0, buffer); break;
+        //case GL_INDEX_ARRAY: if (buffer != nullptr) glIndexPointer(GL_SHORT, 0, buffer); break; // Indexed colors
         default: break;
     }
 }
@@ -4095,7 +4095,7 @@ void rlUnloadVertexBuffer(unsigned int vboId)
 // Shaders management
 //-----------------------------------------------------------------------------------------------
 // Load shader from code strings
-// NOTE: If shader string is NULL, using default vertex/fragment shaders
+// NOTE: If shader string is nullptr, using default vertex/fragment shaders
 unsigned int rlLoadShaderCode(const char *vsCode, const char *fsCode)
 {
     unsigned int id = 0;
@@ -4106,12 +4106,12 @@ unsigned int rlLoadShaderCode(const char *vsCode, const char *fsCode)
 
     // Compile vertex shader (if provided)
     // NOTE: If not vertex shader is provided, use default one
-    if (vsCode != NULL) vertexShaderId = rlCompileShader(vsCode, GL_VERTEX_SHADER);
+    if (vsCode != nullptr) vertexShaderId = rlCompileShader(vsCode, GL_VERTEX_SHADER);
     else vertexShaderId = RLGL.State.defaultVShaderId;
 
     // Compile fragment shader (if provided)
     // NOTE: If not vertex shader is provided, use default one
-    if (fsCode != NULL) fragmentShaderId = rlCompileShader(fsCode, GL_FRAGMENT_SHADER);
+    if (fsCode != nullptr) fragmentShaderId = rlCompileShader(fsCode, GL_FRAGMENT_SHADER);
     else fragmentShaderId = RLGL.State.defaultFShaderId;
 
     // In case vertex and fragment shader are the default ones, no need to recompile, we can just assign the default shader program id
@@ -4179,7 +4179,7 @@ unsigned int rlCompileShader(const char *shaderCode, int type)
 
 #if defined(GRAPHICS_API_OPENGL_33) || defined(GRAPHICS_API_OPENGL_ES2)
     shader = glCreateShader(type);
-    glShaderSource(shader, 1, &shaderCode, NULL);
+    glShaderSource(shader, 1, &shaderCode, nullptr);
 
     GLint success = 0;
     glCompileShader(shader);
@@ -4518,7 +4518,7 @@ unsigned int rlLoadShaderBuffer(unsigned int size, const void *data, int usageHi
     glGenBuffers(1, &ssbo);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
     glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, usageHint? usageHint : RL_STREAM_COPY);
-    if (data == NULL) glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R8UI, GL_RED_INTEGER, GL_UNSIGNED_BYTE, NULL);    // Clear buffer data to 0
+    if (data == nullptr) glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R8UI, GL_RED_INTEGER, GL_UNSIGNED_BYTE, nullptr);    // Clear buffer data to 0
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 #else
     TRACELOG(RL_LOG_WARNING, "SSBO: SSBO not enabled. Define GRAPHICS_API_OPENGL_43");

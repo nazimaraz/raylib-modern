@@ -198,7 +198,7 @@ void SetWindowFocused(void)
 void *GetWindowHandle(void)
 {
     TRACELOG(LOG_WARNING, "GetWindowHandle() not implemented on target platform");
-    return NULL;
+    return nullptr;
 }
 
 // Get number of monitors
@@ -289,7 +289,7 @@ void SetClipboardText(const char *text)
 const char *GetClipboardText(void)
 {
     TRACELOG(LOG_WARNING, "GetClipboardText() not implemented on target platform");
-    return NULL;
+    return nullptr;
 }
 
 // Get clipboard image
@@ -363,7 +363,7 @@ double GetTime(void)
 void OpenURL(const char *url)
 {
     // Security check to (partially) avoid malicious code on target platform
-    if (strchr(url, '\'') != NULL) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
+    if (strchr(url, '\'') != nullptr) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
     else
     {
         // TODO:
@@ -502,7 +502,7 @@ int InitPlatform(void)
     }
 
     // Initialize the EGL device connection
-    if (eglInitialize(platform.device, NULL, NULL) == EGL_FALSE)
+    if (eglInitialize(platform.device, nullptr, nullptr) == EGL_FALSE)
     {
         // If all of the calls to eglInitialize returned EGL_FALSE then an error has occurred.
         TRACELOG(LOG_WARNING, "DISPLAY: Failed to initialize EGL device");
@@ -533,7 +533,7 @@ int InitPlatform(void)
     // Android specific call
     ANativeWindow_setBuffersGeometry(platform.app->window, 0, 0, displayFormat);       // Force use of native display size
 
-    platform.surface = eglCreateWindowSurface(platform.device, platform.config, platform.app->window, NULL);
+    platform.surface = eglCreateWindowSurface(platform.device, platform.config, platform.app->window, nullptr);
 
     // There must be at least one frame displayed before the buffers are swapped
     eglSwapInterval(platform.device, 1);

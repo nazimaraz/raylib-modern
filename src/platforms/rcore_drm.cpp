@@ -381,7 +381,7 @@ void SetWindowFocused(void)
 void *GetWindowHandle(void)
 {
     TRACELOG(LOG_WARNING, "GetWindowHandle() not implemented on target platform");
-    return NULL;
+    return nullptr;
 }
 
 // Get number of monitors
@@ -526,7 +526,7 @@ void SetClipboardText(const char *text)
 const char *GetClipboardText(void)
 {
     TRACELOG(LOG_WARNING, "GetClipboardText() not implemented on target platform");
-    return NULL;
+    return nullptr;
 }
 
 // Get clipboard image
@@ -947,12 +947,12 @@ void PollInputEvents(void)
 int InitPlatform(void)
 {
     platform.fd = -1;
-    platform.connector = NULL;
+    platform.connector = nullptr;
     platform.modeIndex = -1;
-    platform.crtc = NULL;
-    platform.gbmDevice = NULL;
-    platform.gbmSurface = NULL;
-    platform.prevBO = NULL;
+    platform.crtc = nullptr;
+    platform.gbmDevice = nullptr;
+    platform.gbmSurface = nullptr;
+    platform.prevBO = nullptr;
     platform.prevFB = 0;
 
     // Initialize graphic device: display/window and graphic context
@@ -968,14 +968,14 @@ int InitPlatform(void)
     platform.fd = open("/dev/dri/by-path/platform-gpu-card",  O_RDWR); // VideoCore VI (Raspberry Pi 4)
     if (platform.fd != -1) TRACELOG(LOG_INFO, "DISPLAY: platform-gpu-card opened successfully");
 
-    if ((platform.fd == -1) || (drmModeGetResources(platform.fd) == NULL))
+    if ((platform.fd == -1) || (drmModeGetResources(platform.fd) == nullptr))
     {
         TRACELOG(LOG_WARNING, "DISPLAY: Failed to open platform-gpu-card, trying card1");
         platform.fd = open("/dev/dri/card1", O_RDWR); // Other Embedded
         if (platform.fd != -1) TRACELOG(LOG_INFO, "DISPLAY: card1 opened successfully");
     }
 
-    if ((platform.fd == -1) || (drmModeGetResources(platform.fd) == NULL))
+    if ((platform.fd == -1) || (drmModeGetResources(platform.fd) == nullptr))
     {
         TRACELOG(LOG_WARNING, "DISPLAY: Failed to open graphic card1, trying card0");
         platform.fd = open("/dev/dri/card0", O_RDWR); // VideoCore IV (Raspberry Pi 1-3)
@@ -1100,10 +1100,10 @@ int InitPlatform(void)
     CORE.Window.render.height = CORE.Window.screen.height;
 
     drmModeFreeEncoder(enc);
-    enc = NULL;
+    enc = nullptr;
 
     drmModeFreeResources(res);
-    res = NULL;
+    res = nullptr;
 
     platform.gbmDevice = gbm_create_device(platform.fd);
     if (!platform.gbmDevice)
@@ -1160,14 +1160,14 @@ int InitPlatform(void)
     }
 
     // Initialize the EGL device connection
-    if (eglInitialize(platform.device, NULL, NULL) == EGL_FALSE)
+    if (eglInitialize(platform.device, nullptr, nullptr) == EGL_FALSE)
     {
         // If all of the calls to eglInitialize returned EGL_FALSE then an error has occurred
         TRACELOG(LOG_WARNING, "DISPLAY: Failed to initialize EGL device");
         return -1;
     }
 
-    if (!eglChooseConfig(platform.device, NULL, NULL, 0, &numConfigs))
+    if (!eglChooseConfig(platform.device, nullptr, nullptr, 0, &numConfigs))
     {
         TRACELOG(LOG_WARNING, "DISPLAY: Failed to get EGL config count: 0x%x", eglGetError());
         return -1;
@@ -1232,7 +1232,7 @@ int InitPlatform(void)
     }
 
     // Create an EGL window surface
-    platform.surface = eglCreateWindowSurface(platform.device, platform.config, (EGLNativeWindowType)platform.gbmSurface, NULL);
+    platform.surface = eglCreateWindowSurface(platform.device, platform.config, (EGLNativeWindowType)platform.gbmSurface, nullptr);
     if (EGL_NO_SURFACE == platform.surface)
     {
         TRACELOG(LOG_WARNING, "DISPLAY: Failed to create EGL window surface: 0x%04x", eglGetError());
@@ -1339,19 +1339,19 @@ void ClosePlatform(void)
     if (platform.prevBO)
     {
         gbm_surface_release_buffer(platform.gbmSurface, platform.prevBO);
-        platform.prevBO = NULL;
+        platform.prevBO = nullptr;
     }
 
     if (platform.gbmSurface)
     {
         gbm_surface_destroy(platform.gbmSurface);
-        platform.gbmSurface = NULL;
+        platform.gbmSurface = nullptr;
     }
 
     if (platform.gbmDevice)
     {
         gbm_device_destroy(platform.gbmDevice);
-        platform.gbmDevice = NULL;
+        platform.gbmDevice = nullptr;
     }
 
     if (platform.crtc)
@@ -1361,11 +1361,11 @@ void ClosePlatform(void)
             drmModeSetCrtc(platform.fd, platform.crtc->crtc_id, platform.crtc->buffer_id,
                 platform.crtc->x, platform.crtc->y, &platform.connector->connector_id, 1, &platform.crtc->mode);
             drmModeFreeConnector(platform.connector);
-            platform.connector = NULL;
+            platform.connector = nullptr;
         }
 
         drmModeFreeCrtc(platform.crtc);
-        platform.crtc = NULL;
+        platform.crtc = nullptr;
     }
 
     if (platform.fd != -1)
@@ -1582,8 +1582,8 @@ static void ProcessKeyboard(void)
 static void InitEvdevInput(void)
 {
     char path[MAX_FILEPATH_LENGTH] = { 0 };
-    DIR *directory = NULL;
-    struct dirent *entity = NULL;
+    DIR *directory = nullptr;
+    struct dirent *entity = nullptr;
 
     // Initialise keyboard file descriptor
     platform.keyboardFd = -1;
@@ -1608,7 +1608,7 @@ static void InitEvdevInput(void)
 
     if (directory)
     {
-        while ((entity = readdir(directory)) != NULL)
+        while ((entity = readdir(directory)) != nullptr)
         {
             if ((strncmp("event", entity->d_name, strlen("event")) == 0) ||     // Search for devices named "event*"
                 (strncmp("mouse", entity->d_name, strlen("mouse")) == 0))       // Search for devices named "mouse*"
@@ -2103,8 +2103,8 @@ static void PollMouseEvents(void)
 // Search matching DRM mode in connector's mode list
 static int FindMatchingConnectorMode(const drmModeConnector *connector, const drmModeModeInfo *mode)
 {
-    if (NULL == connector) return -1;
-    if (NULL == mode) return -1;
+    if (nullptr == connector) return -1;
+    if (nullptr == mode) return -1;
 
     // safe bitwise comparison of two modes
     #define BINCMP(a, b) memcmp((a), (b), (sizeof(a) < sizeof(b))? sizeof(a) : sizeof(b))
@@ -2127,7 +2127,7 @@ static int FindExactConnectorMode(const drmModeConnector *connector, uint width,
 {
     TRACELOG(LOG_TRACE, "DISPLAY: Searching exact connector mode for %ux%u@%u, selecting an interlaced mode is allowed: %s", width, height, fps, allowInterlaced? "yes" : "no");
 
-    if (NULL == connector) return -1;
+    if (nullptr == connector) return -1;
 
     for (int i = 0; i < platform.connector->count_modes; i++)
     {
@@ -2149,7 +2149,7 @@ static int FindNearestConnectorMode(const drmModeConnector *connector, uint widt
 {
     TRACELOG(LOG_TRACE, "DISPLAY: Searching nearest connector mode for %ux%u@%u, selecting an interlaced mode is allowed: %s", width, height, fps, allowInterlaced? "yes" : "no");
 
-    if (NULL == connector) return -1;
+    if (nullptr == connector) return -1;
 
     int nearestIndex = -1;
     int minUnusedPixels = INT_MAX;

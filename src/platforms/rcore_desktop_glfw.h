@@ -192,16 +192,16 @@ void ToggleFullscreen(void)
         GLFWmonitor **monitors = glfwGetMonitors(&monitorCount);
 
         // Use current monitor, so we correctly get the display the window is on
-        GLFWmonitor *monitor = (monitorIndex < monitorCount)? monitors[monitorIndex] : NULL;
+        GLFWmonitor *monitor = (monitorIndex < monitorCount)? monitors[monitorIndex] : nullptr;
 
-        if (monitor == NULL)
+        if (monitor == nullptr)
         {
             TRACELOG(LOG_WARNING, "GLFW: Failed to get monitor");
 
             CORE.Window.fullscreen = false;
             CORE.Window.flags &= ~FLAG_FULLSCREEN_MODE;
 
-            glfwSetWindowMonitor(platform.handle, NULL, 0, 0, CORE.Window.screen.width, CORE.Window.screen.height, GLFW_DONT_CARE);
+            glfwSetWindowMonitor(platform.handle, nullptr, 0, 0, CORE.Window.screen.width, CORE.Window.screen.height, GLFW_DONT_CARE);
         }
         else
         {
@@ -217,7 +217,7 @@ void ToggleFullscreen(void)
         CORE.Window.fullscreen = false;
         CORE.Window.flags &= ~FLAG_FULLSCREEN_MODE;
 
-        glfwSetWindowMonitor(platform.handle, NULL, CORE.Window.previousPosition.x, CORE.Window.previousPosition.y, CORE.Window.screen.width, CORE.Window.screen.height, GLFW_DONT_CARE);
+        glfwSetWindowMonitor(platform.handle, nullptr, CORE.Window.previousPosition.x, CORE.Window.previousPosition.y, CORE.Window.screen.width, CORE.Window.screen.height, GLFW_DONT_CARE);
 
         // we update the window position right away
         CORE.Window.position.x = CORE.Window.previousPosition.x;
@@ -567,10 +567,10 @@ void ClearWindowState(unsigned int flags)
 // NOTE 2: Image is scaled by the OS for all required sizes
 void SetWindowIcon(Image image)
 {
-    if (image.data == NULL)
+    if (image.data == nullptr)
     {
         // Revert to the default window icon, pass in an empty image array
-        glfwSetWindowIcon(platform.handle, 0, NULL);
+        glfwSetWindowIcon(platform.handle, 0, nullptr);
     }
     else
     {
@@ -596,10 +596,10 @@ void SetWindowIcon(Image image)
 // Standard Windows icon sizes: 256, 128, 96, 64, 48, 32, 24, 16
 void SetWindowIcons(Image *images, int count)
 {
-    if ((images == NULL) || (count <= 0))
+    if ((images == nullptr) || (count <= 0))
     {
         // Revert to the default window icon, pass in an empty image array
-        glfwSetWindowIcon(platform.handle, 0, NULL);
+        glfwSetWindowIcon(platform.handle, 0, nullptr);
     }
     else
     {
@@ -774,7 +774,7 @@ void *GetWindowHandle(void)
     return (void *)glfwGetCocoaWindow(platform.handle);
 #endif
 
-    return NULL;
+    return nullptr;
 }
 
 // Get number of monitors
@@ -793,7 +793,7 @@ int GetCurrentMonitor(void)
     int index = 0;
     int monitorCount = 0;
     GLFWmonitor **monitors = glfwGetMonitors(&monitorCount);
-    GLFWmonitor *monitor = NULL;
+    GLFWmonitor *monitor = nullptr;
 
     if (monitorCount >= 1)
     {
@@ -939,7 +939,7 @@ int GetMonitorPhysicalWidth(int monitor)
     int monitorCount = 0;
     GLFWmonitor **monitors = glfwGetMonitors(&monitorCount);
 
-    if ((monitor >= 0) && (monitor < monitorCount)) glfwGetMonitorPhysicalSize(monitors[monitor], &width, NULL);
+    if ((monitor >= 0) && (monitor < monitorCount)) glfwGetMonitorPhysicalSize(monitors[monitor], &width, nullptr);
     else TRACELOG(LOG_WARNING, "GLFW: Failed to find selected monitor");
 
     return width;
@@ -952,7 +952,7 @@ int GetMonitorPhysicalHeight(int monitor)
     int monitorCount = 0;
     GLFWmonitor **monitors = glfwGetMonitors(&monitorCount);
 
-    if ((monitor >= 0) && (monitor < monitorCount)) glfwGetMonitorPhysicalSize(monitors[monitor], NULL, &height);
+    if ((monitor >= 0) && (monitor < monitorCount)) glfwGetMonitorPhysicalSize(monitors[monitor], nullptr, &height);
     else TRACELOG(LOG_WARNING, "GLFW: Failed to find selected monitor");
 
     return height;
@@ -1029,13 +1029,13 @@ Image GetClipboardImage(void)
 #if defined(SUPPORT_CLIPBOARD_IMAGE)
 #if defined(_WIN32)
     unsigned long long int dataSize = 0;
-    void *fileData = NULL;
+    void *fileData = nullptr;
     int width = 0;
     int height = 0;
 
     fileData  = (void*)Win32GetClipboardImageData(&width, &height, &dataSize);
 
-    if (fileData == NULL) TRACELOG(LOG_WARNING, "Clipboard image: Couldn't get clipboard data.");
+    if (fileData == nullptr) TRACELOG(LOG_WARNING, "Clipboard image: Couldn't get clipboard data.");
     else image = LoadImageFromMemory(".bmp", fileData, (int)dataSize);
 #else
     TRACELOG(LOG_WARNING, "GetClipboardImage() not implemented on target platform");
@@ -1113,7 +1113,7 @@ double GetTime(void)
 void OpenURL(const char *url)
 {
     // Security check to (partially) avoid malicious code
-    if (strchr(url, '\'') != NULL) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
+    if (strchr(url, '\'') != nullptr) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
     else
     {
         char *cmd = (char *)RL_CALLOC(strlen(url) + 32, sizeof(char));
@@ -1162,7 +1162,7 @@ void SetMousePosition(int x, int y)
 void SetMouseCursor(int cursor)
 {
     CORE.Input.Mouse.cursor = cursor;
-    if (cursor == MOUSE_CURSOR_DEFAULT) glfwSetCursor(platform.handle, NULL);
+    if (cursor == MOUSE_CURSOR_DEFAULT) glfwSetCursor(platform.handle, nullptr);
     else
     {
         // NOTE: We are relating internal GLFW enum values to our MouseCursor enum values
@@ -1248,7 +1248,7 @@ void PollInputEvents(void)
 
             const unsigned char *buttons = state.buttons;
 
-            for (int k = 0; (buttons != NULL) && (k < MAX_GAMEPAD_BUTTONS); k++)
+            for (int k = 0; (buttons != nullptr) && (k < MAX_GAMEPAD_BUTTONS); k++)
             {
                 int button = -1;        // GamepadButton enum values assigned
 
@@ -1290,7 +1290,7 @@ void PollInputEvents(void)
             // Get current state of axes
             const float *axes = state.axes;
 
-            for (int k = 0; (axes != NULL) && (k < GLFW_GAMEPAD_AXIS_LAST + 1); k++)
+            for (int k = 0; (axes != nullptr) && (k < GLFW_GAMEPAD_AXIS_LAST + 1); k++)
             {
                 CORE.Input.Gamepad.axisState[i][k] = axes[k];
             }
@@ -1360,7 +1360,7 @@ int InitPlatform(void)
         .allocate = AllocateWrapper,
         .deallocate = DeallocateWrapper,
         .reallocate = ReallocateWrapper,
-        .user = NULL, // RL_*ALLOC macros are not capable of handling user-provided data
+        .user = nullptr, // RL_*ALLOC macros are not capable of handling user-provided data
     };
 
     glfwInitAllocator(&allocator);
@@ -1509,9 +1509,9 @@ int InitPlatform(void)
     // Forcing this initialization here avoids doing it on PollInputEvents() called by EndDrawing() after first frame has been just drawn
     // The initialization will still happen and possible delays still occur, but before the window is shown, which is a nicer experience
     // REF: https://github.com/raysan5/raylib/issues/1554
-    glfwSetJoystickCallback(NULL);
+    glfwSetJoystickCallback(nullptr);
 
-    GLFWmonitor *monitor = NULL;
+    GLFWmonitor *monitor = nullptr;
     if (CORE.Window.fullscreen)
     {
         // According to glfwCreateWindow(), if the user does not have a choice, fullscreen applications
@@ -1575,7 +1575,7 @@ int InitPlatform(void)
         // HighDPI monitors are properly considered in a following similar function: SetupViewport()
         SetupFramebuffer(CORE.Window.display.width, CORE.Window.display.height);
 
-        platform.handle = glfwCreateWindow(CORE.Window.display.width, CORE.Window.display.height, (CORE.Window.title != 0)? CORE.Window.title : " ", monitor, NULL);
+        platform.handle = glfwCreateWindow(CORE.Window.display.width, CORE.Window.display.height, (CORE.Window.title != 0)? CORE.Window.title : " ", monitor, nullptr);
         if (!platform.handle)
         {
             glfwTerminate();
@@ -1595,7 +1595,7 @@ int InitPlatform(void)
         int creationWidth = CORE.Window.screen.width != 0 ? CORE.Window.screen.width : 1;
         int creationHeight = CORE.Window.screen.height != 0 ? CORE.Window.screen.height : 1;
 
-        platform.handle = glfwCreateWindow(creationWidth, creationHeight, (CORE.Window.title != 0)? CORE.Window.title : " ", NULL, NULL);
+        platform.handle = glfwCreateWindow(creationWidth, creationHeight, (CORE.Window.title != 0)? CORE.Window.title : " ", nullptr, nullptr);
         if (!platform.handle)
         {
             glfwTerminate();
@@ -1630,7 +1630,7 @@ int InitPlatform(void)
     }
 
     glfwMakeContextCurrent(platform.handle);
-    result = glfwGetError(NULL);
+    result = glfwGetError(nullptr);
 
     // Check context activation
     if ((result != GLFW_NO_WINDOW_CONTEXT) && (result != GLFW_PLATFORM_ERROR))
@@ -1748,7 +1748,7 @@ int InitPlatform(void)
     for (int i = 0; i < MAX_GAMEPADS; i++)
     {
         // WARNING: If glfwGetJoystickName() is longer than MAX_GAMEPAD_NAME_LENGTH,
-        // we can get a not-NULL terminated string, so, we only copy up to (MAX_GAMEPAD_NAME_LENGTH - 1)
+        // we can get a not-nullptr terminated string, so, we only copy up to (MAX_GAMEPAD_NAME_LENGTH - 1)
         if (glfwJoystickPresent(i)) strncpy(CORE.Input.Gamepad.name[i], glfwGetJoystickName(i), MAX_GAMEPAD_NAME_LENGTH - 1);
     }
     //----------------------------------------------------------------------------
@@ -1880,7 +1880,7 @@ static void WindowDropCallback(GLFWwindow *window, int count, const char **paths
             RL_FREE(CORE.Window.dropFilepaths);
 
             CORE.Window.dropFileCount = 0;
-            CORE.Window.dropFilepaths = NULL;
+            CORE.Window.dropFilepaths = nullptr;
         }
 
         // WARNING: Paths are freed by GLFW when the callback returns, we must keep an internal copy
@@ -2025,7 +2025,7 @@ static void JoystickCallback(int jid, int event)
     if (event == GLFW_CONNECTED)
     {
         // WARNING: If glfwGetJoystickName() is longer than MAX_GAMEPAD_NAME_LENGTH,
-        // we can get a not-NULL terminated string, so, we clean destination and only copy up to -1
+        // we can get a not-nullptr terminated string, so, we clean destination and only copy up to -1
         memset(CORE.Input.Gamepad.name[jid], 0, MAX_GAMEPAD_NAME_LENGTH);
         strncpy(CORE.Input.Gamepad.name[jid], glfwGetJoystickName(jid), MAX_GAMEPAD_NAME_LENGTH - 1);
     }

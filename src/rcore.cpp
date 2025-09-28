@@ -485,7 +485,7 @@ struct AutomationEvent {
 };
 */
 
-static AutomationEventList *currentEventList = NULL;        // Current automation events list, set by user, keep internal pointer
+static AutomationEventList *currentEventList = nullptr;        // Current automation events list, set by user, keep internal pointer
 static bool automationEventRecording = false;               // Recording automation events flag
 //static short automationEventEnabled = 0b0000001111111111; // TODO: Automation events enabled for recording/playing
 #endif
@@ -685,7 +685,7 @@ void InitWindow(int width, int height, const char *title)
     CORE.Window.screen.height = height;
     CORE.Window.eventWaiting = false;
     CORE.Window.screenScale = MatrixIdentity();     // No draw scaling required by default
-    if ((title != NULL) && (title[0] != 0)) CORE.Window.title = title;
+    if ((title != nullptr) && (title[0] != 0)) CORE.Window.title = title;
 
     // Initialize global input state
     memset(&CORE.Input, 0, sizeof(CORE.Input));     // Reset CORE.Input structure to 0
@@ -747,7 +747,7 @@ void InitWindow(int width, int height, const char *title)
     CORE.Window.shouldClose = false;
 
     // Initialize random seed
-    SetRandomSeed((unsigned int)time(NULL));
+    SetRandomSeed((unsigned int)time(nullptr));
 
     TRACELOG(LOG_INFO, "SYSTEM: Working Directory: %s", GetWorkingDirectory());
 }
@@ -1329,18 +1329,18 @@ void UnloadVrStereoConfig(VrStereoConfig config)
 //----------------------------------------------------------------------------------
 
 // Load shader from files and bind default locations
-// NOTE: If shader string is NULL, using default vertex/fragment shaders
+// NOTE: If shader string is nullptr, using default vertex/fragment shaders
 Shader LoadShader(const char *vsFileName, const char *fsFileName)
 {
     Shader shader = { 0 };
 
-    char *vShaderStr = NULL;
-    char *fShaderStr = NULL;
+    char *vShaderStr = nullptr;
+    char *fShaderStr = nullptr;
 
-    if (vsFileName != NULL) vShaderStr = LoadFileText(vsFileName);
-    if (fsFileName != NULL) fShaderStr = LoadFileText(fsFileName);
+    if (vsFileName != nullptr) vShaderStr = LoadFileText(vsFileName);
+    if (fsFileName != nullptr) fShaderStr = LoadFileText(fsFileName);
 
-    if ((vShaderStr == NULL) && (fShaderStr == NULL)) TraceLog(LOG_WARNING, "SHADER: Shader files provided are not valid, using default shader");
+    if ((vShaderStr == nullptr) && (fShaderStr == nullptr)) TraceLog(LOG_WARNING, "SHADER: Shader files provided are not valid, using default shader");
 
     shader = LoadShaderFromMemory(vShaderStr, fShaderStr);
 
@@ -1411,7 +1411,7 @@ Shader LoadShaderFromMemory(const char *vsCode, const char *fsCode)
 bool IsShaderValid(Shader shader)
 {
     return ((shader.id > 0) &&          // Validate shader id (GPU loaded successfully)
-            (shader.locs != NULL));     // Validate memory has been allocated for default shader locations
+            (shader.locs != nullptr));     // Validate memory has been allocated for default shader locations
 
     // The following locations are tried to be set automatically (locs[i] >= 0),
     // any of them can be checked for validation but the only mandatory one is, afaik, SHADER_LOC_VERTEX_POSITION
@@ -1844,7 +1844,7 @@ int GetRandomValue(int min, int max)
 // Load random values sequence, no values repeated, min and max included
 int *LoadRandomSequence(unsigned int count, int min, int max)
 {
-    int *values = NULL;
+    int *values = nullptr;
 
 #if defined(SUPPORT_RPRAND_GENERATOR)
     values = rprand_load_sequence(count, min, max);
@@ -1896,7 +1896,7 @@ void TakeScreenshot(const char *fileName)
 {
 #if defined(SUPPORT_MODULE_RTEXTURES)
     // Security check to (partially) avoid malicious code
-    if (strchr(fileName, '\'') != NULL) { TRACELOG(LOG_WARNING, "SYSTEM: Provided fileName could be potentially malicious, avoid [\'] character"); return; }
+    if (strchr(fileName, '\'') != nullptr) { TRACELOG(LOG_WARNING, "SYSTEM: Provided fileName could be potentially malicious, avoid [\'] character"); return; }
 
     // Apply a scale if we are doing HIGHDPI auto-scaling
     Vector2 scale = { 1.0f, 1.0f };
@@ -1978,7 +1978,7 @@ int FileCopy(const char *srcPath, const char *dstPath)
 
     if (result == 0) // Directory created successfully (or already exists)
     {
-        if ((srcFileData != NULL) && (srcDataSize > 0))
+        if ((srcFileData != nullptr) && (srcDataSize > 0))
             result = SaveFileData(dstPath, srcFileData, srcDataSize);
     }
 
@@ -2008,7 +2008,7 @@ int FileMove(const char *srcPath, const char *dstPath)
 int FileTextReplace(const char *fileName, const char *search, const char *replacement)
 {
     int result = 0;
-    char *fileText = NULL;
+    char *fileText = nullptr;
     char *fileTextUpdated = { 0 };
 
 #if defined(SUPPORT_MODULE_RTEXT)
@@ -2037,7 +2037,7 @@ int FileTextFindIndex(const char *fileName, const char *search)
     {
         char *fileText = LoadFileText(fileName);
         char *ptr = strstr(fileText, search);
-        if (ptr != NULL) result = (int)(ptr - fileText);
+        if (ptr != nullptr) result = (int)(ptr - fileText);
         UnloadFileText(fileText);
     }
 
@@ -2074,7 +2074,7 @@ bool IsFileExtension(const char *fileName, const char *ext)
     // WARNING: fileExt points to last '.' on fileName string but it could happen
     // that fileName is not correct: "myfile.png more text following\n"
 
-    if (fileExt != NULL)
+    if (fileExt != nullptr)
     {
         int fileExtLen = (int)strlen(fileExt);
         char fileExtLower[16] = { 0 };
@@ -2133,7 +2133,7 @@ bool DirectoryExists(const char *dirPath)
     bool result = false;
     DIR *dir = opendir(dirPath);
 
-    if (dir != NULL)
+    if (dir != nullptr)
     {
         result = true;
         closedir(dir);
@@ -2156,7 +2156,7 @@ int GetFileLength(const char *fileName)
 
     FILE *file = fopen(fileName, "rb");
 
-    if (file != NULL)
+    if (file != nullptr)
     {
         fseek(file, 0L, SEEK_END);
         long int fileSize = ftell(file);
@@ -2192,7 +2192,7 @@ const char *GetFileExtension(const char *fileName)
 {
     const char *dot = strrchr(fileName, '.');
 
-    if (!dot || (dot == fileName)) return NULL;
+    if (!dot || (dot == fileName)) return nullptr;
 
     return dot;
 }
@@ -2200,9 +2200,9 @@ const char *GetFileExtension(const char *fileName)
 // String pointer reverse break: returns right-most occurrence of charset in s
 static const char *strprbrk(const char *s, const char *charset)
 {
-    const char *latestMatch = NULL;
+    const char *latestMatch = nullptr;
 
-    for (; s = strpbrk(s, charset), s != NULL; latestMatch = s++) { }
+    for (; s = strpbrk(s, charset), s != nullptr; latestMatch = s++) { }
 
     return latestMatch;
 }
@@ -2210,11 +2210,11 @@ static const char *strprbrk(const char *s, const char *charset)
 // Get pointer to filename for a path string
 const char *GetFileName(const char *filePath)
 {
-    const char *fileName = NULL;
+    const char *fileName = nullptr;
 
-    if (filePath != NULL) fileName = strprbrk(filePath, "\\/");
+    if (filePath != nullptr) fileName = strprbrk(filePath, "\\/");
 
-    if (fileName == NULL) return filePath;
+    if (fileName == nullptr) return filePath;
 
     return fileName + 1;
 }
@@ -2227,7 +2227,7 @@ const char *GetFileNameWithoutExt(const char *filePath)
     static char fileName[MAX_FILENAME_LENGTH] = { 0 };
     memset(fileName, 0, MAX_FILENAME_LENGTH);
 
-    if (filePath != NULL)
+    if (filePath != nullptr)
     {
         strcpy(fileName, GetFileName(filePath)); // Get filename.ext without path
         int size = (int)strlen(fileName); // Get size in bytes
@@ -2258,7 +2258,7 @@ const char *GetDirectoryPath(const char *filePath)
         char separator = '/';
     #endif
     */
-    const char *lastSlash = NULL;
+    const char *lastSlash = nullptr;
     static char dirPath[MAX_FILEPATH_LENGTH] = { 0 };
     memset(dirPath, 0, MAX_FILEPATH_LENGTH);
 
@@ -2338,10 +2338,10 @@ const char *GetApplicationDirectory(void)
     int len = 0;
 #if defined(UNICODE)
     unsigned short widePath[MAX_PATH];
-    len = GetModuleFileNameW(NULL, widePath, MAX_PATH);
-    len = WideCharToMultiByte(0, 0, widePath, len, appDir, MAX_PATH, NULL, NULL);
+    len = GetModuleFileNameW(nullptr, widePath, MAX_PATH);
+    len = WideCharToMultiByte(0, 0, widePath, len, appDir, MAX_PATH, nullptr, nullptr);
 #else
-    len = GetModuleFileNameA(NULL, appDir, MAX_PATH);
+    len = GetModuleFileNameA(nullptr, appDir, MAX_PATH);
 #endif
     if (len > 0)
     {
@@ -2404,7 +2404,7 @@ const char *GetApplicationDirectory(void)
     size_t size = sizeof(appDir);
     int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1};
 
-    if (sysctl(mib, 4, appDir, &size, NULL, 0) == 0)
+    if (sysctl(mib, 4, appDir, &size, nullptr, 0) == 0)
     {
         int len = strlen(appDir);
         for (int i = len; i >= 0; --i)
@@ -2439,10 +2439,10 @@ FilePathList LoadDirectoryFiles(const char *dirPath)
     struct dirent *entity;
     DIR *dir = opendir(dirPath);
 
-    if (dir != NULL) // It's a directory
+    if (dir != nullptr) // It's a directory
     {
         // SCAN 1: Count files
-        while ((entity = readdir(dir)) != NULL)
+        while ((entity = readdir(dir)) != nullptr)
         {
             // NOTE: We skip '.' (current dir) and '..' (parent dir) filepaths
             if ((strcmp(entity->d_name, ".") != 0) && (strcmp(entity->d_name, "..") != 0)) fileCounter++;
@@ -2457,7 +2457,7 @@ FilePathList LoadDirectoryFiles(const char *dirPath)
 
         // SCAN 2: Read filepaths
         // NOTE: Directory paths are also registered
-        ScanDirectoryFiles(dirPath, &files, NULL);
+        ScanDirectoryFiles(dirPath, &files, nullptr);
 
         // Security check: read files.count should match fileCounter
         if (files.count != files.capacity) TRACELOG(LOG_WARNING, "FILEIO: Read files count do not match capacity allocated");
@@ -2488,7 +2488,7 @@ FilePathList LoadDirectoryFilesEx(const char *basePath, const char *filter, bool
 // WARNING: files.count is not reseted to 0 after unloading
 void UnloadDirectoryFiles(FilePathList files)
 {
-    if (files.paths != NULL)
+    if (files.paths != nullptr)
     {
         for (unsigned int i = 0; i < files.capacity; i++) RL_FREE(files.paths[i]);
 
@@ -2499,7 +2499,7 @@ void UnloadDirectoryFiles(FilePathList files)
 // Create directories (including full path requested), returns 0 on success
 int MakeDirectory(const char *dirPath)
 {
-    if ((dirPath == NULL) || (dirPath[0] == '\0')) return -1; // Path is not valid
+    if ((dirPath == nullptr) || (dirPath[0] == '\0')) return -1; // Path is not valid
     if (DirectoryExists(dirPath)) return 0; // Path already exists (is valid)
 
     // Copy path string to avoid modifying original
@@ -2558,7 +2558,7 @@ bool IsFileNameValid(const char *fileName)
 {
     bool valid = true;
 
-    if ((fileName != NULL) && (fileName[0] != '\0'))
+    if ((fileName != nullptr) && (fileName[0] != '\0'))
     {
         int length = (int)strlen(fileName);
         bool allPeriods = true;
@@ -2644,7 +2644,7 @@ void UnloadDroppedFiles(FilePathList files)
         RL_FREE(files.paths);
 
         CORE.Window.dropFileCount = 0;
-        CORE.Window.dropFilepaths = NULL;
+        CORE.Window.dropFilepaths = nullptr;
     }
 }
 
@@ -2657,7 +2657,7 @@ unsigned char *CompressData(const unsigned char *data, int dataSize, int *compDa
 {
     #define COMPRESSION_QUALITY_DEFLATE  8
 
-    unsigned char *compData = NULL;
+    unsigned char *compData = nullptr;
 
 #if defined(SUPPORT_COMPRESSION_API)
     // Compress data and generate a valid DEFLATE stream
@@ -2677,7 +2677,7 @@ unsigned char *CompressData(const unsigned char *data, int dataSize, int *compDa
 // Decompress data (DEFLATE algorithm)
 unsigned char *DecompressData(const unsigned char *compData, int compDataSize, int *dataSize)
 {
-    unsigned char *data = NULL;
+    unsigned char *data = nullptr;
 
 #if defined(SUPPORT_COMPRESSION_API)
     // Decompress data from a valid DEFLATE stream
@@ -2701,7 +2701,7 @@ unsigned char *DecompressData(const unsigned char *compData, int compDataSize, i
 }
 
 // Encode data to Base64 string
-// NOTE: Returned string includes NULL terminator, considered on outputSize
+// NOTE: Returned string includes nullptr terminator, considered on outputSize
 char *EncodeDataBase64(const unsigned char *data, int dataSize, int *outputSize)
 {
     // Base64 conversion table from RFC 4648 [0..63]
@@ -2719,7 +2719,7 @@ char *EncodeDataBase64(const unsigned char *data, int dataSize, int *outputSize)
 
     // Load some memory to store encoded string
     char *encodedData = (char *)RL_CALLOC(estimatedOutputSize, 1);
-    if (encodedData == NULL) return NULL;
+    if (encodedData == nullptr) return nullptr;
 
     int outputCount = 0;
     for (int i = 0; i < dataSize;)
@@ -2756,7 +2756,7 @@ char *EncodeDataBase64(const unsigned char *data, int dataSize, int *outputSize)
     return encodedData;
 }
 
-// Decode Base64 string (expected NULL terminated)
+// Decode Base64 string (expected nullptr terminated)
 unsigned char *DecodeDataBase64(const char *text, int *outputSize)
 {
     // Base64 decode table
@@ -2774,7 +2774,7 @@ unsigned char *DecodeDataBase64(const char *text, int *outputSize)
     };
 
     // Compute expected size and padding
-    int dataSize = (int)strlen(text); // WARNING: Expecting NULL terminated strings!
+    int dataSize = (int)strlen(text); // WARNING: Expecting nullptr terminated strings!
     int ending = dataSize - 1;
     int padding = 0;
     while (text[ending] == '=') { padding++; ending--; }
@@ -2784,7 +2784,7 @@ unsigned char *DecodeDataBase64(const char *text, int *outputSize)
     // Load some memory to store decoded data
     // NOTE: Allocated enough size to include padding
     unsigned char *decodedData = (unsigned char *)RL_CALLOC(maxOutputSize, 1);
-    if (decodedData == NULL) return NULL;
+    if (decodedData == nullptr) return nullptr;
 
     int outputCount = 0;
     for (int i = 0; i < dataSize;)
@@ -3092,7 +3092,7 @@ unsigned int *ComputeSHA1(unsigned char *data, int dataSize)
 // Module Functions Definition: Automation Events Recording and Playing
 //----------------------------------------------------------------------------------
 
-// Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS
+// Load automation events list from file, nullptr for empty list, capacity = MAX_AUTOMATION_EVENTS
 AutomationEventList LoadAutomationEventList(const char *fileName)
 {
     AutomationEventList list = { 0 };
@@ -3102,7 +3102,7 @@ AutomationEventList LoadAutomationEventList(const char *fileName)
     list.capacity = MAX_AUTOMATION_EVENTS;
 
 #if defined(SUPPORT_AUTOMATION_EVENTS)
-    if (fileName == NULL) TRACELOG(LOG_INFO, "AUTOMATION: New empty events list loaded successfully");
+    if (fileName == nullptr) TRACELOG(LOG_INFO, "AUTOMATION: New empty events list loaded successfully");
     else
     {
         // Load automation events file (binary)
@@ -3129,7 +3129,7 @@ AutomationEventList LoadAutomationEventList(const char *fileName)
         //unsigned char *buffer = LoadFileText(fileName);
         FILE *raeFile = fopen(fileName, "rt");
 
-        if (raeFile != NULL)
+        if (raeFile != nullptr)
         {
             unsigned int counter = 0;
             char buffer[256] = { 0 };
@@ -3225,7 +3225,7 @@ bool ExportAutomationEventList(AutomationEventList list, const char *fileName)
             list.events[i].params[0], list.events[i].params[1], list.events[i].params[2], list.events[i].params[3], autoEventTypeName[list.events[i].type]);
     }
 
-    // NOTE: Text data size exported is determined by '\0' (NULL) character
+    // NOTE: Text data size exported is determined by '\0' (nullptr) character
     success = SaveFileText(fileName, txtData);
 
     RL_FREE(txtData);
@@ -3879,12 +3879,12 @@ static void ScanDirectoryFiles(const char *basePath, FilePathList *files, const 
     static char path[MAX_FILEPATH_LENGTH] = { 0 };
     memset(path, 0, MAX_FILEPATH_LENGTH);
 
-    struct dirent *dp = NULL;
+    struct dirent *dp = nullptr;
     DIR *dir = opendir(basePath);
 
-    if (dir != NULL)
+    if (dir != nullptr)
     {
-        while ((dp = readdir(dir)) != NULL)
+        while ((dp = readdir(dir)) != nullptr)
         {
             if ((strcmp(dp->d_name, ".") != 0) &&
                 (strcmp(dp->d_name, "..") != 0))
@@ -3899,7 +3899,7 @@ static void ScanDirectoryFiles(const char *basePath, FilePathList *files, const 
                 {
                     TRACELOG(LOG_WARNING, "FILEIO: Path longer than %d characters (%s...)", MAX_FILEPATH_LENGTH, basePath);
                 }
-                else if (filter != NULL)
+                else if (filter != nullptr)
                 {
                     if (IsPathFile(path))
                     {
@@ -3911,7 +3911,7 @@ static void ScanDirectoryFiles(const char *basePath, FilePathList *files, const 
                     }
                     else
                     {
-                        if (strstr(filter, DIRECTORY_FILTER_TAG) != NULL)
+                        if (strstr(filter, DIRECTORY_FILTER_TAG) != nullptr)
                         {
                             strcpy(files->paths[files->count], path);
                             files->count++;
@@ -3938,12 +3938,12 @@ static void ScanDirectoryFilesRecursively(const char *basePath, FilePathList *fi
     char path[MAX_FILEPATH_LENGTH] = { 0 };
     memset(path, 0, MAX_FILEPATH_LENGTH);
 
-    struct dirent *dp = NULL;
+    struct dirent *dp = nullptr;
     DIR *dir = opendir(basePath);
 
-    if (dir != NULL)
+    if (dir != nullptr)
     {
-        while (((dp = readdir(dir)) != NULL) && (files->count < files->capacity))
+        while (((dp = readdir(dir)) != nullptr) && (files->count < files->capacity))
         {
             if ((strcmp(dp->d_name, ".") != 0) && (strcmp(dp->d_name, "..") != 0))
             {
@@ -3960,7 +3960,7 @@ static void ScanDirectoryFilesRecursively(const char *basePath, FilePathList *fi
                 }
                 else if (IsPathFile(path))
                 {
-                    if (filter != NULL)
+                    if (filter != nullptr)
                     {
                         if (IsFileExtension(path, filter))
                         {
@@ -3982,7 +3982,7 @@ static void ScanDirectoryFilesRecursively(const char *basePath, FilePathList *fi
                 }
                 else
                 {
-                    if ((filter != NULL) && (strstr(filter, DIRECTORY_FILTER_TAG) != NULL))
+                    if ((filter != nullptr) && (strstr(filter, DIRECTORY_FILTER_TAG) != nullptr))
                     {
                         strcpy(files->paths[files->count], path);
                         files->count++;

@@ -110,9 +110,9 @@ extern CoreData CORE;                   // Global CORE state context
 static PlatformData platform = { 0 };   // Platform specific data
 
 // Required WGL functions
-static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = NULL;
-static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = NULL;
-static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
+static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
+static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
+static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
 
 // --------------------------------------------------------------------------------
 // This part of the file contains pure functions that never access global state
@@ -223,7 +223,7 @@ typedef struct {
 //----------------------------------------------------------------------------------
 static size_t AToWLen(const char *a)
 {
-    int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, a, -1, NULL, 0);
+    int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, a, -1, nullptr, 0);
     
     if (sizeNeeded < 0) TRACELOG(LOG_ERROR, "Failed to calculate wide length, result=%d, error=%u", sizeNeeded, GetLastError());
 
@@ -442,7 +442,7 @@ static bool UpdateWindowSize(UpdateWindowKind kind, HWND hwnd, int width, int he
     }
     else swpFlags |= SWP_NOMOVE;
 
-    if (!SetWindowPos(hwnd, NULL, windowPos.x, windowPos.y, windowSize.cx, windowSize.cy, swpFlags))
+    if (!SetWindowPos(hwnd, nullptr, windowPos.x, windowPos.y, windowSize.cx, windowSize.cy, swpFlags))
     {
         TRACELOG(LOG_ERROR, "%s failed, error=%lu", "SetWindowPos", GetLastError());
     }
@@ -480,9 +480,9 @@ static void *WglGetProcAddress(const char *procname)
 {
     void *proc = (void *)wglGetProcAddress(procname);
 
-    if ((proc == NULL) ||
+    if ((proc == nullptr) ||
         // NOTE: Some GPU drivers could return following
-        // invalid sentinel values instead of NULL
+        // invalid sentinel values instead of nullptr
         (proc == (void *)0x1) || 
         (proc == (void *)0x2) || 
         (proc == (void *)0x3) ||
@@ -492,7 +492,7 @@ static void *WglGetProcAddress(const char *procname)
         HMODULE glModule = LoadLibraryW(L"opengl32.dll");
         proc = (void *)GetProcAddress(glModule, procname);
 
-        //if (proc == NULL) TRACELOG(LOG_ERROR, "GL: GetProcAddress() failed to get %s [%p], error=%u", procname, proc, GetLastError());
+        //if (proc == nullptr) TRACELOG(LOG_ERROR, "GL: GetProcAddress() failed to get %s [%p], error=%u", procname, proc, GetLastError());
         //else TRACELOG(LOG_INFO, "GL: Found entry point for %s [%p]", procname, proc);
     }
 
@@ -893,7 +893,7 @@ void SetWindowTitle(const char *title)
 {
     CORE.Window.title = title;
     
-    WCHAR *titleWide = NULL;
+    WCHAR *titleWide = nullptr;
     A_TO_W_ALLOCA(titleWide, CORE.Window.title);
     
     int result = SetWindowTextW(platform.hwnd, titleWide);
@@ -958,7 +958,7 @@ int GetMonitorCount(void)
 {
     int count = 0;
     
-    int result = EnumDisplayMonitors(NULL, NULL, CountMonitorsProc, (LPARAM)&count);
+    int result = EnumDisplayMonitors(nullptr, nullptr, CountMonitorsProc, (LPARAM)&count);
     if (result == 0) TRACELOG(LOG_ERROR, "%s failed, error=%lu", "EnumDisplayMonitors", GetLastError());
 
     return count;
@@ -975,7 +975,7 @@ int GetCurrentMonitor(void)
     context.index = 0;
     context.matchIndex = -1;
     
-    int result = EnumDisplayMonitors(NULL, NULL, FindMonitorProc, (LPARAM)&context);
+    int result = EnumDisplayMonitors(nullptr, nullptr, FindMonitorProc, (LPARAM)&context);
     if (result == 0) TRACELOG(LOG_ERROR, "%s failed, error=%lu", "EnumDisplayMonitors", GetLastError());
 
     return context.matchIndex;
@@ -1054,7 +1054,7 @@ void SetClipboardText(const char *text)
 const char *GetClipboardText(void)
 {
     TRACELOG(LOG_WARNING, "GetClipboardText not implemented");
-    return NULL;
+    return nullptr;
 }
 
 // Get clipboard image
@@ -1071,7 +1071,7 @@ Image GetClipboardImage(void)
 void ShowCursor(void)
 {
     CORE.Input.Mouse.cursorHidden = false;
-    SetCursor(LoadCursorW(NULL, (LPCWSTR)IDC_ARROW));
+    SetCursor(LoadCursorW(nullptr, (LPCWSTR)IDC_ARROW));
 }
 
 // Hides mouse cursor
@@ -1080,7 +1080,7 @@ void HideCursor(void)
     // NOTE: we use SetCursor instead of ShowCursor because it makes it easy
     // to only hide the cursor while it's inside the client area
     CORE.Input.Mouse.cursorHidden = true;
-    SetCursor(NULL);
+    SetCursor(nullptr);
 }
 
 // Enables cursor (unlock cursor)
@@ -1089,13 +1089,13 @@ void EnableCursor(void)
     if (platform.cursorEnabled) TRACELOG(LOG_INFO, "EnableCursor: already enabled");
     else
     {
-        if (!ClipCursor(NULL)) TRACELOG(LOG_ERROR, "%s failed, error=%lu", "ClipCursor", GetLastError());
+        if (!ClipCursor(nullptr)) TRACELOG(LOG_ERROR, "%s failed, error=%lu", "ClipCursor", GetLastError());
 
         RAWINPUTDEVICE rid = { 0 };
         rid.usUsagePage = 0x01; // HID_USAGE_PAGE_GENERIC
         rid.usUsage = 0x02; // HID_USAGE_GENERIC_MOUSE
         rid.dwFlags = RIDEV_REMOVE; // Add to this window even in background
-        rid.hwndTarget = NULL;
+        rid.hwndTarget = nullptr;
         int result = RegisterRawInputDevices(&rid, 1, sizeof(rid));
         if (result == 0) TRACELOG(LOG_ERROR, "%s failed, error=%lu", "RegisterRawInputDevices", GetLastError());
 
@@ -1150,7 +1150,7 @@ void SwapScreenBuffer(void)
 {
     if (!platform.hdc) abort();
     if (!SwapBuffers(platform.hdc)) TRACELOG(LOG_ERROR, "%s failed, error=%lu", "SwapBuffers", GetLastError());
-    if (!ValidateRect(platform.hwnd, NULL)) TRACELOG(LOG_ERROR, "%s failed, error=%lu", "ValidateRect", GetLastError());
+    if (!ValidateRect(platform.hwnd, nullptr)) TRACELOG(LOG_ERROR, "%s failed, error=%lu", "ValidateRect", GetLastError());
 }
 
 //----------------------------------------------------------------------------------
@@ -1173,7 +1173,7 @@ double GetTime(void)
 void OpenURL(const char *url)
 {
     // Security check to (partially) avoid malicious code on target platform
-    if (strchr(url, '\'') != NULL) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
+    if (strchr(url, '\'') != nullptr) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
     else
     {
         TRACELOG(LOG_WARNING, "OpenURL not implemented");
@@ -1214,7 +1214,7 @@ void SetMousePosition(int x, int y)
 void SetMouseCursor(int cursor)
 {
     LPCWSTR cursorName = GetCursorName(cursor);
-    HCURSOR hcursor = LoadCursorW(NULL, cursorName);
+    HCURSOR hcursor = LoadCursorW(nullptr, cursorName);
     if (!hcursor) TRACELOG(LOG_ERROR, "LoadCursor %d (win32 %d) failed, error=%lu", cursor, (size_t)cursorName, GetLastError());
 
     SetCursor(hcursor);
@@ -1225,7 +1225,7 @@ void SetMouseCursor(int cursor)
 const char *GetKeyName(int key)
 {
     TRACELOG(LOG_WARNING, "GetKeyName not implemented");
-    return NULL;
+    return nullptr;
 }
 
 // Register all input events
@@ -1262,7 +1262,7 @@ void PollInputEvents(void)
 
     // Process windows messages
     MSG msg = { 0 };
-    while (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE))
+    while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
     {
         if (msg.message == WM_PAINT) return;
         TranslateMessage(&msg);
@@ -1327,7 +1327,7 @@ HGLRC InitOpenGL(HWND hwnd, HDC hdc)
 
         int format = 0;
         UINT numFormats = 0;
-        if (wglChoosePixelFormatARB(hdc, pixelFormatAttribs, NULL, 1, &format, &numFormats) && (numFormats > 0))
+        if (wglChoosePixelFormatARB(hdc, pixelFormatAttribs, nullptr, 1, &format, &numFormats) && (numFormats > 0))
         {
             PIXELFORMATDESCRIPTOR newPixelFormatDescriptor = { 0 };
             DescribePixelFormat(hdc, format, sizeof(newPixelFormatDescriptor), &newPixelFormatDescriptor);
@@ -1336,7 +1336,7 @@ HGLRC InitOpenGL(HWND hwnd, HDC hdc)
     }
 
     // Create real modern OpenGL context (3.3 core)
-    HGLRC realContext = NULL;
+    HGLRC realContext = nullptr;
     if (wglCreateContextAttribsARB)
     {
         int contextAttribs[] = {
@@ -1347,17 +1347,17 @@ HGLRC InitOpenGL(HWND hwnd, HDC hdc)
             0 // Terminator
         };
 
-        // NOTE: We are not sharing context resources so, second parameters is NULL
-        realContext = wglCreateContextAttribsARB(hdc, NULL, contextAttribs);
+        // NOTE: We are not sharing context resources so, second parameters is nullptr
+        realContext = wglCreateContextAttribsARB(hdc, nullptr, contextAttribs);
 
         // Check for error context creation errors
         // ERROR_INVALID_VERSION_ARB (0x2095)
         // ERROR_INVALID_PROFILE_ARB (0x2096)
-        if (realContext == NULL) TRACELOG(LOG_ERROR, "GL: Error creating requested context: %lu", GetLastError());
+        if (realContext == nullptr) TRACELOG(LOG_ERROR, "GL: Error creating requested context: %lu", GetLastError());
     }
 
     // Cleanup dummy temp context
-    wglMakeCurrent(NULL, NULL);
+    wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(tempContext);
 
     // Activate real context
@@ -1403,7 +1403,7 @@ int InitPlatform(void)
         .lpfnWndProc = WndProc,                         // Custom procedure assigned
         .cbWndExtra = sizeof(LONG_PTR),                 // extra space for the Tuple object ptr
         .hInstance = GetModuleHandleW(0),
-        .hCursor = LoadCursorW(NULL, (LPCWSTR)IDC_ARROW), // TODO: Audit if we want to set this since we're implementing WM_SETCURSOR
+        .hCursor = LoadCursorW(nullptr, (LPCWSTR)IDC_ARROW), // TODO: Audit if we want to set this since we're implementing WM_SETCURSOR
         .lpszClassName = CLASS_NAME //L"GLWindowClass";
     };
 
@@ -1414,7 +1414,7 @@ int InitPlatform(void)
     // TODO: Remove or move this code that sets the display size; should maybe go somewhere in WndProc?
     POINT primaryTopLeft = { 0 };
     HMONITOR monitor = MonitorFromPoint(primaryTopLeft, MONITOR_DEFAULTTOPRIMARY);
-    if (monitor != NULL)
+    if (monitor != nullptr)
     {
         MONITORINFO info;
         info.cbSize = sizeof(info);
@@ -1430,7 +1430,7 @@ int InitPlatform(void)
     
     // Create window
     // NOTE: Title string needs to be converted to WCHAR
-    WCHAR *titleWide = NULL;
+    WCHAR *titleWide = nullptr;
     A_TO_W_ALLOCA(titleWide, CORE.Window.title);
     
     // Create window and get handle
@@ -1441,8 +1441,8 @@ int InitPlatform(void)
         MakeWindowStyle(CORE.Window.flags),     // WS_OVERLAPPEDWINDOW | WS_VISIBLE
         CW_USEDEFAULT, CW_USEDEFAULT,
         0, 0,                                   // Window size [width, height], needs to be updated
-        NULL, NULL,
-        GetModuleHandleW(NULL), NULL);
+        nullptr, nullptr,
+        GetModuleHandleW(nullptr), nullptr);
 
     if (!platform.hwnd)
     {
@@ -1497,7 +1497,7 @@ void ClosePlatform(void)
     {
         int result = DestroyWindow(platform.hwnd);
         if (result == 0) TRACELOG(LOG_WARNING, "WIN32: Error on window destroy: %u", GetLastError());
-        platform.hwnd = NULL;
+        platform.hwnd = nullptr;
     }
 }
 
@@ -1531,17 +1531,17 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
         case WM_DESTROY:
         {
             // Clean up for window destruction
-            wglMakeCurrent(platform.hdc, NULL);
+            wglMakeCurrent(platform.hdc, nullptr);
             if (platform.glContext)
             {
                 if (!wglDeleteContext(platform.glContext)) abort();
-                platform.glContext = NULL;
+                platform.glContext = nullptr;
             }
 
             if (platform.hdc)
             {
                 if (!ReleaseDC(hwnd, platform.hdc)) abort();
-                platform.hdc = NULL;
+                platform.hdc = nullptr;
             }
 
         } break;
@@ -1691,7 +1691,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             RECT *suggestedRect = (RECT*)lparam;
             // Never set the window size to anything other than the suggested rect here
             // Doing so can cause a window to stutter between monitors when transitioning between them
-            if (!SetWindowPos(hwnd, NULL,
+            if (!SetWindowPos(hwnd, nullptr,
                 suggestedRect->left,
                 suggestedRect->top,
                 suggestedRect->right - suggestedRect->left,
@@ -1705,7 +1705,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
         {
             if (LOWORD(lparam) == HTCLIENT)
             {
-                SetCursor(CORE.Input.Mouse.cursorHidden? NULL : LoadCursorW(NULL, (LPCWSTR)IDC_ARROW));
+                SetCursor(CORE.Input.Mouse.cursorHidden? nullptr : LoadCursorW(nullptr, (LPCWSTR)IDC_ARROW));
                 return 0;
             }
 

@@ -558,7 +558,7 @@ enum TraceLogLevel {
 // NOTE: Use GetKeyPressed() to allow redefining
 // required keys for alternative layouts
 enum KeyboardKey {
-    KEY_NULL            = 0,        // Key: NULL, used for no key pressed
+    KEY_NULL            = 0,        // Key: nullptr, used for no key pressed
     // Alphanumeric keys
     KEY_APOSTROPHE      = 39,       // Key: '
     KEY_COMMA           = 44,       // Key: ,
@@ -1142,14 +1142,14 @@ RLAPI void UnloadDroppedFiles(FilePathList files);                  // Unload dr
 // Compression/Encoding functionality
 RLAPI unsigned char *CompressData(const unsigned char *data, int dataSize, int *compDataSize);        // Compress data (DEFLATE algorithm), memory must be MemFree()
 RLAPI unsigned char *DecompressData(const unsigned char *compData, int compDataSize, int *dataSize);  // Decompress data (DEFLATE algorithm), memory must be MemFree()
-RLAPI char *EncodeDataBase64(const unsigned char *data, int dataSize, int *outputSize);               // Encode data to Base64 string (includes NULL terminator), memory must be MemFree()
-RLAPI unsigned char *DecodeDataBase64(const char *text, int *outputSize);                             // Decode Base64 string (expected NULL terminated), memory must be MemFree()
+RLAPI char *EncodeDataBase64(const unsigned char *data, int dataSize, int *outputSize);               // Encode data to Base64 string (includes nullptr terminator), memory must be MemFree()
+RLAPI unsigned char *DecodeDataBase64(const char *text, int *outputSize);                             // Decode Base64 string (expected nullptr terminated), memory must be MemFree()
 RLAPI unsigned int ComputeCRC32(unsigned char *data, int dataSize);  // Compute CRC32 hash code
 RLAPI unsigned int *ComputeMD5(unsigned char *data, int dataSize);   // Compute MD5 hash code, returns static int[4] (16 bytes)
 RLAPI unsigned int *ComputeSHA1(unsigned char *data, int dataSize);  // Compute SHA1 hash code, returns static int[5] (20 bytes)
 
 // Automation events functionality
-RLAPI AutomationEventList LoadAutomationEventList(const char *fileName); // Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS
+RLAPI AutomationEventList LoadAutomationEventList(const char *fileName); // Load automation events list from file, nullptr for empty list, capacity = MAX_AUTOMATION_EVENTS
 RLAPI void UnloadAutomationEventList(AutomationEventList list);   // Unload automation events list from file
 RLAPI bool ExportAutomationEventList(AutomationEventList list, const char *fileName); // Export automation events list as text file
 RLAPI void SetAutomationEventList(AutomationEventList *list);     // Set automation event list to record to
@@ -1455,7 +1455,7 @@ RLAPI int GetPixelDataSize(int width, int height, int format);              // G
 // Font loading/unloading functions
 RLAPI Font GetFontDefault();                                                            // Get the default Font
 RLAPI Font LoadFont(const char *fileName);                                                  // Load font from file into GPU memory (VRAM)
-RLAPI Font LoadFontEx(const char *fileName, int fontSize, const int *codepoints, int codepointCount); // Load font from file with extended parameters, use NULL for codepoints and 0 for codepointCount to load the default character set, font size is provided in pixels height
+RLAPI Font LoadFontEx(const char *fileName, int fontSize, const int *codepoints, int codepointCount); // Load font from file with extended parameters, use nullptr for codepoints and 0 for codepointCount to load the default character set, font size is provided in pixels height
 RLAPI Font LoadFontFromImage(Image image, Color key, int firstChar);                        // Load font from Image (XNA style)
 RLAPI Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int dataSize, int fontSize, const int *codepoints, int codepointCount); // Load font from memory buffer, fileType refers to extension: i.e. '.ttf'
 RLAPI bool IsFontValid(Font font);                                                          // Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
