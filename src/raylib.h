@@ -758,7 +758,7 @@ static constexpr auto MATERIAL_MAP_DIFFUSE = std::to_underlying(MaterialMapIndex
 static constexpr auto MATERIAL_MAP_SPECULAR = std::to_underlying(MaterialMapIndex::MATERIAL_MAP_METALNESS);
 
 // Shader location index
-enum ShaderLocationIndex {
+enum class ShaderLocationIndex {
     SHADER_LOC_VERTEX_POSITION = 0, // Shader location: vertex attribute: position
     SHADER_LOC_VERTEX_TEXCOORD01,   // Shader location: vertex attribute: texcoord01
     SHADER_LOC_VERTEX_TEXCOORD02,   // Shader location: vertex attribute: texcoord02
@@ -791,8 +791,8 @@ enum ShaderLocationIndex {
     SHADER_LOC_VERTEX_INSTANCE_TX   // Shader location: vertex attribute: instanceTransform
 };
 
-static constexpr auto SHADER_LOC_MAP_DIFFUSE = SHADER_LOC_MAP_ALBEDO;
-static constexpr auto SHADER_LOC_MAP_SPECULAR = SHADER_LOC_MAP_METALNESS;
+static constexpr auto SHADER_LOC_MAP_DIFFUSE = ShaderLocationIndex::SHADER_LOC_MAP_ALBEDO;
+static constexpr auto SHADER_LOC_MAP_SPECULAR = ShaderLocationIndex::SHADER_LOC_MAP_METALNESS;
 
 // Shader uniform data type
 enum ShaderUniformDataType {

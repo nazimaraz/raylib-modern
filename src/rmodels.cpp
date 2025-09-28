@@ -1469,7 +1469,7 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
     // Send required data to shader (matrices, values)
     //-----------------------------------------------------
     // Upload to shader material.colDiffuse
-    if (material.shader.locs[SHADER_LOC_COLOR_DIFFUSE] != -1)
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_DIFFUSE)] != -1)
     {
         float values[4] = {
             (float)material.maps[MATERIAL_MAP_DIFFUSE].color.r/255.0f,
@@ -1478,11 +1478,11 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
             (float)material.maps[MATERIAL_MAP_DIFFUSE].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[SHADER_LOC_COLOR_DIFFUSE], values, SHADER_UNIFORM_VEC4, 1);
+        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_DIFFUSE)], values, SHADER_UNIFORM_VEC4, 1);
     }
 
     // Upload to shader material.colSpecular (if location available)
-    if (material.shader.locs[SHADER_LOC_COLOR_SPECULAR] != -1)
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)] != -1)
     {
         float values[4] = {
             (float)material.maps[MATERIAL_MAP_SPECULAR].color.r/255.0f,
@@ -1491,7 +1491,7 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
             (float)material.maps[MATERIAL_MAP_SPECULAR].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[SHADER_LOC_COLOR_SPECULAR], values, SHADER_UNIFORM_VEC4, 1);
+        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)], values, SHADER_UNIFORM_VEC4, 1);
     }
 
     // Get a copy of current matrices to work with,
@@ -1505,8 +1505,8 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
     Matrix matProjection = rlGetMatrixProjection();
 
     // Upload view and projection matrices (if locations available)
-    if (material.shader.locs[SHADER_LOC_MATRIX_VIEW] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_VIEW], matView);
-    if (material.shader.locs[SHADER_LOC_MATRIX_PROJECTION] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_PROJECTION], matProjection);
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_VIEW)] != -1) rlSetUniformMatrix(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_VIEW)], matView);
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_PROJECTION)] != -1) rlSetUniformMatrix(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_PROJECTION)], matProjection);
 
     // Accumulate several model transformations:
     //    transform: model transformation provided (includes DrawModel() params combined with model.transform)
@@ -1514,19 +1514,19 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
     matModel = MatrixMultiply(transform, rlGetMatrixTransform());
 
     // Model transformation matrix is sent to shader uniform location: SHADER_LOC_MATRIX_MODEL
-    if (material.shader.locs[SHADER_LOC_MATRIX_MODEL] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_MODEL], matModel);
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_MODEL)] != -1) rlSetUniformMatrix(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_MODEL)], matModel);
 
     // Get model-view matrix
     matModelView = MatrixMultiply(matModel, matView);
 
     // Upload model normal matrix (if locations available)
-    if (material.shader.locs[SHADER_LOC_MATRIX_NORMAL] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_NORMAL], MatrixTranspose(MatrixInvert(matModel)));
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_NORMAL)] != -1) rlSetUniformMatrix(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_NORMAL)], MatrixTranspose(MatrixInvert(matModel)));
 
 #ifdef RL_SUPPORT_MESH_GPU_SKINNING
     // Upload Bone Transforms
-    if ((material.shader.locs[SHADER_LOC_BONE_MATRICES] != -1) && mesh.boneMatrices)
+    if ((material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_BONE_MATRICES)] != -1) && mesh.boneMatrices)
     {
-        rlSetUniformMatrices(material.shader.locs[SHADER_LOC_BONE_MATRICES], mesh.boneMatrices, mesh.boneCount);
+        rlSetUniformMatrices(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_BONE_MATRICES)], mesh.boneMatrices, mesh.boneCount);
     }
 #endif
     //-----------------------------------------------------
@@ -1545,7 +1545,7 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
                 (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_CUBEMAP))) rlEnableTextureCubemap(material.maps[i].texture.id);
             else rlEnableTexture(material.maps[i].texture.id);
 
-            rlSetUniform(material.shader.locs[SHADER_LOC_MAP_DIFFUSE + i], &i, SHADER_UNIFORM_INT, 1);
+            rlSetUniform(material.shader.locs[std::to_underlying(SHADER_LOC_MAP_DIFFUSE) + i], &i, SHADER_UNIFORM_INT, 1);
         }
     }
 
@@ -1557,72 +1557,72 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
     {
         // Bind mesh VBO data: vertex position (shader-location = 0)
         rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_POSITION]);
-        rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION], 3, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION]);
+        rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_POSITION)], 3, RL_FLOAT, 0, 0, 0);
+        rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_POSITION)]);
 
         // Bind mesh VBO data: vertex texcoords (shader-location = 1)
         rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD]);
-        rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01], 2, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01]);
+        rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TEXCOORD01)], 2, RL_FLOAT, 0, 0, 0);
+        rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TEXCOORD01)]);
 
-        if (material.shader.locs[SHADER_LOC_VERTEX_NORMAL] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_NORMAL)] != -1)
         {
             // Bind mesh VBO data: vertex normals (shader-location = 2)
             rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_NORMAL]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL], 3, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL]);
+            rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_NORMAL)], 3, RL_FLOAT, 0, 0, 0);
+            rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_NORMAL)]);
         }
 
         // Bind mesh VBO data: vertex colors (shader-location = 3, if available)
-        if (material.shader.locs[SHADER_LOC_VERTEX_COLOR] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)] != -1)
         {
             if (mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_COLOR] != 0)
             {
                 rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_COLOR]);
-                rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR], 4, RL_UNSIGNED_BYTE, 1, 0, 0);
-                rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
+                rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)], 4, RL_UNSIGNED_BYTE, 1, 0, 0);
+                rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)]);
             }
             else
             {
                 // Set default value for defined vertex attribute in shader but not provided by mesh
                 // WARNING: It could result in GPU undefined behaviour
                 float value[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-                rlSetVertexAttributeDefault(material.shader.locs[SHADER_LOC_VERTEX_COLOR], value, SHADER_ATTRIB_VEC4, 4);
-                rlDisableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
+                rlSetVertexAttributeDefault(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)], value, SHADER_ATTRIB_VEC4, 4);
+                rlDisableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)]);
             }
         }
 
         // Bind mesh VBO data: vertex tangents (shader-location = 4, if available)
-        if (material.shader.locs[SHADER_LOC_VERTEX_TANGENT] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TANGENT)] != -1)
         {
             rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_TANGENT]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT], 4, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT]);
+            rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TANGENT)], 4, RL_FLOAT, 0, 0, 0);
+            rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TANGENT)]);
         }
 
         // Bind mesh VBO data: vertex texcoords2 (shader-location = 5, if available)
-        if (material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TEXCOORD02)] != -1)
         {
             rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD2]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02], 2, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02]);
+            rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TEXCOORD02)], 2, RL_FLOAT, 0, 0, 0);
+            rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TEXCOORD02)]);
         }
 
 #ifdef RL_SUPPORT_MESH_GPU_SKINNING
         // Bind mesh VBO data: vertex bone ids (shader-location = 6, if available)
-        if (material.shader.locs[SHADER_LOC_VERTEX_BONEIDS] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEIDS)] != -1)
         {
             rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEIDS]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_BONEIDS], 4, RL_UNSIGNED_BYTE, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_BONEIDS]);
+            rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEIDS)], 4, RL_UNSIGNED_BYTE, 0, 0, 0);
+            rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEIDS)]);
         }
 
         // Bind mesh VBO data: vertex bone weights (shader-location = 7, if available)
-        if (material.shader.locs[SHADER_LOC_VERTEX_BONEWEIGHTS] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEWEIGHTS)] != -1)
         {
             rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEWEIGHTS]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_BONEWEIGHTS], 4, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_BONEWEIGHTS]);
+            rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEWEIGHTS)], 4, RL_FLOAT, 0, 0, 0);
+            rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEWEIGHTS)]);
         }
 #endif
 
@@ -1645,7 +1645,7 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
         }
 
         // Send combined model-view-projection matrix to shader
-        rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_MVP], matModelViewProjection);
+        rlSetUniformMatrix(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_MVP)], matModelViewProjection);
 
         // Draw mesh
         if (mesh.indices != nullptr) rlDrawVertexArrayElements(0, mesh.triangleCount*3, 0);
@@ -1696,7 +1696,7 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
     // Send required data to shader (matrices, values)
     //-----------------------------------------------------
     // Upload to shader material.colDiffuse
-    if (material.shader.locs[SHADER_LOC_COLOR_DIFFUSE] != -1)
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_DIFFUSE)] != -1)
     {
         float values[4] = {
             (float)material.maps[MATERIAL_MAP_DIFFUSE].color.r/255.0f,
@@ -1705,20 +1705,20 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
             (float)material.maps[MATERIAL_MAP_DIFFUSE].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[SHADER_LOC_COLOR_DIFFUSE], values, SHADER_UNIFORM_VEC4, 1);
+        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_DIFFUSE)], values, SHADER_UNIFORM_VEC4, 1);
     }
 
     // Upload to shader material.colSpecular (if location available)
-    if (material.shader.locs[SHADER_LOC_COLOR_SPECULAR] != -1)
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)] != -1)
     {
         float values[4] = {
-            (float)material.maps[SHADER_LOC_COLOR_SPECULAR].color.r/255.0f,
-            (float)material.maps[SHADER_LOC_COLOR_SPECULAR].color.g/255.0f,
-            (float)material.maps[SHADER_LOC_COLOR_SPECULAR].color.b/255.0f,
-            (float)material.maps[SHADER_LOC_COLOR_SPECULAR].color.a/255.0f
+            (float)material.maps[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)].color.r/255.0f,
+            (float)material.maps[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)].color.g/255.0f,
+            (float)material.maps[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)].color.b/255.0f,
+            (float)material.maps[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[SHADER_LOC_COLOR_SPECULAR], values, SHADER_UNIFORM_VEC4, 1);
+        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)], values, SHADER_UNIFORM_VEC4, 1);
     }
 
     // Get a copy of current matrices to work with,
@@ -1732,8 +1732,8 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
     Matrix matProjection = rlGetMatrixProjection();
 
     // Upload view and projection matrices (if locations available)
-    if (material.shader.locs[SHADER_LOC_MATRIX_VIEW] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_VIEW], matView);
-    if (material.shader.locs[SHADER_LOC_MATRIX_PROJECTION] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_PROJECTION], matProjection);
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_VIEW)] != -1) rlSetUniformMatrix(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_VIEW)], matView);
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_PROJECTION)] != -1) rlSetUniformMatrix(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_PROJECTION)], matProjection);
 
     // Create instances buffer
     instanceTransforms = (float16 *)RL_MALLOC(instances*sizeof(float16));
@@ -1753,9 +1753,9 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
     // Instances transformation matrices are sent to shader attribute location: SHADER_LOC_VERTEX_INSTANCE_TX
     for (unsigned int i = 0; i < 4; i++)
     {
-        rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_INSTANCE_TX] + i);
-        rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_INSTANCE_TX] + i, 4, RL_FLOAT, 0, sizeof(Matrix), i*sizeof(Vector4));
-        rlSetVertexAttributeDivisor(material.shader.locs[SHADER_LOC_VERTEX_INSTANCE_TX] + i, 1);
+        rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_INSTANCE_TX)] + i);
+        rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_INSTANCE_TX)] + i, 4, RL_FLOAT, 0, sizeof(Matrix), i*sizeof(Vector4));
+        rlSetVertexAttributeDivisor(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_INSTANCE_TX)] + i, 1);
     }
 
     rlDisableVertexBuffer();
@@ -1766,13 +1766,13 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
     matModelView = MatrixMultiply(rlGetMatrixTransform(), matView);
 
     // Upload model normal matrix (if locations available)
-    if (material.shader.locs[SHADER_LOC_MATRIX_NORMAL] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_NORMAL], MatrixTranspose(MatrixInvert(matModel)));
+    if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_NORMAL)] != -1) rlSetUniformMatrix(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_NORMAL)], MatrixTranspose(MatrixInvert(matModel)));
 
 #ifdef RL_SUPPORT_MESH_GPU_SKINNING
     // Upload Bone Transforms
-    if ((material.shader.locs[SHADER_LOC_BONE_MATRICES] != -1) && mesh.boneMatrices)
+    if ((material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_BONE_MATRICES)] != -1) && mesh.boneMatrices)
     {
-        rlSetUniformMatrices(material.shader.locs[SHADER_LOC_BONE_MATRICES], mesh.boneMatrices, mesh.boneCount);
+        rlSetUniformMatrices(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_BONE_MATRICES)], mesh.boneMatrices, mesh.boneCount);
     }
 #endif
 
@@ -1792,7 +1792,7 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
                 (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_CUBEMAP))) rlEnableTextureCubemap(material.maps[i].texture.id);
             else rlEnableTexture(material.maps[i].texture.id);
 
-            rlSetUniform(material.shader.locs[SHADER_LOC_MAP_DIFFUSE + i], &i, SHADER_UNIFORM_INT, 1);
+            rlSetUniform(material.shader.locs[std::to_underlying(SHADER_LOC_MAP_DIFFUSE) + i], &i, SHADER_UNIFORM_INT, 1);
         }
     }
 
@@ -1802,72 +1802,72 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
     {
         // Bind mesh VBO data: vertex position (shader-location = 0)
         rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_POSITION]);
-        rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION], 3, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION]);
+        rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_POSITION)], 3, RL_FLOAT, 0, 0, 0);
+        rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_POSITION)]);
 
         // Bind mesh VBO data: vertex texcoords (shader-location = 1)
         rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD]);
-        rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01], 2, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01]);
+        rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TEXCOORD01)], 2, RL_FLOAT, 0, 0, 0);
+        rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TEXCOORD01)]);
 
-        if (material.shader.locs[SHADER_LOC_VERTEX_NORMAL] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_NORMAL)] != -1)
         {
             // Bind mesh VBO data: vertex normals (shader-location = 2)
             rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_NORMAL]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL], 3, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL]);
+            rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_NORMAL)], 3, RL_FLOAT, 0, 0, 0);
+            rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_NORMAL)]);
         }
 
         // Bind mesh VBO data: vertex colors (shader-location = 3, if available)
-        if (material.shader.locs[SHADER_LOC_VERTEX_COLOR] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)] != -1)
         {
             if (mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_COLOR] != 0)
             {
                 rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_COLOR]);
-                rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR], 4, RL_UNSIGNED_BYTE, 1, 0, 0);
-                rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
+                rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)], 4, RL_UNSIGNED_BYTE, 1, 0, 0);
+                rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)]);
             }
             else
             {
                 // Set default value for unused attribute
                 // NOTE: Required when using default shader and no VAO support
                 float value[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-                rlSetVertexAttributeDefault(material.shader.locs[SHADER_LOC_VERTEX_COLOR], value, SHADER_ATTRIB_VEC4, 4);
-                rlDisableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
+                rlSetVertexAttributeDefault(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)], value, SHADER_ATTRIB_VEC4, 4);
+                rlDisableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)]);
             }
         }
 
         // Bind mesh VBO data: vertex tangents (shader-location = 4, if available)
-        if (material.shader.locs[SHADER_LOC_VERTEX_TANGENT] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TANGENT)] != -1)
         {
             rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_TANGENT]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT], 4, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT]);
+            rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TANGENT)], 4, RL_FLOAT, 0, 0, 0);
+            rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TANGENT)]);
         }
 
         // Bind mesh VBO data: vertex texcoords2 (shader-location = 5, if available)
-        if (material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TEXCOORD02)] != -1)
         {
             rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD2]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02], 2, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02]);
+            rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TEXCOORD02)], 2, RL_FLOAT, 0, 0, 0);
+            rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TEXCOORD02)]);
         }
 
 #ifdef RL_SUPPORT_MESH_GPU_SKINNING
         // Bind mesh VBO data: vertex bone ids (shader-location = 6, if available)
-        if (material.shader.locs[SHADER_LOC_VERTEX_BONEIDS] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEIDS)] != -1)
         {
             rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEIDS]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_BONEIDS], 4, RL_UNSIGNED_BYTE, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_BONEIDS]);
+            rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEIDS)], 4, RL_UNSIGNED_BYTE, 0, 0, 0);
+            rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEIDS)]);
         }
 
         // Bind mesh VBO data: vertex bone weights (shader-location = 7, if available)
-        if (material.shader.locs[SHADER_LOC_VERTEX_BONEWEIGHTS] != -1)
+        if (material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEWEIGHTS)] != -1)
         {
             rlEnableVertexBuffer(mesh.vboId[RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEWEIGHTS]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_BONEWEIGHTS], 4, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_BONEWEIGHTS]);
+            rlSetVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEWEIGHTS)], 4, RL_FLOAT, 0, 0, 0);
+            rlEnableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_BONEWEIGHTS)]);
         }
 #endif
 
@@ -1890,7 +1890,7 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
         }
 
         // Send combined model-view-projection matrix to shader
-        rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_MVP], matModelViewProjection);
+        rlSetUniformMatrix(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_MATRIX_MVP)], matModelViewProjection);
 
         // Draw mesh instanced
         if (mesh.indices != nullptr) rlDrawVertexArrayElementsInstanced(0, mesh.triangleCount*3, 0, instances);
@@ -3761,15 +3761,15 @@ void GenMeshTangents(Mesh *mesh)
     // Update vertex buffers if available
     if (mesh->vboId != nullptr)
     {
-        if (mesh->vboId[SHADER_LOC_VERTEX_TANGENT] != 0)
+        if (mesh->vboId[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TANGENT)] != 0)
         {
             // Update existing tangent vertex buffer
-            rlUpdateVertexBuffer(mesh->vboId[SHADER_LOC_VERTEX_TANGENT], mesh->tangents, mesh->vertexCount*4*sizeof(float), 0);
+            rlUpdateVertexBuffer(mesh->vboId[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TANGENT)], mesh->tangents, mesh->vertexCount*4*sizeof(float), 0);
         }
         else
         {
             // Create new tangent vertex buffer
-            mesh->vboId[SHADER_LOC_VERTEX_TANGENT] = rlLoadVertexBuffer(mesh->tangents, mesh->vertexCount*4*sizeof(float), false);
+            mesh->vboId[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_TANGENT)] = rlLoadVertexBuffer(mesh->tangents, mesh->vertexCount*4*sizeof(float), false);
         }
 
         // Set up vertex attributes for shader
