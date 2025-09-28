@@ -363,21 +363,15 @@
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
-#if (defined(__STDC__) && __STDC_VERSION__ >= 199901L) || (defined(_MSC_VER) && _MSC_VER >= 1800)
-    #include <stdbool.h>
-#elif !defined(__cplusplus) && !defined(bool) && !defined(RL_BOOL_TYPE)
-    // Boolean type
-typedef enum bool { false = 0, true = !false } bool;
-#endif
 
 #if !defined(RL_MATRIX_TYPE)
 // Matrix, 4x4 components, column major, OpenGL style, right handed
-typedef struct Matrix {
+struct Matrix {
     float m0, m4, m8, m12;      // Matrix first row (4 components)
     float m1, m5, m9, m13;      // Matrix second row (4 components)
     float m2, m6, m10, m14;     // Matrix third row (4 components)
     float m3, m7, m11, m15;     // Matrix fourth row (4 components)
-} Matrix;
+};
 #define RL_MATRIX_TYPE
 #endif
 
@@ -385,7 +379,7 @@ namespace raylib
 {
 
 // Dynamic vertex buffers (position + texcoords + colors + indices arrays)
-typedef struct rlVertexBuffer {
+struct rlVertexBuffer {
     int elementCount;           // Number of elements in the buffer (QUADS)
 
     float *vertices;            // Vertex position (XYZ - 3 components per vertex) (shader-location = 0)
@@ -400,13 +394,13 @@ typedef struct rlVertexBuffer {
 #endif
     unsigned int vaoId;         // OpenGL Vertex Array Object id
     unsigned int vboId[5];      // OpenGL Vertex Buffer Objects id (5 types of vertex data)
-} rlVertexBuffer;
+};
 
 // Draw call type
 // NOTE: Only texture changes register a new draw, other state-change-related elements are not
 // used at this moment (vaoId, shaderId, matrices), raylib just forces a batch draw call if any
 // of those state-change happens (this is done in core module)
-typedef struct rlDrawCall {
+struct rlDrawCall {
     int mode;                   // Drawing mode: LINES, TRIANGLES, QUADS
     int vertexCount;            // Number of vertex of the draw
     int vertexAlignment;        // Number of vertex required for index alignment (LINES, TRIANGLES)
@@ -416,10 +410,10 @@ typedef struct rlDrawCall {
 
     //Matrix projection;        // Projection matrix for this draw -> Using RLGL.projection by default
     //Matrix modelview;         // Modelview matrix for this draw -> Using RLGL.modelview by default
-} rlDrawCall;
+};
 
 // rlRenderBatch type
-typedef struct rlRenderBatch {
+struct rlRenderBatch {
     int bufferCount;            // Number of vertex buffers (multi-buffering support)
     int currentBuffer;          // Current buffer tracking in case of multi-buffering
     rlVertexBuffer *vertexBuffer; // Dynamic buffer(s) for vertex data
@@ -427,21 +421,21 @@ typedef struct rlRenderBatch {
     rlDrawCall *draws;          // Draw calls array, depends on textureId
     int drawCounter;            // Draw calls counter
     float currentDepth;         // Current depth value for next draw
-} rlRenderBatch;
+};
 
 // OpenGL version
-typedef enum {
+enum rlGlVersion {
     RL_OPENGL_11 = 1,           // OpenGL 1.1
     RL_OPENGL_21,               // OpenGL 2.1 (GLSL 120)
     RL_OPENGL_33,               // OpenGL 3.3 (GLSL 330)
     RL_OPENGL_43,               // OpenGL 4.3 (using GLSL 330)
     RL_OPENGL_ES_20,            // OpenGL ES 2.0 (GLSL 100)
     RL_OPENGL_ES_30             // OpenGL ES 3.0 (GLSL 300 es)
-} rlGlVersion;
+};
 
 // Trace log level
 // NOTE: Organized by priority level
-typedef enum {
+enum rlTraceLogLevel {
     RL_LOG_ALL = 0,             // Display all logs
     RL_LOG_TRACE,               // Trace logging, intended for internal use only
     RL_LOG_DEBUG,               // Debug logging, used for internal debugging, it should be disabled on release builds
@@ -450,11 +444,11 @@ typedef enum {
     RL_LOG_ERROR,               // Error logging, used on unrecoverable failures
     RL_LOG_FATAL,               // Fatal logging, used to abort program: exit(EXIT_FAILURE)
     RL_LOG_NONE                 // Disable logging
-} rlTraceLogLevel;
+};
 
 // Texture pixel formats
 // NOTE: Support depends on OpenGL version
-typedef enum {
+enum rlPixelFormat {
     RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE = 1,     // 8 bit per pixel (no alpha)
     RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA,        // 8*2 bpp (2 channels)
     RL_PIXELFORMAT_UNCOMPRESSED_R5G6B5,            // 16 bpp
@@ -479,22 +473,22 @@ typedef enum {
     RL_PIXELFORMAT_COMPRESSED_PVRT_RGBA,           // 4 bpp
     RL_PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA,       // 8 bpp
     RL_PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA        // 2 bpp
-} rlPixelFormat;
+};
 
 // Texture parameters: filter mode
 // NOTE 1: Filtering considers mipmaps if available in the texture
 // NOTE 2: Filter is accordingly set for minification and magnification
-typedef enum {
+enum rlTextureFilter {
     RL_TEXTURE_FILTER_POINT = 0,        // No filter, just pixel approximation
     RL_TEXTURE_FILTER_BILINEAR,         // Linear filtering
     RL_TEXTURE_FILTER_TRILINEAR,        // Trilinear filtering (linear with mipmaps)
     RL_TEXTURE_FILTER_ANISOTROPIC_4X,   // Anisotropic filtering 4x
     RL_TEXTURE_FILTER_ANISOTROPIC_8X,   // Anisotropic filtering 8x
     RL_TEXTURE_FILTER_ANISOTROPIC_16X,  // Anisotropic filtering 16x
-} rlTextureFilter;
+};
 
 // Color blending modes (pre-defined)
-typedef enum {
+enum rlBlendMode {
     RL_BLEND_ALPHA = 0,                 // Blend textures considering alpha (default)
     RL_BLEND_ADDITIVE,                  // Blend textures adding colors
     RL_BLEND_MULTIPLIED,                // Blend textures multiplying colors
@@ -503,10 +497,10 @@ typedef enum {
     RL_BLEND_ALPHA_PREMULTIPLY,         // Blend premultiplied textures considering alpha
     RL_BLEND_CUSTOM,                    // Blend textures using custom src/dst factors (use rlSetBlendFactors())
     RL_BLEND_CUSTOM_SEPARATE            // Blend textures using custom src/dst factors (use rlSetBlendFactorsSeparate())
-} rlBlendMode;
+};
 
 // Shader location point type
-typedef enum {
+enum rlShaderLocationIndex {
     RL_SHADER_LOC_VERTEX_POSITION = 0,  // Shader location: vertex attribute: position
     RL_SHADER_LOC_VERTEX_TEXCOORD01,    // Shader location: vertex attribute: texcoord01
     RL_SHADER_LOC_VERTEX_TEXCOORD02,    // Shader location: vertex attribute: texcoord02
@@ -533,13 +527,13 @@ typedef enum {
     RL_SHADER_LOC_MAP_IRRADIANCE,       // Shader location: samplerCube texture: irradiance
     RL_SHADER_LOC_MAP_PREFILTER,        // Shader location: samplerCube texture: prefilter
     RL_SHADER_LOC_MAP_BRDF              // Shader location: sampler2d texture: brdf
-} rlShaderLocationIndex;
+};
 
 #define RL_SHADER_LOC_MAP_DIFFUSE       RL_SHADER_LOC_MAP_ALBEDO
 #define RL_SHADER_LOC_MAP_SPECULAR      RL_SHADER_LOC_MAP_METALNESS
 
 // Shader uniform data type
-typedef enum {
+enum rlShaderUniformDataType {
     RL_SHADER_UNIFORM_FLOAT = 0,        // Shader uniform type: float
     RL_SHADER_UNIFORM_VEC2,             // Shader uniform type: vec2 (2 float)
     RL_SHADER_UNIFORM_VEC3,             // Shader uniform type: vec3 (3 float)
@@ -553,19 +547,19 @@ typedef enum {
     RL_SHADER_UNIFORM_UIVEC3,           // Shader uniform type: uivec3 (3 unsigned int)
     RL_SHADER_UNIFORM_UIVEC4,           // Shader uniform type: uivec4 (4 unsigned int)
     RL_SHADER_UNIFORM_SAMPLER2D         // Shader uniform type: sampler2d
-} rlShaderUniformDataType;
+};
 
 // Shader attribute data types
-typedef enum {
+enum rlShaderAttributeDataType {
     RL_SHADER_ATTRIB_FLOAT = 0,         // Shader attribute type: float
     RL_SHADER_ATTRIB_VEC2,              // Shader attribute type: vec2 (2 float)
     RL_SHADER_ATTRIB_VEC3,              // Shader attribute type: vec3 (3 float)
     RL_SHADER_ATTRIB_VEC4               // Shader attribute type: vec4 (4 float)
-} rlShaderAttributeDataType;
+};
 
 // Framebuffer attachment type
 // NOTE: By default up to 8 color channels defined, but it can be more
-typedef enum {
+enum rlFramebufferAttachType {
     RL_ATTACHMENT_COLOR_CHANNEL0 = 0,       // Framebuffer attachment type: color 0
     RL_ATTACHMENT_COLOR_CHANNEL1 = 1,       // Framebuffer attachment type: color 1
     RL_ATTACHMENT_COLOR_CHANNEL2 = 2,       // Framebuffer attachment type: color 2
@@ -576,10 +570,10 @@ typedef enum {
     RL_ATTACHMENT_COLOR_CHANNEL7 = 7,       // Framebuffer attachment type: color 7
     RL_ATTACHMENT_DEPTH = 100,              // Framebuffer attachment type: depth
     RL_ATTACHMENT_STENCIL = 200,            // Framebuffer attachment type: stencil
-} rlFramebufferAttachType;
+};
 
 // Framebuffer texture attachment type
-typedef enum {
+enum rlFramebufferAttachTextureType {
     RL_ATTACHMENT_CUBEMAP_POSITIVE_X = 0,   // Framebuffer texture attachment type: cubemap, +X side
     RL_ATTACHMENT_CUBEMAP_NEGATIVE_X = 1,   // Framebuffer texture attachment type: cubemap, -X side
     RL_ATTACHMENT_CUBEMAP_POSITIVE_Y = 2,   // Framebuffer texture attachment type: cubemap, +Y side
@@ -588,13 +582,13 @@ typedef enum {
     RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z = 5,   // Framebuffer texture attachment type: cubemap, -Z side
     RL_ATTACHMENT_TEXTURE2D = 100,          // Framebuffer texture attachment type: texture2d
     RL_ATTACHMENT_RENDERBUFFER = 200,       // Framebuffer texture attachment type: renderbuffer
-} rlFramebufferAttachTextureType;
+};
 
 // Face culling mode
-typedef enum {
+enum rlCullMode {
     RL_CULL_FACE_FRONT = 0,
     RL_CULL_FACE_BACK
-} rlCullMode;
+};
 
 //------------------------------------------------------------------------------------
 // Functions Declaration - Matrix operations
@@ -890,9 +884,9 @@ RLAPI void rlLoadDrawQuad(void);     // Load and draw a quad
     // It seems OpenGL ES 2.0 instancing entry points are not defined on Raspberry Pi
     // provided headers (despite being defined in official Khronos GLES2 headers)
     #if defined(PLATFORM_DRM)
-    typedef void (GL_APIENTRYP PFNGLDRAWARRAYSINSTANCEDEXTPROC) (GLenum mode, GLint start, GLsizei count, GLsizei primcount);
-    typedef void (GL_APIENTRYP PFNGLDRAWELEMENTSINSTANCEDEXTPROC) (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei primcount);
-    typedef void (GL_APIENTRYP PFNGLVERTEXATTRIBDIVISOREXTPROC) (GLuint index, GLuint divisor);
+    using GL_APIENTRYP = void (PFNGLDRAWARRAYSINSTANCEDEXTPROC) (GLenum mode, GLint start, GLsizei count, GLsizei primcount);
+    using GL_APIENTRYP = void (PFNGLDRAWELEMENTSINSTANCEDEXTPROC) (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei primcount);
+    using GL_APIENTRYP = void (PFNGLVERTEXATTRIBDIVISOREXTPROC) (GLuint index, GLuint divisor);
     #endif
 #endif
 
@@ -1053,9 +1047,9 @@ namespace raylib
 //----------------------------------------------------------------------------------
 #if defined(GRAPHICS_API_OPENGL_33) || defined(GRAPHICS_API_OPENGL_ES2)
 
-typedef void *(*rlglLoadProc)(const char *name);   // OpenGL extension functions loader signature (same as GLADloadproc)
+using rlglLoadProc = void *(*)(const char *name);   // OpenGL extension functions loader signature (same as GLADloadproc)
 
-typedef struct rlglData {
+struct rlglData {
     rlRenderBatch *currentBatch;            // Current render batch
     rlRenderBatch defaultBatch;             // Default internal render batch
 
@@ -1129,7 +1123,7 @@ typedef struct rlglData {
         int maxDepthBits;                   // Maximum bits for depth component
 
     } ExtSupported;     // Extensions supported flags
-} rlglData;
+};
 
 #endif  // GRAPHICS_API_OPENGL_33 || GRAPHICS_API_OPENGL_ES2
 
@@ -1171,7 +1165,7 @@ static int rlGetPixelDataSize(int width, int height, int format);   // Get pixel
 static Matrix rlMatrixIdentity(void);                       // Get identity matrix
 #if defined(GRAPHICS_API_OPENGL_33) || defined(GRAPHICS_API_OPENGL_ES2)
 // Auxiliar matrix math functions
-typedef struct rl_float16 { float v[16]; } rl_float16;
+struct rl_float16 { float v[16]; };
 static rl_float16 rlMatrixToFloatV(Matrix mat);             // Get float array of matrix data
 #define rlMatrixToFloat(mat) (rlMatrixToFloatV(mat).v)      // Get float vector for Matrix
 static Matrix rlMatrixMultiply(Matrix left, Matrix right);  // Multiply two matrices

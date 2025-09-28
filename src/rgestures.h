@@ -58,25 +58,19 @@
 // Types and Structures Definition
 // NOTE: Below types are required for standalone usage
 //----------------------------------------------------------------------------------
-// Boolean type
-#if (defined(__STDC__) && __STDC_VERSION__ >= 199901L) || (defined(_MSC_VER) && _MSC_VER >= 1800)
-    #include <stdbool.h>
-#elif !defined(__cplusplus) && !defined(bool) && !defined(RL_BOOL_TYPE)
-    typedef enum bool { false = 0, true = !false } bool;
-#endif
 
 #if !defined(RL_VECTOR2_TYPE)
 // Vector2 type
-typedef struct Vector2 {
+struct Vector2 {
     float x;
     float y;
-} Vector2;
+};
 #endif
 
 #if defined(RGESTURES_STANDALONE)
 // Gestures type
 // NOTE: It could be used as flags to enable only some gestures
-typedef enum {
+enum Gesture {
     GESTURE_NONE        = 0,
     GESTURE_TAP         = 1,
     GESTURE_DOUBLETAP   = 2,
@@ -88,26 +82,26 @@ typedef enum {
     GESTURE_SWIPE_DOWN  = 128,
     GESTURE_PINCH_IN    = 256,
     GESTURE_PINCH_OUT   = 512
-} Gesture;
+};
 #endif
 
 namespace raylib
 {
 
-typedef enum {
+enum TouchAction {
     TOUCH_ACTION_UP = 0,
     TOUCH_ACTION_DOWN,
     TOUCH_ACTION_MOVE,
     TOUCH_ACTION_CANCEL
-} TouchAction;
+};
 
 // Gesture event
-typedef struct {
+struct GestureEvent {
     int touchAction;
     int pointCount;
     int pointId[MAX_TOUCH_POINTS];
     Vector2 position[MAX_TOUCH_POINTS];
-} GestureEvent;
+};
 
 //----------------------------------------------------------------------------------
 // Global Variables Definition
@@ -194,7 +188,7 @@ float GetGesturePinchAngle(void);                       // Get gesture pinch ang
 //----------------------------------------------------------------------------------
 
 // Gestures module state context [136 bytes]
-typedef struct {
+struct GesturesData {
     unsigned int current;               // Current detected gesture
     unsigned int enabledFlags;          // Enabled gestures flags
     struct {
@@ -229,7 +223,7 @@ typedef struct {
         float angle;                    // PINCH angle (relative to x-axis)
         float distance;                 // PINCH displacement distance (normalized [0..1])
     } Pinch;
-} GesturesData;
+};
 
 //----------------------------------------------------------------------------------
 // Global Variables Definition

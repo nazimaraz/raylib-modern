@@ -96,48 +96,48 @@ static constexpr auto EPSILON = 1e-06;
 //----------------------------------------------------------------------------------
 #if !defined(RL_VECTOR2_TYPE)
 // Vector2 type
-typedef struct Vector2 {
+struct Vector2 {
     float x;
     float y;
-} Vector2;
+};
 #define RL_VECTOR2_TYPE
 #endif
 
 #if !defined(RL_VECTOR3_TYPE)
 // Vector3 type
-typedef struct Vector3 {
+struct Vector3 {
     float x;
     float y;
     float z;
-} Vector3;
+};
 #define RL_VECTOR3_TYPE
 #endif
 
 #if !defined(RL_VECTOR4_TYPE)
 // Vector4 type
-typedef struct Vector4 {
+struct Vector4 {
     float x;
     float y;
     float z;
     float w;
-} Vector4;
+};
 #define RL_VECTOR4_TYPE
 #endif
 
 #if !defined(RL_QUATERNION_TYPE)
 // Quaternion type
-typedef Vector4 Quaternion;
+using Quaternion = Vector4;
 #define RL_QUATERNION_TYPE
 #endif
 
 #if !defined(RL_MATRIX_TYPE)
 // Matrix type (OpenGL style 4x4 - right handed, column major)
-typedef struct Matrix {
+struct Matrix {
     float m0, m4, m8, m12;      // Matrix first row (4 components)
     float m1, m5, m9, m13;      // Matrix second row (4 components)
     float m2, m6, m10, m14;     // Matrix third row (4 components)
     float m3, m7, m11, m15;     // Matrix fourth row (4 components)
-} Matrix;
+};
 #define RL_MATRIX_TYPE
 #endif
 
