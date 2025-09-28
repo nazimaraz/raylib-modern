@@ -72,15 +72,15 @@ namespace raylib
     #elif defined(_WIN32) && defined(USE_LIBTYPE_SHARED)
         #define RMAPI __declspec(dllimport)         // We are using raylib as a Win32 shared library (.dll)
     #else
-        #define RMAPI extern inline // Provide external definition
+        #define RMAPI static constexpr // Provide external definition
     #endif
 #elif defined(RAYMATH_STATIC_INLINE)
-    #define RMAPI static inline // Functions may be inlined, no external out-of-line definition
+    #define RMAPI static constexpr // Functions may be inlined, no external out-of-line definition
 #else
     #if defined(__TINYC__)
-        #define RMAPI static inline // plain inline not supported by tinycc (See issue #435)
+        #define RMAPI static constepxr // plain inline not supported by tinycc (See issue #435)
     #else
-        #define RMAPI inline        // Functions may be inlined or external definition used
+        #define RMAPI constexpr        // Functions may be inlined or external definition used
     #endif
 #endif
 
@@ -201,10 +201,6 @@ RMAPI float Wrap(float value, float min, float max)
 // Check whether two given floats are almost equal
 RMAPI int FloatEquals(float x, float y)
 {
-#if !defined(EPSILON)
-    #define EPSILON 0.000001f
-#endif
-
     int result = (fabsf(x - y)) <= (EPSILON*fmaxf(1.0f, fmaxf(fabsf(x), fabsf(y))));
 
     return result;
@@ -215,7 +211,7 @@ RMAPI int FloatEquals(float x, float y)
 //----------------------------------------------------------------------------------
 
 // Vector with components value 0.0f
-RMAPI Vector2 Vector2Zero(void)
+RMAPI Vector2 Vector2Zero()
 {
     Vector2 result = { 0.0f, 0.0f };
 
@@ -223,7 +219,7 @@ RMAPI Vector2 Vector2Zero(void)
 }
 
 // Vector with components value 1.0f
-RMAPI Vector2 Vector2One(void)
+RMAPI Vector2 Vector2One()
 {
     Vector2 result = { 1.0f, 1.0f };
 
@@ -570,7 +566,7 @@ RMAPI Vector2 Vector2Refract(Vector2 v, Vector2 n, float r)
 //----------------------------------------------------------------------------------
 
 // Vector with components value 0.0f
-RMAPI Vector3 Vector3Zero(void)
+RMAPI Vector3 Vector3Zero()
 {
     Vector3 result = { 0.0f, 0.0f, 0.0f };
 
@@ -578,7 +574,7 @@ RMAPI Vector3 Vector3Zero(void)
 }
 
 // Vector with components value 1.0f
-RMAPI Vector3 Vector3One(void)
+RMAPI Vector3 Vector3One()
 {
     Vector3 result = { 1.0f, 1.0f, 1.0f };
 
@@ -1127,7 +1123,7 @@ RMAPI float3 Vector3ToFloatV(Vector3 v)
     return buffer;
 }
 
-static constexpr float* Vector3ToFloat(const Vector3& vec)
+RMAPI float* Vector3ToFloat(const Vector3& vec)
 {
     return Vector3ToFloatV(vec).v;
 }
@@ -1225,13 +1221,13 @@ RMAPI Vector3 Vector3Refract(Vector3 v, Vector3 n, float r)
 // Module Functions Definition - Vector4 math
 //----------------------------------------------------------------------------------
 
-RMAPI Vector4 Vector4Zero(void)
+RMAPI Vector4 Vector4Zero()
 {
     Vector4 result = { 0.0f, 0.0f, 0.0f, 0.0f };
     return result;
 }
 
-RMAPI Vector4 Vector4One(void)
+RMAPI Vector4 Vector4One()
 {
     Vector4 result = { 1.0f, 1.0f, 1.0f, 1.0f };
     return result;
@@ -1569,7 +1565,7 @@ RMAPI Matrix MatrixInvert(Matrix mat)
 }
 
 // Get identity matrix
-RMAPI Matrix MatrixIdentity(void)
+RMAPI Matrix MatrixIdentity()
 {
     Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
                       0.0f, 1.0f, 0.0f, 0.0f,
@@ -2019,7 +2015,7 @@ RMAPI float16 MatrixToFloatV(Matrix mat)
 }
 
 // Get float vector for Matrix
-static constexpr float* MatrixToFloat(const Matrix& mat)
+RMAPI float* MatrixToFloat(const Matrix& mat)
 {
     return MatrixToFloatV(mat).v;
 }
@@ -2061,7 +2057,7 @@ RMAPI Quaternion QuaternionSubtractValue(Quaternion q, float sub)
 }
 
 // Get identity quaternion
-RMAPI Quaternion QuaternionIdentity(void)
+RMAPI Quaternion QuaternionIdentity()
 {
     Quaternion result = { 0.0f, 0.0f, 0.0f, 1.0f };
 
