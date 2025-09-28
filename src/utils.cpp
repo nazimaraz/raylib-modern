@@ -64,7 +64,7 @@
 namespace raylib
 {
 
-static int logTypeLevel = LOG_INFO;                 // Minimum log type level
+static auto logTypeLevel = TraceLogLevel::LOG_INFO;                 // Minimum log type level
 
 static TraceLogCallback traceLog = nullptr;            // TraceLog callback function pointer
 static LoadFileDataCallback loadFileData = nullptr;    // LoadFileData callback function pointer
@@ -103,11 +103,11 @@ static int android_close(void *cookie);
 // Module Functions Definition
 //----------------------------------------------------------------------------------
 // Set the current threshold (minimum) log level
-void SetTraceLogLevel(int logType) { logTypeLevel = logType; }
+void SetTraceLogLevel(const TraceLogLevel logType) { logTypeLevel = logType; }
 
-// Show trace log messages (LOG_INFO, LOG_WARNING, LOG_ERROR, LOG_DEBUG)
-void TraceLog(int logType, const char *text, ...)
+void TraceLog(const int logLevel, const char *text, ...)
 {
+    const auto logType = static_cast<TraceLogLevel>(logLevel);
 #if defined(SUPPORT_TRACELOG)
     // Message has level below current threshold, don't emit
     if (logType < logTypeLevel) return;
@@ -125,6 +125,8 @@ void TraceLog(int logType, const char *text, ...)
 #if defined(PLATFORM_ANDROID)
     switch (logType)
     {
+        using enum TraceLogLevel;
+
         case LOG_TRACE: __android_log_vprint(ANDROID_LOG_VERBOSE, "raylib", text, args); break;
         case LOG_DEBUG: __android_log_vprint(ANDROID_LOG_DEBUG, "raylib", text, args); break;
         case LOG_INFO: __android_log_vprint(ANDROID_LOG_INFO, "raylib", text, args); break;
@@ -138,6 +140,8 @@ void TraceLog(int logType, const char *text, ...)
 
     switch (logType)
     {
+        using enum TraceLogLevel;
+
         case LOG_TRACE: strcpy(buffer, "TRACE: "); break;
         case LOG_DEBUG: strcpy(buffer, "DEBUG: "); break;
         case LOG_INFO: strcpy(buffer, "INFO: "); break;
@@ -156,7 +160,67 @@ void TraceLog(int logType, const char *text, ...)
 
     va_end(args);
 
-    if (logType == LOG_FATAL) exit(EXIT_FAILURE);  // If fatal logging, exit program
+    if (logType == TraceLogLevel::LOG_FATAL) exit(EXIT_FAILURE);  // If fatal logging, exit program
+
+#endif  // SUPPORT_TRACELOG
+}
+
+// Show trace log messages (LOG_INFO, LOG_WARNING, LOG_ERROR, LOG_DEBUG)
+void TraceLog(const TraceLogLevel logType, const char *text, ...)
+{
+#if defined(SUPPORT_TRACELOG)
+    // Message has level below current threshold, don't emit
+    if (logType < logTypeLevel) return;
+
+    va_list args;
+    va_start(args, text);
+
+    if (traceLog)
+    {
+        traceLog(logType, text, args);
+        va_end(args);
+        return;
+    }
+
+#if defined(PLATFORM_ANDROID)
+    switch (logType)
+    {
+        using enum TraceLogLevel;
+
+        case LOG_TRACE: __android_log_vprint(ANDROID_LOG_VERBOSE, "raylib", text, args); break;
+        case LOG_DEBUG: __android_log_vprint(ANDROID_LOG_DEBUG, "raylib", text, args); break;
+        case LOG_INFO: __android_log_vprint(ANDROID_LOG_INFO, "raylib", text, args); break;
+        case LOG_WARNING: __android_log_vprint(ANDROID_LOG_WARN, "raylib", text, args); break;
+        case LOG_ERROR: __android_log_vprint(ANDROID_LOG_ERROR, "raylib", text, args); break;
+        case LOG_FATAL: __android_log_vprint(ANDROID_LOG_FATAL, "raylib", text, args); break;
+        default: break;
+    }
+#else
+    char buffer[MAX_TRACELOG_MSG_LENGTH] = { 0 };
+
+    switch (logType)
+    {
+        using enum TraceLogLevel;
+
+        case LOG_TRACE: strcpy(buffer, "TRACE: "); break;
+        case LOG_DEBUG: strcpy(buffer, "DEBUG: "); break;
+        case LOG_INFO: strcpy(buffer, "INFO: "); break;
+        case LOG_WARNING: strcpy(buffer, "WARNING: "); break;
+        case LOG_ERROR: strcpy(buffer, "ERROR: "); break;
+        case LOG_FATAL: strcpy(buffer, "FATAL: "); break;
+        default: break;
+    }
+
+    unsigned int textSize = (unsigned int)strlen(text);
+    memcpy(buffer + strlen(buffer), text, (textSize < (MAX_TRACELOG_MSG_LENGTH - 12))? textSize : (MAX_TRACELOG_MSG_LENGTH - 12));
+    strcat(buffer, "\n");
+    vprintf(buffer, args);
+    fflush(stdout);
+#endif
+
+    va_end(args);
+
+    if (logType == TraceLogLevel::LOG_FATAL) exit(EXIT_FAILURE);  // If fatal logging, exit program
 
 #endif  // SUPPORT_TRACELOG
 }
@@ -219,7 +283,7 @@ unsigned char *LoadFileData(const char *fileName, int *dataSize)
                     // dataSize is unified along raylib as a 'int' type, so, for file-sizes > INT_MAX (2147483647 bytes) we have a limitation
                     if (count > 2147483647)
                     {
-                        TRACELOG(LOG_WARNING, "FILEIO: [%s] File is bigger than 2147483647 bytes, avoid using LoadFileData()", fileName);
+                        TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] File is bigger than 2147483647 bytes, avoid using LoadFileData()", fileName);
 
                         RL_FREE(data);
                         data = nullptr;
@@ -228,22 +292,22 @@ unsigned char *LoadFileData(const char *fileName, int *dataSize)
                     {
                         *dataSize = (int)count;
 
-                        if ((*dataSize) != size) TRACELOG(LOG_WARNING, "FILEIO: [%s] File partially loaded (%i bytes out of %i)", fileName, dataSize, count);
-                        else TRACELOG(LOG_INFO, "FILEIO: [%s] File loaded successfully", fileName);
+                        if ((*dataSize) != size) TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] File partially loaded (%i bytes out of %i)", fileName, dataSize, count);
+                        else TRACELOG(TraceLogLevel::LOG_INFO, "FILEIO: [%s] File loaded successfully", fileName);
                     }
                 }
-                else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to allocated memory for file reading", fileName);
+                else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to allocated memory for file reading", fileName);
             }
-            else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to read file", fileName);
+            else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to read file", fileName);
 
             fclose(file);
         }
-        else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open file", fileName);
+        else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to open file", fileName);
 #else
-    TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
 #endif
     }
-    else TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
+    else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: File name provided is not valid");
 
     return data;
 }
@@ -274,19 +338,19 @@ bool SaveFileData(const char *fileName, void *data, int dataSize)
             // and expects a size_t input value but as dataSize is limited to INT_MAX (2147483647 bytes), there shouldn't be a problem
             int count = (int)fwrite(data, sizeof(unsigned char), dataSize, file);
 
-            if (count == 0) TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to write file", fileName);
-            else if (count != dataSize) TRACELOG(LOG_WARNING, "FILEIO: [%s] File partially written", fileName);
-            else TRACELOG(LOG_INFO, "FILEIO: [%s] File saved successfully", fileName);
+            if (count == 0) TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to write file", fileName);
+            else if (count != dataSize) TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] File partially written", fileName);
+            else TRACELOG(TraceLogLevel::LOG_INFO, "FILEIO: [%s] File saved successfully", fileName);
 
             int result = fclose(file);
             if (result == 0) success = true;
         }
-        else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open file", fileName);
+        else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to open file", fileName);
 #else
-    TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
 #endif
     }
-    else TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
+    else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: File name provided is not valid");
 
     return success;
 }
@@ -339,8 +403,8 @@ bool ExportDataAsCode(const unsigned char *data, int dataSize, const char *fileN
 
     RL_FREE(txtData);
 
-    if (success != 0) TRACELOG(LOG_INFO, "FILEIO: [%s] Data as code exported successfully", fileName);
-    else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to export data as code", fileName);
+    if (success != 0) TRACELOG(TraceLogLevel::LOG_INFO, "FILEIO: [%s] Data as code exported successfully", fileName);
+    else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to export data as code", fileName);
 
     return success;
 }
@@ -385,20 +449,20 @@ char *LoadFileText(const char *fileName)
                     // Zero-terminate the string
                     text[count] = '\0';
 
-                    TRACELOG(LOG_INFO, "FILEIO: [%s] Text file loaded successfully", fileName);
+                    TRACELOG(TraceLogLevel::LOG_INFO, "FILEIO: [%s] Text file loaded successfully", fileName);
                 }
-                else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to allocated memory for file reading", fileName);
+                else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to allocated memory for file reading", fileName);
             }
-            else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to read text file", fileName);
+            else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to read text file", fileName);
 
             fclose(file);
         }
-        else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open text file", fileName);
+        else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to open text file", fileName);
 #else
-    TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
 #endif
     }
-    else TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
+    else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: File name provided is not valid");
 
     return text;
 }
@@ -427,18 +491,18 @@ bool SaveFileText(const char *fileName, const char *text)
         {
             int count = fprintf(file, "%s", text);
 
-            if (count < 0) TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to write text file", fileName);
-            else TRACELOG(LOG_INFO, "FILEIO: [%s] Text file saved successfully", fileName);
+            if (count < 0) TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to write text file", fileName);
+            else TRACELOG(TraceLogLevel::LOG_INFO, "FILEIO: [%s] Text file saved successfully", fileName);
 
             int result = fclose(file);
             if (result == 0) success = true;
         }
-        else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open text file", fileName);
+        else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to open text file", fileName);
 #else
-    TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
 #endif
     }
-    else TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
+    else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: File name provided is not valid");
 
     return success;
 }
@@ -497,7 +561,7 @@ static int android_read(void *cookie, char *data, int dataSize)
 
 static int android_write(void *cookie, const char *data, int dataSize)
 {
-    TRACELOG(LOG_WARNING, "ANDROID: Failed to provide write access to APK");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "ANDROID: Failed to provide write access to APK");
 
     return EACCES;
 }

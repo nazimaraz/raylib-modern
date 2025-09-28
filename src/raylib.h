@@ -543,7 +543,7 @@ enum ConfigFlags {
 
 // Trace log level
 // NOTE: Organized by priority level
-enum TraceLogLevel {
+enum class TraceLogLevel {
     LOG_ALL = 0,        // Display all logs
     LOG_TRACE,          // Trace logging, intended for internal use only
     LOG_DEBUG,          // Debug logging, used for internal debugging, it should be disabled on release builds
@@ -937,7 +937,7 @@ enum NPatchLayout {
 
 // Callbacks to hook some internal functions
 // WARNING: These callbacks are intended for advanced users
-using TraceLogCallback = void (*)(int logLevel, const char *text, va_list args);  // Logging: Redirect trace log messages
+using TraceLogCallback = void (*)(TraceLogLevel logLevel, const char *text, va_list args);  // Logging: Redirect trace log messages
 using LoadFileDataCallback = unsigned char *(*)(const char *fileName, int *dataSize);    // FileIO: Load binary data
 using SaveFileDataCallback = bool (*)(const char *fileName, void *data, int dataSize);   // FileIO: Save binary data
 using LoadFileTextCallback = char *(*)(const char *fileName);            // FileIO: Load text data
@@ -1086,6 +1086,7 @@ RLAPI void OpenURL(const char *url);                              // Open URL wi
 // NOTE: Following functions implemented in module [utils]
 //------------------------------------------------------------------
 RLAPI void TraceLog(int logLevel, const char *text, ...);         // Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
+RLAPI void TraceLog(TraceLogLevel logLevel, const char *text, ...);         // Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
 RLAPI void SetTraceLogLevel(int logLevel);                        // Set the current threshold (minimum) log level
 RLAPI void *MemAlloc(unsigned int size);                          // Internal memory allocator
 RLAPI void *MemRealloc(void *ptr, unsigned int size);             // Internal memory reallocator

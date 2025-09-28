@@ -374,7 +374,7 @@ void RestoreWindow(void)
 // Set window configuration state using flags
 void SetWindowState(unsigned int flags)
 {
-    if (!CORE.Window.ready) TRACELOG(LOG_WARNING, "WINDOW: SetWindowState does nothing before window initialization, Use \"SetConfigFlags\" instead");
+    if (!CORE.Window.ready) TRACELOG(TraceLogLevel::LOG_WARNING, "WINDOW: SetWindowState does nothing before window initialization, Use \"SetConfigFlags\" instead");
 
     CORE.Window.flags |= flags;
 
@@ -423,11 +423,11 @@ void SetWindowState(unsigned int flags)
     }
     if (flags & FLAG_WINDOW_TRANSPARENT)
     {
-        TRACELOG(LOG_WARNING, "WINDOW: Framebuffer transparency can only be configured before window initialization");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "WINDOW: Framebuffer transparency can only be configured before window initialization");
     }
     if (flags & FLAG_WINDOW_HIGHDPI)
     {
-        TRACELOG(LOG_WARNING, "WINDOW: High DPI can only be configured before window initialization");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "WINDOW: High DPI can only be configured before window initialization");
     }
     if (flags & FLAG_WINDOW_MOUSE_PASSTHROUGH)
     {
@@ -443,7 +443,7 @@ void SetWindowState(unsigned int flags)
     }
     if (flags & FLAG_INTERLACED_HINT)
     {
-        TRACELOG(LOG_WARNING, "RPI: Interlaced mode can only be configured before window initialization");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "RPI: Interlaced mode can only be configured before window initialization");
     }
 }
 
@@ -502,11 +502,11 @@ void ClearWindowState(unsigned int flags)
     }
     if (flags & FLAG_WINDOW_TRANSPARENT)
     {
-        TRACELOG(LOG_WARNING, "WINDOW: Framebuffer transparency can only be configured before window initialization");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "WINDOW: Framebuffer transparency can only be configured before window initialization");
     }
     if (flags & FLAG_WINDOW_HIGHDPI)
     {
-        TRACELOG(LOG_WARNING, "WINDOW: High DPI can only be configured before window initialization");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "WINDOW: High DPI can only be configured before window initialization");
     }
     if (flags & FLAG_WINDOW_MOUSE_PASSTHROUGH)
     {
@@ -522,7 +522,7 @@ void ClearWindowState(unsigned int flags)
     }
     if (flags & FLAG_INTERLACED_HINT)
     {
-        TRACELOG(LOG_WARNING, "RPI: Interlaced mode can only be configured before window initialization");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "RPI: Interlaced mode can only be configured before window initialization");
     }
 }
 
@@ -805,10 +805,10 @@ Image GetClipboardImage(void)
     int height = 0;
     fileData  = (void *)Win32GetClipboardImageData(&width, &height, &dataSize);
 
-    if (fileData == nullptr) TRACELOG(LOG_WARNING, "Clipboard image: Couldn't get clipboard data");
+    if (fileData == nullptr) TRACELOG(TraceLogLevel::LOG_WARNING, "Clipboard image: Couldn't get clipboard data");
     else image = LoadImageFromMemory(".bmp", fileData, dataSize);
 #else
-    TRACELOG(LOG_WARNING, "Clipboard image: PLATFORM_DESKTOP_RGFW doesn't implement GetClipboardImage() for this OS");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "Clipboard image: PLATFORM_DESKTOP_RGFW doesn't implement GetClipboardImage() for this OS");
 #endif
 #endif // SUPPORT_CLIPBOARD_IMAGE
 
@@ -873,7 +873,7 @@ double GetTime(void)
 void OpenURL(const char *url)
 {
     // Security check to (partially) avoid malicious code on target platform
-    if (strchr(url, '\'') != nullptr) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
+    if (strchr(url, '\'') != nullptr) TRACELOG(TraceLogLevel::LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
     else
     {
         // TODO: Open URL implementation
@@ -887,14 +887,14 @@ void OpenURL(const char *url)
 // Set internal gamepad mappings
 int SetGamepadMappings(const char *mappings)
 {
-    TRACELOG(LOG_WARNING, "SetGamepadMappings() unsupported on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetGamepadMappings() unsupported on target platform");
     return 0;
 }
 
 // Set gamepad vibration
 void SetGamepadVibration(int gamepad, float leftMotor, float rightMotor, float duration)
 {
-    TRACELOG(LOG_WARNING, "SetGamepadVibration() unsupported on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetGamepadVibration() unsupported on target platform");
 }
 
 // Set mouse position XY
@@ -914,7 +914,7 @@ void SetMouseCursor(int cursor)
 // Get physical key name.
 const char *GetKeyName(int key)
 {
-    TRACELOG(LOG_WARNING, "GetKeyName() unsupported on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetKeyName() unsupported on target platform");
 
     return "";
 }
@@ -1029,7 +1029,7 @@ void PollInputEvents(void)
 
                         CORE.Window.dropFileCount++;
                     }
-                    else TRACELOG(LOG_WARNING, "FILE: Maximum drag and drop files at once is limited to 1024 files!");
+                    else TRACELOG(TraceLogLevel::LOG_WARNING, "FILE: Maximum drag and drop files at once is limited to 1024 files!");
                 }
             } break;
 
@@ -1355,7 +1355,7 @@ int InitPlatform(void)
     }
     else
     {
-        TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphics device");
+        TRACELOG(TraceLogLevel::LOG_FATAL, "PLATFORM: Failed to initialize graphics device");
         return -1;
     }
     //----------------------------------------------------------------------------
@@ -1368,11 +1368,11 @@ int InitPlatform(void)
     CORE.Window.currentFbo.width = CORE.Window.render.width;
     CORE.Window.currentFbo.height = CORE.Window.render.height;
 
-    TRACELOG(LOG_INFO, "DISPLAY: Device initialized successfully");
-    TRACELOG(LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
-    TRACELOG(LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
-    TRACELOG(LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
-    TRACELOG(LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
+    TRACELOG(TraceLogLevel::LOG_INFO, "DISPLAY: Device initialized successfully");
+    TRACELOG(TraceLogLevel::LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
+    TRACELOG(TraceLogLevel::LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
+    TRACELOG(TraceLogLevel::LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
+    TRACELOG(TraceLogLevel::LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
 
     // Load OpenGL extensions
     // NOTE: GL procedures address loader is required to load extensions
@@ -1391,20 +1391,20 @@ int InitPlatform(void)
     //----------------------------------------------------------------------------
 
 #if defined(RGFW_WAYLAND)
-    if (RGFW_useWaylandBool) TRACELOG(LOG_INFO, "PLATFORM: DESKTOP (RGFW - Wayland): Initialized successfully");
-    else TRACELOG(LOG_INFO, "PLATFORM: DESKTOP (RGFW - X11 (fallback)): Initialized successfully");
+    if (RGFW_useWaylandBool) TRACELOG(TraceLogLevel::LOG_INFO, "PLATFORM: DESKTOP (RGFW - Wayland): Initialized successfully");
+    else TRACELOG(TraceLogLevel::LOG_INFO, "PLATFORM: DESKTOP (RGFW - X11 (fallback)): Initialized successfully");
 #elif defined(RGFW_X11)
     #if defined(__APPLE__)
-        TRACELOG(LOG_INFO, "PLATFORM: DESKTOP (RGFW - X11 (MacOS)): Initialized successfully");
+        TRACELOG(TraceLogLevel::LOG_INFO, "PLATFORM: DESKTOP (RGFW - X11 (MacOS)): Initialized successfully");
     #else
-        TRACELOG(LOG_INFO, "PLATFORM: DESKTOP (RGFW - X11): Initialized successfully");
+        TRACELOG(TraceLogLevel::LOG_INFO, "PLATFORM: DESKTOP (RGFW - X11): Initialized successfully");
     #endif
 #elif defined (RGFW_WINDOWS)
-    TRACELOG(LOG_INFO, "PLATFORM: DESKTOP (RGFW - Win32): Initialized successfully");
+    TRACELOG(TraceLogLevel::LOG_INFO, "PLATFORM: DESKTOP (RGFW - Win32): Initialized successfully");
 #elif defined(RGFW_WASM)
-    TRACELOG(LOG_INFO, "PLATFORM: DESKTOP (RGFW - WASMs): Initialized successfully");
+    TRACELOG(TraceLogLevel::LOG_INFO, "PLATFORM: DESKTOP (RGFW - WASMs): Initialized successfully");
 #elif defined(RGFW_MACOS)
-    TRACELOG(LOG_INFO, "PLATFORM: DESKTOP (RGFW - MacOS): Initialized successfully");
+    TRACELOG(TraceLogLevel::LOG_INFO, "PLATFORM: DESKTOP (RGFW - MacOS): Initialized successfully");
 #endif
 
     return 0;

@@ -232,7 +232,7 @@ static size_t AToWLen(const char *a)
 static void AToWCopy(wchar_t *outPtr, size_t outLen, const char *a)
 {
     int size = MultiByteToWideChar(CP_UTF8, 0, a, -1, outPtr, (int)outLen);
-    if (size != outLen) TRACELOG(LOG_WARNING, "WIN32: Convert %zu UTF-8 chars to WCHAR but converted %zu", outLen, size);
+    if (size != outLen) TRACELOG(TraceLogLevel::LOG_WARNING, "WIN32: Convert %zu UTF-8 chars to WCHAR but converted %zu", outLen, size);
 }
 
 static bool DecoratedFromStyle(DWORD style)
@@ -291,7 +291,7 @@ static bool IsMinimized2(HWND hwnd)
 {
     bool isIconic = IsIconic(hwnd);
     bool styleMinimized = !!(WS_MINIMIZE & GetWindowLongPtrW(hwnd, GWL_STYLE));
-    if (isIconic != styleMinimized) TRACELOG(LOG_WARNING, "IsIconic(%d) != WS_MINIMIZED(%d)", isIconic, styleMinimized);
+    if (isIconic != styleMinimized) TRACELOG(TraceLogLevel::LOG_WARNING, "IsIconic(%d) != WS_MINIMIZED(%d)", isIconic, styleMinimized);
 
     return isIconic;
 }
@@ -299,7 +299,7 @@ static bool IsMinimized2(HWND hwnd)
 // Enforces that the actual window/platform state is in sync with raylib's flags
 static void CheckFlags(const char *context, HWND hwnd, DWORD flags, DWORD expectedStyle, DWORD styleCheckMask)
 {
-    //TRACELOG(LOG_INFO, "Verifying Flags 0x%x Style 0x%x Mask 0x%x", flags, expectedStyle & styleCheckMask, styleCheckMask);
+    //TRACELOG(TraceLogLevel::LOG_INFO, "Verifying Flags 0x%x Style 0x%x Mask 0x%x", flags, expectedStyle & styleCheckMask, styleCheckMask);
 
     DWORD styleFromFlags = MakeWindowStyle(flags);
     if ((styleFromFlags & styleCheckMask) != (expectedStyle & styleCheckMask))
@@ -418,7 +418,7 @@ static bool UpdateWindowSize(UpdateWindowKind kind, HWND hwnd, int width, int he
     SIZE actual = GetClientSize(hwnd);
     if ((actual.cx == desired.cx) || (actual.cy == desired.cy)) return false;
 
-    TRACELOG(LOG_INFO, "Restoring client size from [%dx%d] to [%dx%d] (dpi:%lu dpiScaling:%d app:%ix%i)",
+    TRACELOG(TraceLogLevel::LOG_INFO, "Restoring client size from [%dx%d] to [%dx%d] (dpi:%lu dpiScaling:%d app:%ix%i)",
         actual.cx, actual.cy, desired.cx, desired.cy, dpi, dpiScaling, width, height);
 
     SIZE windowSize = CalcWindowSize(dpi, desired, MakeWindowStyle(flags));
@@ -493,7 +493,7 @@ static void *WglGetProcAddress(const char *procname)
         proc = (void *)GetProcAddress(glModule, procname);
 
         //if (proc == nullptr) TRACELOG(LOG_ERROR, "GL: GetProcAddress() failed to get %s [%p], error=%u", procname, proc, GetLastError());
-        //else TRACELOG(LOG_INFO, "GL: Found entry point for %s [%p]", procname, proc);
+        //else TRACELOG(TraceLogLevel::LOG_INFO, "GL: Found entry point for %s [%p]", procname, proc);
     }
 
     return proc;
@@ -821,7 +821,7 @@ bool WindowShouldClose(void)
 // Toggle fullscreen mode
 void ToggleFullscreen(void)
 {
-    TRACELOG(LOG_WARNING, "ToggleFullscreen not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "ToggleFullscreen not implemented");
 }
 
 // Toggle borderless windowed mode
@@ -880,13 +880,13 @@ void ClearWindowState(unsigned int flags)
 // Set icon for window
 void SetWindowIcon(Image image)
 {
-    TRACELOG(LOG_WARNING, "SetWindowIcon not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowIcon not implemented");
 }
 
 // Set icon for window
 void SetWindowIcons(Image *images, int count)
 {
-    TRACELOG(LOG_WARNING, "SetWindowIcons not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowIcons not implemented");
 }
 
 void SetWindowTitle(const char *title)
@@ -903,19 +903,19 @@ void SetWindowTitle(const char *title)
 // Set window position on screen (windowed mode)
 void SetWindowPosition(int x, int y)
 {
-    TRACELOG(LOG_WARNING, "SetWindowPosition not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowPosition not implemented");
 }
 
 // Set monitor for the current window
 void SetWindowMonitor(int monitor)
 {
-    TRACELOG(LOG_WARNING, "SetWindowMonitor not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowMonitor not implemented");
 }
 
 // Set window minimum dimensions (FLAG_WINDOW_RESIZABLE)
 void SetWindowMinSize(int width, int height)
 {
-    TRACELOG(LOG_WARNING, "SetWindowMinSize not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowMinSize not implemented");
 
     CORE.Window.screenMin.width = width;
     CORE.Window.screenMin.height = height;
@@ -924,7 +924,7 @@ void SetWindowMinSize(int width, int height)
 // Set window maximum dimensions (FLAG_WINDOW_RESIZABLE)
 void SetWindowMaxSize(int width, int height)
 {
-    TRACELOG(LOG_WARNING, "SetWindowMaxSize not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowMaxSize not implemented");
 
     CORE.Window.screenMax.width = width;
     CORE.Window.screenMax.height = height;
@@ -933,19 +933,19 @@ void SetWindowMaxSize(int width, int height)
 // Set window dimensions
 void SetWindowSize(int width, int height)
 {
-    TRACELOG(LOG_WARNING, "SetWindowSize not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowSize not implemented");
 }
 
 // Set window opacity, value opacity is between 0.0 and 1.0
 void SetWindowOpacity(float opacity)
 {
-    TRACELOG(LOG_WARNING, "SetWindowOpacity not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowOpacity not implemented");
 }
 
 // Set window focused
 void SetWindowFocused(void)
 {
-    TRACELOG(LOG_WARNING, "SetWindowFocused not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowFocused not implemented");
 }
 
 // Get native window handle
@@ -984,56 +984,56 @@ int GetCurrentMonitor(void)
 // Get selected monitor position
 Vector2 GetMonitorPosition(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPosition not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorPosition not implemented");
     return (Vector2){ 0, 0 };
 }
 
 // Get selected monitor width (currently used by monitor)
 int GetMonitorWidth(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorWidth not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorWidth not implemented");
     return 0;
 }
 
 // Get selected monitor height (currently used by monitor)
 int GetMonitorHeight(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorHeight not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorHeight not implemented");
     return 0;
 }
 
 // Get selected monitor physical width in millimetres
 int GetMonitorPhysicalWidth(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPhysicalWidth not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorPhysicalWidth not implemented");
     return 0;
 }
 
 // Get selected monitor physical height in millimetres
 int GetMonitorPhysicalHeight(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPhysicalHeight not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorPhysicalHeight not implemented");
     return 0;
 }
 
 // Get selected monitor refresh rate
 int GetMonitorRefreshRate(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorRefreshRate not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorRefreshRate not implemented");
     return 0;
 }
 
 // Get the human-readable, UTF-8 encoded name of the selected monitor
 const char *GetMonitorName(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorName not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorName not implemented");
     return 0;
 }
 
 // Get window position XY on monitor
 Vector2 GetWindowPosition(void)
 {
-    TRACELOG(LOG_WARNING, "GetWindowPosition not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetWindowPosition not implemented");
     return (Vector2){ 0, 0 };
 }
 
@@ -1047,13 +1047,13 @@ Vector2 GetWindowScaleDPI(void)
 // Set clipboard text content
 void SetClipboardText(const char *text)
 {
-    TRACELOG(LOG_WARNING, "SetClipboardText not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetClipboardText not implemented");
 }
 
 // Get clipboard text content
 const char *GetClipboardText(void)
 {
-    TRACELOG(LOG_WARNING, "GetClipboardText not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetClipboardText not implemented");
     return nullptr;
 }
 
@@ -1062,7 +1062,7 @@ Image GetClipboardImage(void)
 {
     Image image = { 0 };
     
-    TRACELOG(LOG_WARNING, "GetClipboardText not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetClipboardText not implemented");
 
     return image;
 }
@@ -1086,7 +1086,7 @@ void HideCursor(void)
 // Enables cursor (unlock cursor)
 void EnableCursor(void)
 {
-    if (platform.cursorEnabled) TRACELOG(LOG_INFO, "EnableCursor: already enabled");
+    if (platform.cursorEnabled) TRACELOG(TraceLogLevel::LOG_INFO, "EnableCursor: already enabled");
     else
     {
         if (!ClipCursor(nullptr)) TRACELOG(LOG_ERROR, "%s failed, error=%lu", "ClipCursor", GetLastError());
@@ -1101,7 +1101,7 @@ void EnableCursor(void)
 
         ShowCursor();
         platform.cursorEnabled = true;
-        TRACELOG(LOG_INFO, "EnableCursor: enabled");
+        TRACELOG(TraceLogLevel::LOG_INFO, "EnableCursor: enabled");
     }
 }
 
@@ -1127,7 +1127,7 @@ void DisableCursor(void)
         LONG width = clientRect.right - clientRect.left;
         LONG height = clientRect.bottom - clientRect.top;
 
-        TRACELOG(LOG_INFO, "ClipCursor client %d,%d %d,%d (topleft %d,%d)",
+        TRACELOG(TraceLogLevel::LOG_INFO, "ClipCursor client %d,%d %d,%d (topleft %d,%d)",
             clientRect.left, clientRect.top, clientRect.right, clientRect.bottom, topleft.x, topleft.y);
             
         LONG centerX = topleft.x + width/2;
@@ -1140,9 +1140,9 @@ void DisableCursor(void)
         HideCursor();
 
         platform.cursorEnabled = false;
-        TRACELOG(LOG_INFO, "DisableCursor: disabled");
+        TRACELOG(TraceLogLevel::LOG_INFO, "DisableCursor: disabled");
     }
-    else TRACELOG(LOG_INFO, "DisableCursor: already disabled");
+    else TRACELOG(TraceLogLevel::LOG_INFO, "DisableCursor: already disabled");
 }
 
 // Swap back buffer with front buffer (screen drawing)
@@ -1173,10 +1173,10 @@ double GetTime(void)
 void OpenURL(const char *url)
 {
     // Security check to (partially) avoid malicious code on target platform
-    if (strchr(url, '\'') != nullptr) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
+    if (strchr(url, '\'') != nullptr) TRACELOG(TraceLogLevel::LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
     else
     {
-        TRACELOG(LOG_WARNING, "OpenURL not implemented");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "OpenURL not implemented");
     }
 }
 
@@ -1187,7 +1187,7 @@ void OpenURL(const char *url)
 // Set internal gamepad mappings
 int SetGamepadMappings(const char *mappings)
 {
-    TRACELOG(LOG_WARNING, "SetGamepadMappings not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetGamepadMappings not implemented");
 
     return -1;
 }
@@ -1195,7 +1195,7 @@ int SetGamepadMappings(const char *mappings)
 // Set gamepad vibration
 void SetGamepadVibration(int gamepad, float leftMotor, float rightMotor, float duration)
 {
-    TRACELOG(LOG_WARNING, "SetGamepadVibration not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetGamepadVibration not implemented");
 }
 
 // Set mouse position XY
@@ -1205,9 +1205,9 @@ void SetMousePosition(int x, int y)
     {
         CORE.Input.Mouse.currentPosition = (Vector2){ (float)x, (float)y };
         CORE.Input.Mouse.previousPosition = CORE.Input.Mouse.currentPosition;
-        TRACELOG(LOG_WARNING, "SetMousePosition not implemented");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetMousePosition not implemented");
     }
-    else TRACELOG(LOG_WARNING, "INPUT: MOUSE: Cursor not enabled");
+    else TRACELOG(TraceLogLevel::LOG_WARNING, "INPUT: MOUSE: Cursor not enabled");
 }
 
 // Set mouse cursor
@@ -1224,7 +1224,7 @@ void SetMouseCursor(int cursor)
 // Get physical key name
 const char *GetKeyName(int key)
 {
-    TRACELOG(LOG_WARNING, "GetKeyName not implemented");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetKeyName not implemented");
     return nullptr;
 }
 
@@ -1385,13 +1385,13 @@ int InitPlatform(void)
     // NOTE: SetProcessDpiAwarenessContext() requires Windows 10, version 1703 and shcore.lib linkage
     if (IsWindows10Version1703OrGreaterWin32())
     {
-        TRACELOG(LOG_INFO, "DpiAware: >=Win10Creators");
+        TRACELOG(TraceLogLevel::LOG_INFO, "DpiAware: >=Win10Creators");
         if (!SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)) 
             TRACELOG(LOG_ERROR, "%s failed, error %u", "SetProcessDpiAwarenessContext", GetLastError());
     }
     else
     {
-        TRACELOG(LOG_INFO, "DpiAware: <Win10Creators");
+        TRACELOG(TraceLogLevel::LOG_INFO, "DpiAware: <Win10Creators");
         HRESULT hr = SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
         if (hr < 0) TRACELOG(LOG_ERROR, "%s failed, hresult=0x%lx", "SetProcessDpiAwareness", (DWORD)hr);
     }
@@ -1418,14 +1418,14 @@ int InitPlatform(void)
     {
         MONITORINFO info;
         info.cbSize = sizeof(info);
-        if (!GetMonitorInfoW(monitor, &info)) TRACELOG(LOG_WARNING, "%s failed, error: %u", "GetMonitorInfo", GetLastError());
+        if (!GetMonitorInfoW(monitor, &info)) TRACELOG(TraceLogLevel::LOG_WARNING, "%s failed, error: %u", "GetMonitorInfo", GetLastError());
         else
         {
             CORE.Window.display.width = info.rcMonitor.right - info.rcMonitor.left;
             CORE.Window.display.height = info.rcMonitor.bottom - info.rcMonitor.top;
         }
     }
-    else TRACELOG(LOG_WARNING, "MonitorFromPoint, error: %s", GetLastError()); 
+    else TRACELOG(TraceLogLevel::LOG_WARNING, "MonitorFromPoint, error: %s", GetLastError());
 */
     
     // Create window
@@ -1467,11 +1467,11 @@ int InitPlatform(void)
 
     CORE.Window.currentFbo.width = CORE.Window.render.width;
     CORE.Window.currentFbo.height = CORE.Window.render.height;
-    TRACELOG(LOG_INFO, "DISPLAY: Device initialized successfully");
-    TRACELOG(LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
-    TRACELOG(LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
-    TRACELOG(LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
-    TRACELOG(LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
+    TRACELOG(TraceLogLevel::LOG_INFO, "DISPLAY: Device initialized successfully");
+    TRACELOG(TraceLogLevel::LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
+    TRACELOG(TraceLogLevel::LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
+    TRACELOG(TraceLogLevel::LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
+    TRACELOG(TraceLogLevel::LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
 
     CORE.Storage.basePath = GetWorkingDirectory();
 
@@ -1485,7 +1485,7 @@ int InitPlatform(void)
     // TODO: Enable cursor? -> Use default value as 0
     platform.cursorEnabled = true;
 
-    TRACELOG(LOG_INFO, "PLATFORM: DESKTOP: WIN32: Initialized successfully");
+    TRACELOG(TraceLogLevel::LOG_INFO, "PLATFORM: DESKTOP: WIN32: Initialized successfully");
     
     return 0;
 }
@@ -1496,7 +1496,7 @@ void ClosePlatform(void)
     if (platform.hwnd)
     {
         int result = DestroyWindow(platform.hwnd);
-        if (result == 0) TRACELOG(LOG_WARNING, "WIN32: Error on window destroy: %u", GetLastError());
+        if (result == 0) TRACELOG(TraceLogLevel::LOG_WARNING, "WIN32: Error on window destroy: %u", GetLastError());
         platform.hwnd = nullptr;
     }
 }
@@ -1558,7 +1558,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             {
                 // TODO: Enforce min/max size
             } 
-            else TRACELOG(LOG_WARNING, "WINDOW: Trying to resize a non-resizable window");
+            else TRACELOG(TraceLogLevel::LOG_WARNING, "WINDOW: Trying to resize a non-resizable window");
             
             result = TRUE;
         } break;
@@ -1576,13 +1576,13 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
                 
                 if (oldSize.cx != newSize.cx || oldSize.cy != newSize.cy)
                 {
-                    TRACELOG(LOG_INFO, "resize from style change: %dx%d to %dx%d", oldSize.cx, oldSize.cy, newSize.cx, newSize.cy);
+                    TRACELOG(TraceLogLevel::LOG_INFO, "resize from style change: %dx%d to %dx%d", oldSize.cx, oldSize.cy, newSize.cx, newSize.cy);
                     
                     if (CORE.Window.flags & FLAG_WINDOW_MAXIMIZED)
                     {
                         // looks like windows will automatically "unminimize" a window
                         // if a style changes modifies it's size
-                        TRACELOG(LOG_INFO, "style change modifed window size, removing maximized flag");
+                        TRACELOG(TraceLogLevel::LOG_INFO, "style change modifed window size, removing maximized flag");
                         deferredFlags->clear |= FLAG_WINDOW_MAXIMIZED;
                     }
                 }
@@ -1604,7 +1604,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             Mized mized = MIZED_NONE;
             bool isIconic = IsIconic(hwnd);
             bool styleMinimized = !!(WS_MINIMIZE & GetWindowLongPtrW(hwnd, GWL_STYLE));
-            if (isIconic != styleMinimized) TRACELOG(LOG_WARNING, "IsIconic(%d) != WS_MINIMIZED(%d)", isIconic, styleMinimized);
+            if (isIconic != styleMinimized) TRACELOG(TraceLogLevel::LOG_WARNING, "IsIconic(%d) != WS_MINIMIZED(%d)", isIconic, styleMinimized);
             
             if (isIconic) mized = MIZED_MIN;
             else
@@ -1739,7 +1739,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             {
                 case XBUTTON1: HandleMouseButton(MOUSE_BUTTON_SIDE, 1); break;
                 case XBUTTON2: HandleMouseButton(MOUSE_BUTTON_EXTRA, 1); break;
-                default: TRACELOG(LOG_WARNING, "TODO: handle ex mouse button DOWN wparam=%u", HIWORD(wparam)); break;
+                default: TRACELOG(TraceLogLevel::LOG_WARNING, "TODO: handle ex mouse button DOWN wparam=%u", HIWORD(wparam)); break;
             }
         } break;
         case WM_XBUTTONUP:
@@ -1748,7 +1748,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             {
                 case XBUTTON1: HandleMouseButton(MOUSE_BUTTON_SIDE, 0); break;
                 case XBUTTON2: HandleMouseButton(MOUSE_BUTTON_EXTRA, 0); break;
-                default: TRACELOG(LOG_WARNING, "TODO: handle ex mouse button UP   wparam=%u", HIWORD(wparam)); break;
+                default: TRACELOG(TraceLogLevel::LOG_WARNING, "TODO: handle ex mouse button UP   wparam=%u", HIWORD(wparam)); break;
             }
         } break;
         case WM_MOUSEWHEEL: CORE.Input.Mouse.currentWheelMove.y = ((float)GET_WHEEL_DELTA_WPARAM(wparam))/WHEEL_DELTA; break;
@@ -1791,7 +1791,7 @@ static void HandleKey(WPARAM wparam, LPARAM lparam, char state)
     
     // TODO: Use scancode?
     //BYTE scancode = lparam >> 16;
-    //TRACELOG(LOG_INFO, "KEY key=%d vk=%lu scan=%u = %u", key, wparam, scancode, state);
+    //TRACELOG(TraceLogLevel::LOG_INFO, "KEY key=%d vk=%lu scan=%u = %u", key, wparam, scancode, state);
     
     if (key != KEY_NULL)
     {
@@ -1799,7 +1799,7 @@ static void HandleKey(WPARAM wparam, LPARAM lparam, char state)
 
         if ((key == KEY_ESCAPE) && (state == 1)) CORE.Window.shouldClose = 1;
     }
-    else TRACELOG(LOG_WARNING, "INPUT: Unknown (or currently unhandled) virtual keycode %d (0x%x)", wparam, wparam);
+    else TRACELOG(TraceLogLevel::LOG_WARNING, "INPUT: Unknown (or currently unhandled) virtual keycode %d (0x%x)", wparam, wparam);
 
     // TODO: Add key to the queue as well?
 }
@@ -1905,7 +1905,7 @@ static unsigned SanitizeFlags(SanitizeFlagsKind kind, unsigned flags)
 {
     if ((flags & FLAG_WINDOW_MAXIMIZED) && (flags & FLAG_BORDERLESS_WINDOWED_MODE))
     {
-        TRACELOG(LOG_INFO, "borderless windows mode is overriding maximized");
+        TRACELOG(TraceLogLevel::LOG_INFO, "borderless windows mode is overriding maximized");
         flags &= ~FLAG_WINDOW_MAXIMIZED;
     }
 
@@ -1915,7 +1915,7 @@ static unsigned SanitizeFlags(SanitizeFlagsKind kind, unsigned flags)
         case SANITIZE_FLAGS_NORMAL:
             if ((flags & FLAG_MSAA_4X_HINT) && (!(CORE.Window.flags & FLAG_MSAA_4X_HINT)))
             {
-                TRACELOG(LOG_WARNING, "WINDOW: MSAA can only be configured before window initialization");
+                TRACELOG(TraceLogLevel::LOG_WARNING, "WINDOW: MSAA can only be configured before window initialization");
                 flags &= ~FLAG_MSAA_4X_HINT;
             }
             break;

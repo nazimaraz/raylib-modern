@@ -260,7 +260,7 @@ void ToggleFullscreen(void)
 
             int width, height;
             emscripten_get_canvas_element_size("#canvas", &width, &height);
-            TRACELOG(LOG_WARNING, "Emscripten: Enter fullscreen: Canvas size: %i x %i", width, height);
+            TRACELOG(TraceLogLevel::LOG_WARNING, "Emscripten: Enter fullscreen: Canvas size: %i x %i", width, height);
 
             CORE.Window.fullscreen = true;          // Toggle fullscreen flag
             CORE.Window.flags |= FLAG_FULLSCREEN_MODE;
@@ -272,7 +272,7 @@ void ToggleFullscreen(void)
 
             int width, height;
             emscripten_get_canvas_element_size("#canvas", &width, &height);
-            TRACELOG(LOG_WARNING, "Emscripten: Exit fullscreen: Canvas size: %i x %i", width, height);
+            TRACELOG(TraceLogLevel::LOG_WARNING, "Emscripten: Exit fullscreen: Canvas size: %i x %i", width, height);
 
             CORE.Window.fullscreen = false;          // Toggle fullscreen flag
             CORE.Window.flags &= ~FLAG_FULLSCREEN_MODE;
@@ -346,7 +346,7 @@ void MaximizeWindow(void)
 // Set window state: minimized
 void MinimizeWindow(void)
 {
-    TRACELOG(LOG_WARNING, "MinimizeWindow() not available on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "MinimizeWindow() not available on target platform");
 }
 
 // Restore window from being minimized/maximized
@@ -363,7 +363,7 @@ void RestoreWindow(void)
 // Set window configuration state using flags
 void SetWindowState(unsigned int flags)
 {
-    if (!CORE.Window.ready) TRACELOG(LOG_WARNING, "WINDOW: SetWindowState does nothing before window initialization, Use \"SetConfigFlags\" instead");
+    if (!CORE.Window.ready) TRACELOG(TraceLogLevel::LOG_WARNING, "WINDOW: SetWindowState does nothing before window initialization, Use \"SetConfigFlags\" instead");
 
     // Check previous state and requested state to apply required changes
     // NOTE: In most cases the functions already change the flags internally
@@ -371,7 +371,7 @@ void SetWindowState(unsigned int flags)
     // State change: FLAG_VSYNC_HINT
     if ((flags & FLAG_VSYNC_HINT) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_VSYNC_HINT) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_VSYNC_HINT) not available on target platform");
     }
 
     // State change: FLAG_BORDERLESS_WINDOWED_MODE
@@ -412,19 +412,19 @@ void SetWindowState(unsigned int flags)
     // State change: FLAG_WINDOW_UNDECORATED
     if ((flags & FLAG_WINDOW_UNDECORATED) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_WINDOW_UNDECORATED) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_WINDOW_UNDECORATED) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_HIDDEN
     if ((flags & FLAG_WINDOW_HIDDEN) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_WINDOW_HIDDEN) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_WINDOW_HIDDEN) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_MINIMIZED
     if ((flags & FLAG_WINDOW_MINIMIZED) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_WINDOW_MINIMIZED) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_WINDOW_MINIMIZED) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_MAXIMIZED
@@ -447,19 +447,19 @@ void SetWindowState(unsigned int flags)
     // State change: FLAG_WINDOW_UNFOCUSED
     if ((flags & FLAG_WINDOW_UNFOCUSED) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_WINDOW_UNFOCUSED) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_WINDOW_UNFOCUSED) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_TOPMOST
     if ((flags & FLAG_WINDOW_TOPMOST) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_WINDOW_TOPMOST) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_WINDOW_TOPMOST) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_ALWAYS_RUN
     if ((flags & FLAG_WINDOW_ALWAYS_RUN) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_WINDOW_ALWAYS_RUN) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_WINDOW_ALWAYS_RUN) not available on target platform");
     }
 
     // The following states can not be changed after window creation
@@ -468,31 +468,31 @@ void SetWindowState(unsigned int flags)
     // State change: FLAG_WINDOW_TRANSPARENT
     if ((flags & FLAG_WINDOW_TRANSPARENT) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_WINDOW_TRANSPARENT) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_WINDOW_TRANSPARENT) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_HIGHDPI
     if ((flags & FLAG_WINDOW_HIGHDPI) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_WINDOW_HIGHDPI) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_WINDOW_HIGHDPI) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_MOUSE_PASSTHROUGH
     if ((flags & FLAG_WINDOW_MOUSE_PASSTHROUGH) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_WINDOW_MOUSE_PASSTHROUGH) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_WINDOW_MOUSE_PASSTHROUGH) not available on target platform");
     }
 
     // State change: FLAG_MSAA_4X_HINT
     if ((flags & FLAG_MSAA_4X_HINT) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_MSAA_4X_HINT) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_MSAA_4X_HINT) not available on target platform");
     }
 
     // State change: FLAG_INTERLACED_HINT
     if ((flags & FLAG_INTERLACED_HINT) > 0)
     {
-        TRACELOG(LOG_WARNING, "SetWindowState(FLAG_INTERLACED_HINT) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowState(FLAG_INTERLACED_HINT) not available on target platform");
     }
 }
 
@@ -505,7 +505,7 @@ void ClearWindowState(unsigned int flags)
     // State change: FLAG_VSYNC_HINT
     if ((flags & FLAG_VSYNC_HINT) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_VSYNC_HINT) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_VSYNC_HINT) not available on target platform");
     }
 
     // State change: FLAG_BORDERLESS_WINDOWED_MODE
@@ -547,13 +547,13 @@ void ClearWindowState(unsigned int flags)
     // State change: FLAG_WINDOW_HIDDEN
     if ((flags & FLAG_WINDOW_HIDDEN) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_WINDOW_HIDDEN) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_WINDOW_HIDDEN) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_MINIMIZED
     if ((flags & FLAG_WINDOW_MINIMIZED) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_WINDOW_MINIMIZED) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_WINDOW_MINIMIZED) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_MAXIMIZED
@@ -570,25 +570,25 @@ void ClearWindowState(unsigned int flags)
     // State change: FLAG_WINDOW_UNDECORATED
     if ((flags & FLAG_WINDOW_UNDECORATED) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_WINDOW_UNDECORATED) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_WINDOW_UNDECORATED) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_UNFOCUSED
     if ((flags & FLAG_WINDOW_UNFOCUSED) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_WINDOW_UNFOCUSED) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_WINDOW_UNFOCUSED) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_TOPMOST
     if ((flags & FLAG_WINDOW_TOPMOST) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_WINDOW_TOPMOST) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_WINDOW_TOPMOST) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_ALWAYS_RUN
     if ((flags & FLAG_WINDOW_ALWAYS_RUN) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_WINDOW_ALWAYS_RUN) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_WINDOW_ALWAYS_RUN) not available on target platform");
     }
 
     // The following states can not be changed after window creation
@@ -597,44 +597,44 @@ void ClearWindowState(unsigned int flags)
     // State change: FLAG_WINDOW_TRANSPARENT
     if ((flags & FLAG_WINDOW_TRANSPARENT) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_WINDOW_TRANSPARENT) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_WINDOW_TRANSPARENT) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_HIGHDPI
     if ((flags & FLAG_WINDOW_HIGHDPI) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_WINDOW_HIGHDPI) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_WINDOW_HIGHDPI) not available on target platform");
     }
 
     // State change: FLAG_WINDOW_MOUSE_PASSTHROUGH
     if ((flags & FLAG_WINDOW_MOUSE_PASSTHROUGH) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_WINDOW_MOUSE_PASSTHROUGH) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_WINDOW_MOUSE_PASSTHROUGH) not available on target platform");
     }
 
     // State change: FLAG_MSAA_4X_HINT
     if ((flags & FLAG_MSAA_4X_HINT) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_MSAA_4X_HINT) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_MSAA_4X_HINT) not available on target platform");
     }
 
     // State change: FLAG_INTERLACED_HINT
     if ((flags & FLAG_INTERLACED_HINT) > 0)
     {
-        TRACELOG(LOG_WARNING, "ClearWindowState(FLAG_INTERLACED_HINT) not available on target platform");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "ClearWindowState(FLAG_INTERLACED_HINT) not available on target platform");
     }
 }
 
 // Set icon for window
 void SetWindowIcon(Image image)
 {
-    TRACELOG(LOG_WARNING, "SetWindowIcon() not available on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowIcon() not available on target platform");
 }
 
 // Set icon for window, multiple images
 void SetWindowIcons(Image *images, int count)
 {
-    TRACELOG(LOG_WARNING, "SetWindowIcons() not available on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowIcons() not available on target platform");
 }
 
 // Set title for window
@@ -647,13 +647,13 @@ void SetWindowTitle(const char *title)
 // Set window position on screen (windowed mode)
 void SetWindowPosition(int x, int y)
 {
-    TRACELOG(LOG_WARNING, "SetWindowPosition() not available on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowPosition() not available on target platform");
 }
 
 // Set monitor for the current window
 void SetWindowMonitor(int monitor)
 {
-    TRACELOG(LOG_WARNING, "SetWindowMonitor() not available on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowMonitor() not available on target platform");
 }
 
 // Set window minimum dimensions (FLAG_WINDOW_RESIZABLE)
@@ -693,34 +693,34 @@ void SetWindowOpacity(float opacity)
 // Set window focused
 void SetWindowFocused(void)
 {
-    TRACELOG(LOG_WARNING, "SetWindowFocused() not available on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "SetWindowFocused() not available on target platform");
 }
 
 // Get native window handle
 void *GetWindowHandle(void)
 {
-    TRACELOG(LOG_WARNING, "GetWindowHandle() not implemented on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetWindowHandle() not implemented on target platform");
     return nullptr;
 }
 
 // Get number of monitors
 int GetMonitorCount(void)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorCount() not implemented on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorCount() not implemented on target platform");
     return 1;
 }
 
 // Get current monitor where window is placed
 int GetCurrentMonitor(void)
 {
-    TRACELOG(LOG_WARNING, "GetCurrentMonitor() not implemented on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetCurrentMonitor() not implemented on target platform");
     return 0;
 }
 
 // Get selected monitor position
 Vector2 GetMonitorPosition(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPosition() not implemented on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorPosition() not implemented on target platform");
     return (Vector2){ 0, 0 };
 }
 
@@ -745,28 +745,28 @@ int GetMonitorHeight(int monitor)
 // Get selected monitor physical width in millimetres
 int GetMonitorPhysicalWidth(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPhysicalWidth() not implemented on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorPhysicalWidth() not implemented on target platform");
     return 0;
 }
 
 // Get selected monitor physical height in millimetres
 int GetMonitorPhysicalHeight(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPhysicalHeight() not implemented on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorPhysicalHeight() not implemented on target platform");
     return 0;
 }
 
 // Get selected monitor refresh rate
 int GetMonitorRefreshRate(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorRefreshRate() not implemented on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorRefreshRate() not implemented on target platform");
     return 0;
 }
 
 // Get the human-readable, UTF-8 encoded name of the selected monitor
 const char *GetMonitorName(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorName() not implemented on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetMonitorName() not implemented on target platform");
     return "";
 }
 
@@ -794,7 +794,7 @@ Vector2 GetWindowScaleDPI(void)
 void SetClipboardText(const char *text)
 {
     // Security check to (partially) avoid malicious code
-    if (strchr(text, '\'') != nullptr) TRACELOG(LOG_WARNING, "SYSTEM: Provided Clipboard could be potentially malicious, avoid [\'] character");
+    if (strchr(text, '\'') != nullptr) TRACELOG(TraceLogLevel::LOG_WARNING, "SYSTEM: Provided Clipboard could be potentially malicious, avoid [\'] character");
     else EM_ASM({ navigator.clipboard.writeText(UTF8ToString($0)); }, text);
 }
 
@@ -825,7 +825,7 @@ Image GetClipboardImage(void)
 {
     Image image = { 0 };
 
-    TRACELOG(LOG_WARNING, "GetClipboardImage() not implemented on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetClipboardImage() not implemented on target platform");
 
     return image;
 }
@@ -900,7 +900,7 @@ double GetTime(void)
 void OpenURL(const char *url)
 {
     // Security check to (partially) avoid malicious code on target platform
-    if (strchr(url, '\'') != nullptr) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
+    if (strchr(url, '\'') != nullptr) TRACELOG(TraceLogLevel::LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
     else emscripten_run_script(TextFormat("window.open('%s', '_blank')", url));
 }
 
@@ -911,7 +911,7 @@ void OpenURL(const char *url)
 // Set internal gamepad mappings
 int SetGamepadMappings(const char *mappings)
 {
-    TRACELOG(LOG_INFO, "SetGamepadMappings not implemented in rcore_web.c");
+    TRACELOG(TraceLogLevel::LOG_INFO, "SetGamepadMappings not implemented in rcore_web.c");
 
     return 0;
 }
@@ -973,7 +973,7 @@ void SetMouseCursor(int cursor)
 // Get physical key name.
 const char *GetKeyName(int key)
 {
-    TRACELOG(LOG_WARNING, "GetKeyName() not implemented on target platform");
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GetKeyName() not implemented on target platform");
     return "";
 }
 
@@ -1107,7 +1107,7 @@ int InitPlatform(void)
 
     // Initialize GLFW internal global state
     int result = glfwInit();
-    if (result == GLFW_FALSE) { TRACELOG(LOG_WARNING, "GLFW: Failed to initialize GLFW"); return -1; }
+    if (result == GLFW_FALSE) { TRACELOG(TraceLogLevel::LOG_WARNING, "GLFW: Failed to initialize GLFW"); return -1; }
 
     // Initialize graphic device: display/window and graphic context
     //----------------------------------------------------------------------------
@@ -1156,7 +1156,7 @@ int InitPlatform(void)
     if (CORE.Window.flags & FLAG_MSAA_4X_HINT)
     {
         // NOTE: MSAA is only enabled for main framebuffer, not user-created FBOs
-        TRACELOG(LOG_INFO, "DISPLAY: Trying to enable MSAA x4");
+        TRACELOG(TraceLogLevel::LOG_INFO, "DISPLAY: Trying to enable MSAA x4");
         glfwWindowHint(GLFW_SAMPLES, 4); // Tries to enable multisampling x4 (MSAA), default is 0
     }
 
@@ -1249,7 +1249,7 @@ int InitPlatform(void)
             }
         }
 
-        TRACELOG(LOG_WARNING, "SYSTEM: Closest fullscreen videomode: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
+        TRACELOG(TraceLogLevel::LOG_WARNING, "SYSTEM: Closest fullscreen videomode: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
 
         // NOTE: ISSUE: Closest videomode could not match monitor aspect-ratio, for example,
         // for a desired screen size of 800x450 (16:9), closest supported videomode is 800x600 (4:3),
@@ -1283,7 +1283,7 @@ int InitPlatform(void)
     if (!platform.handle)
     {
         glfwTerminate();
-        TRACELOG(LOG_WARNING, "GLFW: Failed to initialize Window");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "GLFW: Failed to initialize Window");
         return -1;
     }
 
@@ -1326,22 +1326,22 @@ int InitPlatform(void)
         CORE.Window.currentFbo.width = fbWidth;
         CORE.Window.currentFbo.height = fbHeight;
 
-        TRACELOG(LOG_INFO, "DISPLAY: Device initialized successfully");
-        TRACELOG(LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
-        TRACELOG(LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
-        TRACELOG(LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
-        TRACELOG(LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
+        TRACELOG(TraceLogLevel::LOG_INFO, "DISPLAY: Device initialized successfully");
+        TRACELOG(TraceLogLevel::LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
+        TRACELOG(TraceLogLevel::LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
+        TRACELOG(TraceLogLevel::LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
+        TRACELOG(TraceLogLevel::LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
     }
     else
     {
-        TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphics device");
+        TRACELOG(TraceLogLevel::LOG_FATAL, "PLATFORM: Failed to initialize graphics device");
         return -1;
     }
 
     if ((CORE.Window.flags & FLAG_WINDOW_MINIMIZED) > 0) MinimizeWindow();
 
     // If graphic device is no properly initialized, we end program
-    if (!CORE.Window.ready) { TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphic device"); return -1; }
+    if (!CORE.Window.ready) { TRACELOG(TraceLogLevel::LOG_FATAL, "PLATFORM: Failed to initialize graphic device"); return -1; }
 
     // Load OpenGL extensions
     // NOTE: GL procedures address loader is required to load extensions
@@ -1390,7 +1390,7 @@ int InitPlatform(void)
     CORE.Storage.basePath = GetWorkingDirectory();
     //----------------------------------------------------------------------------
 
-    TRACELOG(LOG_INFO, "PLATFORM: WEB: Initialized successfully");
+    TRACELOG(TraceLogLevel::LOG_INFO, "PLATFORM: WEB: Initialized successfully");
 
     return 0;
 }
@@ -1407,7 +1407,7 @@ void ClosePlatform(void)
 // GLFW3: Called on errors
 static void ErrorCallback(int error, const char *description)
 {
-    TRACELOG(LOG_WARNING, "GLFW: Error: %i Description: %s", error, description);
+    TRACELOG(TraceLogLevel::LOG_WARNING, "GLFW: Error: %i Description: %s", error, description);
 }
 
 // GLFW3: Called on window resizing, runs when window is resizedLastFrame

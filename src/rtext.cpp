@@ -330,7 +330,7 @@ extern void LoadFontDefault(void)
 
     defaultFont.baseSize = (int)defaultFont.recs[0].height;
 
-    TRACELOG(LOG_INFO, "FONT: Default font loaded successfully (%i glyphs)", defaultFont.glyphCount);
+    TRACELOG(TraceLogLevel::LOG_INFO, "FONT: Default font loaded successfully (%i glyphs)", defaultFont.glyphCount);
 }
 
 // Unload raylib default font
@@ -396,11 +396,11 @@ Font LoadFont(const char *fileName)
 
     if (isGpuReady)
     {
-        if (font.texture.id == 0) TRACELOG(LOG_WARNING, "FONT: [%s] Failed to load font texture -> Using default font", fileName);
+        if (font.texture.id == 0) TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: [%s] Failed to load font texture -> Using default font", fileName);
         else
         {
             SetTextureFilter(font.texture, TEXTURE_FILTER_POINT);    // By default, we set point filter (the best performance)
-            TRACELOG(LOG_INFO, "FONT: Data loaded successfully (%i pixel size | %i glyphs)", font.baseSize, font.glyphCount);
+            TRACELOG(TraceLogLevel::LOG_INFO, "FONT: Data loaded successfully (%i pixel size | %i glyphs)", font.baseSize, font.glyphCount);
         }
     }
 
@@ -602,7 +602,7 @@ Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int
 
         UnloadImage(atlas);
 
-        TRACELOG(LOG_INFO, "FONT: Data loaded successfully (%i pixel size | %i glyphs)", font.baseSize, font.glyphCount);
+        TRACELOG(TraceLogLevel::LOG_INFO, "FONT: Data loaded successfully (%i pixel size | %i glyphs)", font.baseSize, font.glyphCount);
     }
     else font = GetFontDefault();
 #else
@@ -730,7 +730,7 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
                         stbtt_GetCodepointHMetrics(&fontInfo, cp, &glyphs[k].advanceX, nullptr);
                         glyphs[k].advanceX = (int)((float)glyphs[k].advanceX*scaleFactor);
 
-                        if (cpHeight > fontSize) TRACELOG(LOG_WARNING, "FONT: [0x%04x] Glyph height is bigger than requested font size: %i > %i", cp, cpHeight, (int)fontSize);
+                        if (cpHeight > fontSize) TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: [0x%04x] Glyph height is bigger than requested font size: %i > %i", cp, cpHeight, (int)fontSize);
 
                         // Load glyph image
                         glyphs[k].image.width = cpWidth;
@@ -740,7 +740,7 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
 
                         glyphs[k].offsetY += (int)((float)ascent*scaleFactor);
                     }
-                    //else TRACELOG(LOG_WARNING, "FONT: Glyph [0x%08x] has no image data available", cp); // Only reported for 0x20 and 0x3000
+                    //else TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: Glyph [0x%08x] has no image data available", cp); // Only reported for 0x20 and 0x3000
 
                     // We create an empty image for Space character (0x20), useful for sprite font generation
                     // NOTE: Another space to consider: 0x3000 (CJK - Ideographic Space)
@@ -781,9 +781,9 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
                 }
             }
 
-            if (glyphCounter < codepointCount) TRACELOG(LOG_WARNING, "FONT: Requested codepoints glyphs found: [%i/%i]", k, codepointCount);
+            if (glyphCounter < codepointCount) TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: Requested codepoints glyphs found: [%i/%i]", k, codepointCount);
         }
-        else TRACELOG(LOG_WARNING, "FONT: Failed to process TTF font data");
+        else TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: Failed to process TTF font data");
 
         if (genFontChars) RL_FREE(requiredCodepoints);
     }
@@ -802,7 +802,7 @@ Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyp
 
     if (glyphs == nullptr)
     {
-        TRACELOG(LOG_WARNING, "FONT: Provided chars info not valid, returning empty image atlas");
+        TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: Provided chars info not valid, returning empty image atlas");
         return atlas;
     }
 
@@ -888,7 +888,7 @@ Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyp
                 {
                     for (int j = i + 1; j < glyphCount; j++)
                     {
-                        TRACELOG(LOG_WARNING, "FONT: Failed to package character (0x%02x)", glyphs[j].value);
+                        TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: Failed to package character (0x%02x)", glyphs[j].value);
                         // Make sure remaining recs contain valid data
                         recs[j].x = 0;
                         recs[j].y = 0;
@@ -956,7 +956,7 @@ Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyp
                     }
                 }
             }
-            else TRACELOG(LOG_WARNING, "FONT: Failed to package character (0x%02x)", glyphs[i].value);
+            else TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: Failed to package character (0x%02x)", glyphs[i].value);
         }
 
         RL_FREE(rects);
@@ -1063,7 +1063,7 @@ bool ExportFontAsCode(Font font, const char *fileName)
     // Support font export and initialization
     // NOTE: This mechanism is highly coupled to raylib
     Image image = LoadImageFromTexture(font.texture);
-    if (image.format != PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA) TRACELOG(LOG_WARNING, "Font export as code: Font image format is not GRAY+ALPHA!");
+    if (image.format != PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA) TRACELOG(TraceLogLevel::LOG_WARNING, "Font export as code: Font image format is not GRAY+ALPHA!");
     int imageDataSize = GetPixelDataSize(image.width, image.height, image.format);
 
     // Image data is usually GRAYSCALE + ALPHA and can be reduced to GRAYSCALE
@@ -1169,8 +1169,8 @@ bool ExportFontAsCode(Font font, const char *fileName)
 
     RL_FREE(txtData);
 
-    if (success != 0) TRACELOG(LOG_INFO, "FILEIO: [%s] Font as code exported successfully", fileName);
-    else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to export font as code", fileName);
+    if (success != 0) TRACELOG(TraceLogLevel::LOG_INFO, "FILEIO: [%s] Font as code exported successfully", fileName);
+    else TRACELOG(TraceLogLevel::LOG_WARNING, "FILEIO: [%s] Failed to export font as code", fileName);
 
     return success;
 }
@@ -2379,7 +2379,7 @@ static Font LoadBMFont(const char *fileName)
 
     if (pageCount > MAX_FONT_IMAGE_PAGES)
     {
-        TRACELOG(LOG_WARNING, "FONT: [%s] Font defines more pages than supported: %i/%i", fileName, pageCount, MAX_FONT_IMAGE_PAGES);
+        TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: [%s] Font defines more pages than supported: %i/%i", fileName, pageCount, MAX_FONT_IMAGE_PAGES);
         pageCount = MAX_FONT_IMAGE_PAGES;
     }
 
@@ -2484,7 +2484,7 @@ static Font LoadBMFont(const char *fileName)
         else
         {
             font.glyphs[i].image = GenImageColor((int)font.recs[i].width, (int)font.recs[i].height, BLACK);
-            TRACELOG(LOG_WARNING, "FONT: [%s] Some characters data not correctly provided", fileName);
+            TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: [%s] Some characters data not correctly provided", fileName);
         }
     }
 
@@ -2495,9 +2495,9 @@ static Font LoadBMFont(const char *fileName)
     {
         UnloadFont(font);
         font = GetFontDefault();
-        TRACELOG(LOG_WARNING, "FONT: [%s] Failed to load texture, reverted to default font", fileName);
+        TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: [%s] Failed to load texture, reverted to default font", fileName);
     }
-    else TRACELOG(LOG_INFO, "FONT: [%s] Font loaded successfully (%i glyphs)", fileName, font.glyphCount);
+    else TRACELOG(TraceLogLevel::LOG_INFO, "FONT: [%s] Font loaded successfully (%i glyphs)", fileName, font.glyphCount);
 
     return font;
 }
