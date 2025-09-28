@@ -88,31 +88,8 @@ namespace raylib
 //----------------------------------------------------------------------------------
 // Defines and Macros
 //----------------------------------------------------------------------------------
-#ifndef PI
-    #define PI 3.14159265358979323846f
-#endif
 
-#ifndef EPSILON
-    #define EPSILON 0.000001f
-#endif
-
-#ifndef DEG2RAD
-    #define DEG2RAD (PI/180.0f)
-#endif
-
-#ifndef RAD2DEG
-    #define RAD2DEG (180.0f/PI)
-#endif
-
-// Get float vector for Matrix
-#ifndef MatrixToFloat
-    #define MatrixToFloat(mat) (MatrixToFloatV(mat).v)
-#endif
-
-// Get float vector for Vector3
-#ifndef Vector3ToFloat
-    #define Vector3ToFloat(vec) (Vector3ToFloatV(vec).v)
-#endif
+static constexpr auto EPSILON = 1e-06;
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
@@ -165,13 +142,15 @@ typedef struct Matrix {
 #endif
 
 // NOTE: Helper types to be used instead of array return types for *ToFloat functions
-typedef struct float3 {
+struct float3
+{
     float v[3];
-} float3;
+};
 
-typedef struct float16 {
+struct float16
+{
     float v[16];
-} float16;
+};
 
 //----------------------------------------------------------------------------------
 // Module Functions Definition - Utils math
@@ -1148,6 +1127,11 @@ RMAPI float3 Vector3ToFloatV(Vector3 v)
     return buffer;
 }
 
+static constexpr float* Vector3ToFloat(const Vector3& vec)
+{
+    return Vector3ToFloatV(vec).v;
+}
+
 // Invert the given vector
 RMAPI Vector3 Vector3Invert(Vector3 v)
 {
@@ -2032,6 +2016,12 @@ RMAPI float16 MatrixToFloatV(Matrix mat)
     result.v[15] = mat.m15;
 
     return result;
+}
+
+// Get float vector for Matrix
+static constexpr float* MatrixToFloat(const Matrix& mat)
+{
+    return MatrixToFloatV(mat).v;
 }
 
 //----------------------------------------------------------------------------------
