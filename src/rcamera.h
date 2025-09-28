@@ -419,11 +419,11 @@ Matrix GetCameraViewMatrix(Camera *camera)
 // Returns the camera projection matrix
 Matrix GetCameraProjectionMatrix(Camera *camera, float aspect)
 {
-    if (camera->projection == CAMERA_PERSPECTIVE)
+    if (camera->projection == CameraProjection::CAMERA_PERSPECTIVE)
     {
         return MatrixPerspective(camera->fovy*DEG2RAD, aspect, CAMERA_CULL_DISTANCE_NEAR, CAMERA_CULL_DISTANCE_FAR);
     }
-    else if (camera->projection == CAMERA_ORTHOGRAPHIC)
+    else if (camera->projection == CameraProjection::CAMERA_ORTHOGRAPHIC)
     {
         double top = camera->fovy/2.0;
         double right = top*aspect;

@@ -1070,7 +1070,7 @@ void BeginMode3D(Camera camera)
     float aspect = (float)CORE.Window.currentFbo.width/(float)CORE.Window.currentFbo.height;
 
     // NOTE: zNear and zFar values are important when computing depth buffer values
-    if (camera.projection == CAMERA_PERSPECTIVE)
+    if (camera.projection == CameraProjection::CAMERA_PERSPECTIVE)
     {
         // Setup perspective projection
         double top = rlGetCullDistanceNear()*tan(camera.fovy*0.5*DEG2RAD);
@@ -1078,7 +1078,7 @@ void BeginMode3D(Camera camera)
 
         rlFrustum(-right, right, -top, top, rlGetCullDistanceNear(), rlGetCullDistanceFar());
     }
-    else if (camera.projection == CAMERA_ORTHOGRAPHIC)
+    else if (camera.projection == CameraProjection::CAMERA_ORTHOGRAPHIC)
     {
         // Setup orthographic projection
         double top = camera.fovy/2.0;
@@ -1533,12 +1533,12 @@ Ray GetScreenToWorldRayEx(Vector2 position, Camera camera, int width, int height
 
     Matrix matProj = MatrixIdentity();
 
-    if (camera.projection == CAMERA_PERSPECTIVE)
+    if (camera.projection == CameraProjection::CAMERA_PERSPECTIVE)
     {
         // Calculate projection matrix from perspective
         matProj = MatrixPerspective(camera.fovy*DEG2RAD, ((double)width/(double)height), rlGetCullDistanceNear(), rlGetCullDistanceFar());
     }
-    else if (camera.projection == CAMERA_ORTHOGRAPHIC)
+    else if (camera.projection == CameraProjection::CAMERA_ORTHOGRAPHIC)
     {
         double aspect = (double)width/(double)height;
         double top = camera.fovy/2.0;
@@ -1561,8 +1561,8 @@ Ray GetScreenToWorldRayEx(Vector2 position, Camera camera, int width, int height
     // Calculate normalized direction vector
     Vector3 direction = Vector3Normalize(Vector3Subtract(farPoint, nearPoint));
 
-    if (camera.projection == CAMERA_PERSPECTIVE) ray.position = camera.position;
-    else if (camera.projection == CAMERA_ORTHOGRAPHIC) ray.position = cameraPlanePointerPos;
+    if (camera.projection == CameraProjection::CAMERA_PERSPECTIVE) ray.position = camera.position;
+    else if (camera.projection == CameraProjection::CAMERA_ORTHOGRAPHIC) ray.position = cameraPlanePointerPos;
 
     // Apply calculated vectors to ray
     ray.direction = direction;
@@ -1620,12 +1620,12 @@ Vector2 GetWorldToScreenEx(Vector3 position, Camera camera, int width, int heigh
     // Calculate projection matrix (from perspective instead of frustum
     Matrix matProj = MatrixIdentity();
 
-    if (camera.projection == CAMERA_PERSPECTIVE)
+    if (camera.projection == CameraProjection::CAMERA_PERSPECTIVE)
     {
         // Calculate projection matrix from perspective
         matProj = MatrixPerspective(camera.fovy*DEG2RAD, ((double)width/(double)height), rlGetCullDistanceNear(), rlGetCullDistanceFar());
     }
-    else if (camera.projection == CAMERA_ORTHOGRAPHIC)
+    else if (camera.projection == CameraProjection::CAMERA_ORTHOGRAPHIC)
     {
         double aspect = (double)width/(double)height;
         double top = camera.fovy/2.0;
