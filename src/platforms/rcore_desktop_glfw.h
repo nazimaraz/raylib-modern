@@ -1250,40 +1250,41 @@ void PollInputEvents(void)
 
             for (int k = 0; (buttons != nullptr) && (k < MAX_GAMEPAD_BUTTONS); k++)
             {
-                int button = -1;        // GamepadButton enum values assigned
+                auto button = GamepadButton::GAMEPAD_BUTTON_UNKNOWN;        // GamepadButton enum values assigned
 
                 switch (k)
                 {
-                    case GLFW_GAMEPAD_BUTTON_Y: button = GAMEPAD_BUTTON_RIGHT_FACE_UP; break;
-                    case GLFW_GAMEPAD_BUTTON_B: button = GAMEPAD_BUTTON_RIGHT_FACE_RIGHT; break;
-                    case GLFW_GAMEPAD_BUTTON_A: button = GAMEPAD_BUTTON_RIGHT_FACE_DOWN; break;
-                    case GLFW_GAMEPAD_BUTTON_X: button = GAMEPAD_BUTTON_RIGHT_FACE_LEFT; break;
+                    case GLFW_GAMEPAD_BUTTON_Y: button = GamepadButton::GAMEPAD_BUTTON_RIGHT_FACE_UP; break;
+                    case GLFW_GAMEPAD_BUTTON_B: button = GamepadButton::GAMEPAD_BUTTON_RIGHT_FACE_RIGHT; break;
+                    case GLFW_GAMEPAD_BUTTON_A: button = GamepadButton::GAMEPAD_BUTTON_RIGHT_FACE_DOWN; break;
+                    case GLFW_GAMEPAD_BUTTON_X: button = GamepadButton::GAMEPAD_BUTTON_RIGHT_FACE_LEFT; break;
 
-                    case GLFW_GAMEPAD_BUTTON_LEFT_BUMPER: button = GAMEPAD_BUTTON_LEFT_TRIGGER_1; break;
-                    case GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER: button = GAMEPAD_BUTTON_RIGHT_TRIGGER_1; break;
+                    case GLFW_GAMEPAD_BUTTON_LEFT_BUMPER: button = GamepadButton::GAMEPAD_BUTTON_LEFT_TRIGGER_1; break;
+                    case GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER: button = GamepadButton::GAMEPAD_BUTTON_RIGHT_TRIGGER_1; break;
 
-                    case GLFW_GAMEPAD_BUTTON_BACK: button = GAMEPAD_BUTTON_MIDDLE_LEFT; break;
-                    case GLFW_GAMEPAD_BUTTON_GUIDE: button = GAMEPAD_BUTTON_MIDDLE; break;
-                    case GLFW_GAMEPAD_BUTTON_START: button = GAMEPAD_BUTTON_MIDDLE_RIGHT; break;
+                    case GLFW_GAMEPAD_BUTTON_BACK: button = GamepadButton::GAMEPAD_BUTTON_MIDDLE_LEFT; break;
+                    case GLFW_GAMEPAD_BUTTON_GUIDE: button = GamepadButton::GAMEPAD_BUTTON_MIDDLE; break;
+                    case GLFW_GAMEPAD_BUTTON_START: button = GamepadButton::GAMEPAD_BUTTON_MIDDLE_RIGHT; break;
 
-                    case GLFW_GAMEPAD_BUTTON_DPAD_UP: button = GAMEPAD_BUTTON_LEFT_FACE_UP; break;
-                    case GLFW_GAMEPAD_BUTTON_DPAD_RIGHT: button = GAMEPAD_BUTTON_LEFT_FACE_RIGHT; break;
-                    case GLFW_GAMEPAD_BUTTON_DPAD_DOWN: button = GAMEPAD_BUTTON_LEFT_FACE_DOWN; break;
-                    case GLFW_GAMEPAD_BUTTON_DPAD_LEFT: button = GAMEPAD_BUTTON_LEFT_FACE_LEFT; break;
+                    case GLFW_GAMEPAD_BUTTON_DPAD_UP: button = GamepadButton::GAMEPAD_BUTTON_LEFT_FACE_UP; break;
+                    case GLFW_GAMEPAD_BUTTON_DPAD_RIGHT: button = GamepadButton::GAMEPAD_BUTTON_LEFT_FACE_RIGHT; break;
+                    case GLFW_GAMEPAD_BUTTON_DPAD_DOWN: button = GamepadButton::GAMEPAD_BUTTON_LEFT_FACE_DOWN; break;
+                    case GLFW_GAMEPAD_BUTTON_DPAD_LEFT: button = GamepadButton::GAMEPAD_BUTTON_LEFT_FACE_LEFT; break;
 
-                    case GLFW_GAMEPAD_BUTTON_LEFT_THUMB: button = GAMEPAD_BUTTON_LEFT_THUMB; break;
-                    case GLFW_GAMEPAD_BUTTON_RIGHT_THUMB: button = GAMEPAD_BUTTON_RIGHT_THUMB; break;
+                    case GLFW_GAMEPAD_BUTTON_LEFT_THUMB: button = GamepadButton::GAMEPAD_BUTTON_LEFT_THUMB; break;
+                    case GLFW_GAMEPAD_BUTTON_RIGHT_THUMB: button = GamepadButton::GAMEPAD_BUTTON_RIGHT_THUMB; break;
                     default: break;
                 }
 
-                if (button != -1)   // Check for valid button
+                if (button != GamepadButton::GAMEPAD_BUTTON_UNKNOWN)   // Check for valid button
                 {
+                    const auto buttonIndex = std::to_underlying(button);
                     if (buttons[k] == GLFW_PRESS)
                     {
-                        CORE.Input.Gamepad.currentButtonState[i][button] = 1;
-                        CORE.Input.Gamepad.lastButtonPressed = button;
+                        CORE.Input.Gamepad.currentButtonState[i][buttonIndex] = 1;
+                        CORE.Input.Gamepad.lastButtonPressed = buttonIndex;
                     }
-                    else CORE.Input.Gamepad.currentButtonState[i][button] = 0;
+                    else CORE.Input.Gamepad.currentButtonState[i][buttonIndex] = 0;
                 }
             }
 
@@ -1296,18 +1297,18 @@ void PollInputEvents(void)
             }
 
             // Register buttons for 2nd triggers (because GLFW doesn't count these as buttons but rather as axes)
-            if (CORE.Input.Gamepad.axisState[i][GAMEPAD_AXIS_LEFT_TRIGGER] > 0.1f)
+            if (CORE.Input.Gamepad.axisState[i][std::to_underlying(GamepadAxis::GAMEPAD_AXIS_LEFT_TRIGGER)] > 0.1f)
             {
-                CORE.Input.Gamepad.currentButtonState[i][GAMEPAD_BUTTON_LEFT_TRIGGER_2] = 1;
-                CORE.Input.Gamepad.lastButtonPressed = GAMEPAD_BUTTON_LEFT_TRIGGER_2;
+                CORE.Input.Gamepad.currentButtonState[i][std::to_underlying(GamepadButton::GAMEPAD_BUTTON_LEFT_TRIGGER_2)] = 1;
+                CORE.Input.Gamepad.lastButtonPressed = std::to_underlying(GamepadButton::GAMEPAD_BUTTON_LEFT_TRIGGER_2);
             }
-            else CORE.Input.Gamepad.currentButtonState[i][GAMEPAD_BUTTON_LEFT_TRIGGER_2] = 0;
-            if (CORE.Input.Gamepad.axisState[i][GAMEPAD_AXIS_RIGHT_TRIGGER] > 0.1f)
+            else CORE.Input.Gamepad.currentButtonState[i][std::to_underlying(GamepadButton::GAMEPAD_BUTTON_LEFT_TRIGGER_2)] = 0;
+            if (CORE.Input.Gamepad.axisState[i][std::to_underlying(GamepadAxis::GAMEPAD_AXIS_RIGHT_TRIGGER)] > 0.1f)
             {
-                CORE.Input.Gamepad.currentButtonState[i][GAMEPAD_BUTTON_RIGHT_TRIGGER_2] = 1;
-                CORE.Input.Gamepad.lastButtonPressed = GAMEPAD_BUTTON_RIGHT_TRIGGER_2;
+                CORE.Input.Gamepad.currentButtonState[i][std::to_underlying(GamepadButton::GAMEPAD_BUTTON_RIGHT_TRIGGER_2)] = 1;
+                CORE.Input.Gamepad.lastButtonPressed = std::to_underlying(GamepadButton::GAMEPAD_BUTTON_RIGHT_TRIGGER_2);
             }
-            else CORE.Input.Gamepad.currentButtonState[i][GAMEPAD_BUTTON_RIGHT_TRIGGER_2] = 0;
+            else CORE.Input.Gamepad.currentButtonState[i][std::to_underlying(GamepadButton::GAMEPAD_BUTTON_RIGHT_TRIGGER_2)] = 0;
 
             CORE.Input.Gamepad.axisCount[i] = GLFW_GAMEPAD_AXIS_LAST + 1;
         }

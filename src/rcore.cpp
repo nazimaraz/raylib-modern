@@ -692,7 +692,7 @@ void InitWindow(int width, int height, const char *title)
     CORE.Input.Keyboard.exitKey = std::to_underlying(KeyboardKey::KEY_ESCAPE);
     CORE.Input.Mouse.scale = (Vector2){ 1.0f, 1.0f };
     CORE.Input.Mouse.cursor = MouseCursor::MOUSE_CURSOR_ARROW;
-    CORE.Input.Gamepad.lastButtonPressed = GAMEPAD_BUTTON_UNKNOWN;
+    CORE.Input.Gamepad.lastButtonPressed = std::to_underlying(GamepadButton::GAMEPAD_BUTTON_UNKNOWN);
 
     // Initialize platform
     //--------------------------------------------------------------
@@ -3544,15 +3544,15 @@ int GetGamepadAxisCount(int gamepad)
 }
 
 // Get axis movement vector for a gamepad
-float GetGamepadAxisMovement(int gamepad, int axis)
+float GetGamepadAxisMovement(int gamepad, const GamepadAxis axis)
 {
-    float value = ((axis == GAMEPAD_AXIS_LEFT_TRIGGER) || (axis == GAMEPAD_AXIS_RIGHT_TRIGGER))? -1.0f : 0.0f;
-
-    if ((gamepad < MAX_GAMEPADS) && CORE.Input.Gamepad.ready[gamepad] && (axis < MAX_GAMEPAD_AXES))
+    float value = ((axis == GamepadAxis::GAMEPAD_AXIS_LEFT_TRIGGER) || (axis == GamepadAxis::GAMEPAD_AXIS_RIGHT_TRIGGER))? -1.0f : 0.0f;
+    const auto axisIndex = std::to_underlying(axis);
+    if ((gamepad < MAX_GAMEPADS) && CORE.Input.Gamepad.ready[gamepad] && (axisIndex < MAX_GAMEPAD_AXES))
     {
-        float movement = (value < 0.0f)? CORE.Input.Gamepad.axisState[gamepad][axis] : fabsf(CORE.Input.Gamepad.axisState[gamepad][axis]);
+        float movement = (value < 0.0f)? CORE.Input.Gamepad.axisState[gamepad][axisIndex] : fabsf(CORE.Input.Gamepad.axisState[gamepad][axisIndex]);
 
-        if (movement > value) value = CORE.Input.Gamepad.axisState[gamepad][axis];
+        if (movement > value) value = CORE.Input.Gamepad.axisState[gamepad][axisIndex];
     }
 
     return value;
@@ -4229,17 +4229,18 @@ static void RecordAutomationEvent(void)
             if (currentEventList->count == currentEventList->capacity) return;    // Security check
         }
 
-        for (int axis = 0; axis < MAX_GAMEPAD_AXES; axis++)
+        for (int axisIndex = 0; axisIndex < MAX_GAMEPAD_AXES; axisIndex++)
         {
+            const auto axis = static_cast<GamepadAxis>(axisIndex);
             // Event type: INPUT_GAMEPAD_AXIS_MOTION
-            float defaultMovement = ((axis == GAMEPAD_AXIS_LEFT_TRIGGER) || (axis == GAMEPAD_AXIS_RIGHT_TRIGGER))? -1.0f : 0.0f;
+            float defaultMovement = ((axis == GamepadAxis::GAMEPAD_AXIS_LEFT_TRIGGER) || (axis == GamepadAxis::GAMEPAD_AXIS_RIGHT_TRIGGER))? -1.0f : 0.0f;
             if (GetGamepadAxisMovement(gamepad, axis) != defaultMovement)
             {
                 currentEventList->events[currentEventList->count].frame = CORE.Time.frameCounter;
                 currentEventList->events[currentEventList->count].type = INPUT_GAMEPAD_AXIS_MOTION;
                 currentEventList->events[currentEventList->count].params[0] = gamepad;
-                currentEventList->events[currentEventList->count].params[1] = axis;
-                currentEventList->events[currentEventList->count].params[2] = (int)(CORE.Input.Gamepad.axisState[gamepad][axis]*32768.0f);
+                currentEventList->events[currentEventList->count].params[1] = axisIndex;
+                currentEventList->events[currentEventList->count].params[2] = (int)(CORE.Input.Gamepad.axisState[gamepad][axisIndex]*32768.0f);
 
                 TRACELOG(TraceLogLevel::LOG_INFO, "AUTOMATION: Frame: %i | Event type: INPUT_GAMEPAD_AXIS_MOTION | Event parameters: %i, %i, %i", currentEventList->events[currentEventList->count].frame, currentEventList->events[currentEventList->count].params[0], currentEventList->events[currentEventList->count].params[1], currentEventList->events[currentEventList->count].params[2]);
                 currentEventList->count++;

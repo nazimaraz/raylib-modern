@@ -707,7 +707,7 @@ enum class MouseCursor {
 };
 
 // Gamepad buttons
-enum GamepadButton {
+enum class GamepadButton {
     GAMEPAD_BUTTON_UNKNOWN = 0,         // Unknown button, just for error checking
     GAMEPAD_BUTTON_LEFT_FACE_UP,        // Gamepad left DPAD up button
     GAMEPAD_BUTTON_LEFT_FACE_RIGHT,     // Gamepad left DPAD right button
@@ -729,7 +729,7 @@ enum GamepadButton {
 };
 
 // Gamepad axes
-enum GamepadAxis {
+enum class GamepadAxis {
     GAMEPAD_AXIS_LEFT_X        = 0,     // Gamepad left stick X axis
     GAMEPAD_AXIS_LEFT_Y        = 1,     // Gamepad left stick Y axis
     GAMEPAD_AXIS_RIGHT_X       = 2,     // Gamepad right stick X axis
@@ -1183,7 +1183,7 @@ RLAPI bool IsGamepadButtonReleased(int gamepad, int button);  // Check if a game
 RLAPI bool IsGamepadButtonUp(int gamepad, int button);        // Check if a gamepad button is NOT being pressed
 RLAPI int GetGamepadButtonPressed();                      // Get the last gamepad button pressed
 RLAPI int GetGamepadAxisCount(int gamepad);                   // Get axis count for a gamepad
-RLAPI float GetGamepadAxisMovement(int gamepad, int axis);    // Get movement value for a gamepad axis
+RLAPI float GetGamepadAxisMovement(int gamepad, GamepadAxis axis);    // Get movement value for a gamepad axis
 RLAPI int SetGamepadMappings(const char *mappings);           // Set internal gamepad mappings (SDL_GameControllerDB)
 RLAPI void SetGamepadVibration(int gamepad, float leftMotor, float rightMotor, float duration); // Set gamepad vibration for both motors (duration in seconds)
 
