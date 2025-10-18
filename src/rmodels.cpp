@@ -1318,7 +1318,7 @@ void UploadMesh(Mesh *mesh, bool dynamic)
         // Default vertex attribute: normal
         // WARNING: Default value provided to shader if location available
         float value[3] = { 0.0f, 0.0f, 1.0f };
-        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_NORMAL, value, SHADER_ATTRIB_VEC3, 3);
+        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_NORMAL, value, std::to_underlying(ShaderAttributeDataType::SHADER_ATTRIB_VEC3), 3);
         rlDisableVertexAttribute(RL_DEFAULT_SHADER_ATTRIB_LOCATION_NORMAL);
     }
 
@@ -1334,7 +1334,7 @@ void UploadMesh(Mesh *mesh, bool dynamic)
         // Default vertex attribute: color
         // WARNING: Default value provided to shader if location available
         float value[4] = { 1.0f, 1.0f, 1.0f, 1.0f };    // WHITE
-        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_COLOR, value, SHADER_ATTRIB_VEC4, 4);
+        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_COLOR, value, std::to_underlying(ShaderAttributeDataType::SHADER_ATTRIB_VEC4), 4);
         rlDisableVertexAttribute(RL_DEFAULT_SHADER_ATTRIB_LOCATION_COLOR);
     }
 
@@ -1350,7 +1350,7 @@ void UploadMesh(Mesh *mesh, bool dynamic)
         // Default vertex attribute: tangent
         // WARNING: Default value provided to shader if location available
         float value[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
-        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_TANGENT, value, SHADER_ATTRIB_VEC4, 4);
+        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_TANGENT, value, std::to_underlying(ShaderAttributeDataType::SHADER_ATTRIB_VEC4), 4);
         rlDisableVertexAttribute(RL_DEFAULT_SHADER_ATTRIB_LOCATION_TANGENT);
     }
 
@@ -1366,7 +1366,7 @@ void UploadMesh(Mesh *mesh, bool dynamic)
         // Default vertex attribute: texcoord2
         // WARNING: Default value provided to shader if location available
         float value[2] = { 0.0f, 0.0f };
-        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD2, value, SHADER_ATTRIB_VEC2, 2);
+        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD2, value, std::to_underlying(ShaderAttributeDataType::SHADER_ATTRIB_VEC2), 2);
         rlDisableVertexAttribute(RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD2);
     }
 
@@ -1383,7 +1383,7 @@ void UploadMesh(Mesh *mesh, bool dynamic)
         // Default vertex attribute: boneIds
         // WARNING: Default value provided to shader if location available
         float value[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEIDS, value, SHADER_ATTRIB_VEC4, 4);
+        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEIDS, value, std::to_underlying(ShaderAttributeDataType::SHADER_ATTRIB_VEC4), 4);
         rlDisableVertexAttribute(RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEIDS);
     }
 
@@ -1399,7 +1399,7 @@ void UploadMesh(Mesh *mesh, bool dynamic)
         // Default vertex attribute: boneWeights
         // WARNING: Default value provided to shader if location available
         float value[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEWEIGHTS, value, SHADER_ATTRIB_VEC4, 2);
+        rlSetVertexAttributeDefault(RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEWEIGHTS, value, std::to_underlying(ShaderAttributeDataType::SHADER_ATTRIB_VEC4), 2);
         rlDisableVertexAttribute(RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEWEIGHTS);
     }
 #endif
@@ -1478,7 +1478,7 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
             (float)material.maps[MATERIAL_MAP_DIFFUSE].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_DIFFUSE)], values, SHADER_UNIFORM_VEC4, 1);
+        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_DIFFUSE)], values, std::to_underlying(ShaderUniformDataType::SHADER_UNIFORM_VEC4), 1);
     }
 
     // Upload to shader material.colSpecular (if location available)
@@ -1491,7 +1491,7 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
             (float)material.maps[MATERIAL_MAP_SPECULAR].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)], values, SHADER_UNIFORM_VEC4, 1);
+        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)], values, std::to_underlying(ShaderUniformDataType::SHADER_UNIFORM_VEC4), 1);
     }
 
     // Get a copy of current matrices to work with,
@@ -1545,7 +1545,7 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
                 (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_CUBEMAP))) rlEnableTextureCubemap(material.maps[i].texture.id);
             else rlEnableTexture(material.maps[i].texture.id);
 
-            rlSetUniform(material.shader.locs[std::to_underlying(SHADER_LOC_MAP_DIFFUSE) + i], &i, SHADER_UNIFORM_INT, 1);
+            rlSetUniform(material.shader.locs[std::to_underlying(SHADER_LOC_MAP_DIFFUSE) + i], &i, std::to_underlying(ShaderUniformDataType::SHADER_UNIFORM_INT), 1);
         }
     }
 
@@ -1587,7 +1587,7 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
                 // Set default value for defined vertex attribute in shader but not provided by mesh
                 // WARNING: It could result in GPU undefined behaviour
                 float value[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-                rlSetVertexAttributeDefault(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)], value, SHADER_ATTRIB_VEC4, 4);
+                rlSetVertexAttributeDefault(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)], value, std::to_underlying(ShaderAttributeDataType::SHADER_ATTRIB_VEC4), 4);
                 rlDisableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)]);
             }
         }
@@ -1705,7 +1705,7 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
             (float)material.maps[MATERIAL_MAP_DIFFUSE].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_DIFFUSE)], values, SHADER_UNIFORM_VEC4, 1);
+        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_DIFFUSE)], values, std::to_underlying(ShaderUniformDataType::SHADER_UNIFORM_VEC4), 1);
     }
 
     // Upload to shader material.colSpecular (if location available)
@@ -1718,7 +1718,7 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
             (float)material.maps[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)], values, SHADER_UNIFORM_VEC4, 1);
+        rlSetUniform(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_COLOR_SPECULAR)], values, std::to_underlying(ShaderUniformDataType::SHADER_UNIFORM_VEC4), 1);
     }
 
     // Get a copy of current matrices to work with,
@@ -1792,7 +1792,7 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
                 (i == std::to_underlying(MaterialMapIndex::MATERIAL_MAP_CUBEMAP))) rlEnableTextureCubemap(material.maps[i].texture.id);
             else rlEnableTexture(material.maps[i].texture.id);
 
-            rlSetUniform(material.shader.locs[std::to_underlying(SHADER_LOC_MAP_DIFFUSE) + i], &i, SHADER_UNIFORM_INT, 1);
+            rlSetUniform(material.shader.locs[std::to_underlying(SHADER_LOC_MAP_DIFFUSE) + i], &i, std::to_underlying(ShaderUniformDataType::SHADER_UNIFORM_INT), 1);
         }
     }
 
@@ -1832,7 +1832,7 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
                 // Set default value for unused attribute
                 // NOTE: Required when using default shader and no VAO support
                 float value[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-                rlSetVertexAttributeDefault(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)], value, SHADER_ATTRIB_VEC4, 4);
+                rlSetVertexAttributeDefault(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)], value, std::to_underlying(ShaderAttributeDataType::SHADER_ATTRIB_VEC4), 4);
                 rlDisableVertexAttribute(material.shader.locs[std::to_underlying(ShaderLocationIndex::SHADER_LOC_VERTEX_COLOR)]);
             }
         }
@@ -2144,7 +2144,7 @@ static void ProcessMaterialsOBJ(Material *materials, tinyobj_material_t *mats, i
 
         // Get default texture, in case no texture is defined
         // NOTE: rlgl default texture is a 1x1 pixel UNCOMPRESSED_R8G8B8A8
-        materials[m].maps[MATERIAL_MAP_DIFFUSE].texture = (Texture2D){ rlGetTextureIdDefault(), 1, 1, 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
+        materials[m].maps[MATERIAL_MAP_DIFFUSE].texture = (Texture2D){ rlGetTextureIdDefault(), 1, 1, 1, PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
 
         if (mats[m].diffuse_texname != nullptr) materials[m].maps[MATERIAL_MAP_DIFFUSE].texture = LoadTexture(mats[m].diffuse_texname);  //char *diffuse_texname; // map_Kd
         else materials[m].maps[MATERIAL_MAP_DIFFUSE].color = (Color){ (unsigned char)(mats[m].diffuse[0]*255.0f), (unsigned char)(mats[m].diffuse[1]*255.0f), (unsigned char)(mats[m].diffuse[2]*255.0f), 255 }; //float diffuse[3];
@@ -2205,7 +2205,7 @@ Material LoadMaterialDefault(void)
     material.shader.locs = rlGetShaderLocsDefault();
 
     // Using rlgl default texture (1x1 pixel, UNCOMPRESSED_R8G8B8A8, 1 mipmap)
-    material.maps[MATERIAL_MAP_DIFFUSE].texture = (Texture2D){ rlGetTextureIdDefault(), 1, 1, 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
+    material.maps[MATERIAL_MAP_DIFFUSE].texture = (Texture2D){ rlGetTextureIdDefault(), 1, 1, 1, PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
     //material.maps[MATERIAL_MAP_NORMAL].texture;         // NOTE: By default, not set
     //material.maps[MATERIAL_MAP_SPECULAR].texture;       // NOTE: By default, not set
 
@@ -5423,7 +5423,7 @@ static Model LoadGLTF(const char *fileName)
                         imMetallic.width = imRoughness.width = imMetallicRoughness.width;
                         imMetallic.height = imRoughness.height = imMetallicRoughness.height;
 
-                        imMetallic.format = imRoughness.format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
+                        imMetallic.format = imRoughness.format = PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
                         imMetallic.mipmaps = imRoughness.mipmaps = 1;
 
                         for (int x = 0; x < imRoughness.width; x++)
@@ -6782,9 +6782,9 @@ static Model LoadM3D(const char *fileName)
                             image.width = m3d->texture[prop->value.textureid].w;
                             image.height = m3d->texture[prop->value.textureid].h;
                             image.mipmaps = 1;
-                            image.format = (m3d->texture[prop->value.textureid].f == 4)? PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 :
-                                           ((m3d->texture[prop->value.textureid].f == 3)? PIXELFORMAT_UNCOMPRESSED_R8G8B8 :
-                                           ((m3d->texture[prop->value.textureid].f == 2)? PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA : PIXELFORMAT_UNCOMPRESSED_GRAYSCALE));
+                            image.format = (m3d->texture[prop->value.textureid].f == 4)? PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 :
+                                           ((m3d->texture[prop->value.textureid].f == 3)? PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8 :
+                                           ((m3d->texture[prop->value.textureid].f == 2)? PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA : PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAYSCALE));
 
                             switch (prop->type)
                             {

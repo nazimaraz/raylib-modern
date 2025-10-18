@@ -229,9 +229,9 @@ struct GesturesData {
 // Global Variables Definition
 //----------------------------------------------------------------------------------
 static GesturesData GESTURES = {
-    .Touch.firstId = -1,
-    .current = GESTURE_NONE,        // No current gesture detected
-    .enabledFlags = 0b0000001111111111  // All gestures supported by default
+    .current = std::to_underlying(Gesture::GESTURE_NONE),        // No current gesture detected
+    .enabledFlags = 0b0000001111111111,  // All gestures supported by default
+    .Touch{.firstId = -1}
 };
 
 //----------------------------------------------------------------------------------
@@ -271,15 +271,15 @@ void ProcessGestureEvent(GestureEvent event)
             GESTURES.Touch.tapCounter++;    // Tap counter
 
             // Detect GESTURE_DOUBLE_TAP
-            if ((GESTURES.current == GESTURE_NONE) && (GESTURES.Touch.tapCounter >= 2) && ((rgGetCurrentTime() - GESTURES.Touch.eventTime) < TAP_TIMEOUT) && (rgVector2Distance(GESTURES.Touch.downPositionA, event.position[0]) < DOUBLETAP_RANGE))
+            if ((GESTURES.current == std::to_underlying(Gesture::GESTURE_NONE)) && (GESTURES.Touch.tapCounter >= 2) && ((rgGetCurrentTime() - GESTURES.Touch.eventTime) < TAP_TIMEOUT) && (rgVector2Distance(GESTURES.Touch.downPositionA, event.position[0]) < DOUBLETAP_RANGE))
             {
-                GESTURES.current = GESTURE_DOUBLETAP;
+                GESTURES.current = std::to_underlying(Gesture::GESTURE_DOUBLETAP);
                 GESTURES.Touch.tapCounter = 0;
             }
             else    // Detect GESTURE_TAP
             {
                 GESTURES.Touch.tapCounter = 1;
-                GESTURES.current = GESTURE_TAP;
+                GESTURES.current = std::to_underlying(Gesture::GESTURE_TAP);
             }
 
             GESTURES.Touch.downPositionA = event.position[0];
@@ -295,23 +295,23 @@ void ProcessGestureEvent(GestureEvent event)
         else if (event.touchAction == TOUCH_ACTION_UP)
         {
             // A swipe can happen while the current gesture is drag, but (specially for web) also hold, so set upPosition for both cases
-            if (GESTURES.current == GESTURE_DRAG || GESTURES.current == GESTURE_HOLD) GESTURES.Touch.upPosition = event.position[0];
+            if (GESTURES.current == std::to_underlying(Gesture::GESTURE_DRAG) || GESTURES.current == std::to_underlying(Gesture::GESTURE_HOLD)) GESTURES.Touch.upPosition = event.position[0];
 
             // NOTE: GESTURES.Drag.intensity dependent on the resolution of the screen
             GESTURES.Drag.distance = rgVector2Distance(GESTURES.Touch.downPositionA, GESTURES.Touch.upPosition);
             GESTURES.Drag.intensity = GESTURES.Drag.distance/(float)((rgGetCurrentTime() - GESTURES.Swipe.startTime));
 
             // Detect GESTURE_SWIPE
-            if ((GESTURES.Drag.intensity > FORCE_TO_SWIPE) && (GESTURES.current != GESTURE_DRAG))
+            if ((GESTURES.Drag.intensity > FORCE_TO_SWIPE) && (GESTURES.current != std::to_underlying(Gesture::GESTURE_DRAG)))
             {
                 // NOTE: Angle should be inverted in Y
                 GESTURES.Drag.angle = 360.0f - rgVector2Angle(GESTURES.Touch.downPositionA, GESTURES.Touch.upPosition);
 
-                if ((GESTURES.Drag.angle < 30) || (GESTURES.Drag.angle > 330)) GESTURES.current = GESTURE_SWIPE_RIGHT;          // Right
-                else if ((GESTURES.Drag.angle >= 30) && (GESTURES.Drag.angle <= 150)) GESTURES.current = GESTURE_SWIPE_UP;      // Up
-                else if ((GESTURES.Drag.angle > 150) && (GESTURES.Drag.angle < 210)) GESTURES.current = GESTURE_SWIPE_LEFT;     // Left
-                else if ((GESTURES.Drag.angle >= 210) && (GESTURES.Drag.angle <= 330)) GESTURES.current = GESTURE_SWIPE_DOWN;   // Down
-                else GESTURES.current = GESTURE_NONE;
+                if ((GESTURES.Drag.angle < 30) || (GESTURES.Drag.angle > 330)) GESTURES.current = std::to_underlying(Gesture::GESTURE_SWIPE_RIGHT);          // Right
+                else if ((GESTURES.Drag.angle >= 30) && (GESTURES.Drag.angle <= 150)) GESTURES.current = std::to_underlying(Gesture::GESTURE_SWIPE_UP);      // Up
+                else if ((GESTURES.Drag.angle > 150) && (GESTURES.Drag.angle < 210)) GESTURES.current = std::to_underlying(Gesture::GESTURE_SWIPE_LEFT);     // Left
+                else if ((GESTURES.Drag.angle >= 210) && (GESTURES.Drag.angle <= 330)) GESTURES.current = std::to_underlying(Gesture::GESTURE_SWIPE_DOWN);   // Down
+                else GESTURES.current = std::to_underlying(Gesture::GESTURE_NONE);
             }
             else
             {
@@ -319,7 +319,7 @@ void ProcessGestureEvent(GestureEvent event)
                 GESTURES.Drag.intensity = 0.0f;
                 GESTURES.Drag.angle = 0.0f;
 
-                GESTURES.current = GESTURE_NONE;
+                GESTURES.current = std::to_underlying(Gesture::GESTURE_NONE);
             }
 
             GESTURES.Touch.downDragPosition = (Vector2){ 0.0f, 0.0f };
@@ -329,7 +329,7 @@ void ProcessGestureEvent(GestureEvent event)
         {
             GESTURES.Touch.moveDownPositionA = event.position[0];
 
-            if (GESTURES.current == GESTURE_HOLD)
+            if (GESTURES.current == std::to_underlying(Gesture::GESTURE_HOLD))
             {
                 if (GESTURES.Hold.resetRequired) GESTURES.Touch.downPositionA = event.position[0];
 
@@ -339,7 +339,7 @@ void ProcessGestureEvent(GestureEvent event)
                 if ((rgGetCurrentTime() - GESTURES.Touch.eventTime) > DRAG_TIMEOUT)
                 {
                     GESTURES.Touch.eventTime = rgGetCurrentTime();
-                    GESTURES.current = GESTURE_DRAG;
+                    GESTURES.current = std::to_underlying(Gesture::GESTURE_DRAG);
                 }
             }
 
@@ -362,7 +362,7 @@ void ProcessGestureEvent(GestureEvent event)
             GESTURES.Pinch.vector.x = GESTURES.Touch.downPositionB.x - GESTURES.Touch.downPositionA.x;
             GESTURES.Pinch.vector.y = GESTURES.Touch.downPositionB.y - GESTURES.Touch.downPositionA.y;
 
-            GESTURES.current = GESTURE_HOLD;
+            GESTURES.current = std::to_underlying(Gesture::GESTURE_HOLD);
             GESTURES.Hold.timeDuration = rgGetCurrentTime();
         }
         else if (event.touchAction == TOUCH_ACTION_MOVE)
@@ -377,12 +377,12 @@ void ProcessGestureEvent(GestureEvent event)
 
             if ((rgVector2Distance(GESTURES.Touch.previousPositionA, GESTURES.Touch.moveDownPositionA) >= MINIMUM_PINCH) || (rgVector2Distance(GESTURES.Touch.previousPositionB, GESTURES.Touch.moveDownPositionB) >= MINIMUM_PINCH))
             {
-                if ( rgVector2Distance(GESTURES.Touch.previousPositionA, GESTURES.Touch.previousPositionB) > rgVector2Distance(GESTURES.Touch.moveDownPositionA, GESTURES.Touch.moveDownPositionB) ) GESTURES.current = GESTURE_PINCH_IN;
-                else GESTURES.current = GESTURE_PINCH_OUT;
+                if ( rgVector2Distance(GESTURES.Touch.previousPositionA, GESTURES.Touch.previousPositionB) > rgVector2Distance(GESTURES.Touch.moveDownPositionA, GESTURES.Touch.moveDownPositionB) ) GESTURES.current = std::to_underlying(Gesture::GESTURE_PINCH_IN);
+                else GESTURES.current = std::to_underlying(Gesture::GESTURE_PINCH_OUT);
             }
             else
             {
-                GESTURES.current = GESTURE_HOLD;
+                GESTURES.current = std::to_underlying(Gesture::GESTURE_HOLD);
                 GESTURES.Hold.timeDuration = rgGetCurrentTime();
             }
 
@@ -396,7 +396,7 @@ void ProcessGestureEvent(GestureEvent event)
             GESTURES.Pinch.vector = (Vector2){ 0.0f, 0.0f };
             GESTURES.Touch.pointCount = 0;
 
-            GESTURES.current = GESTURE_NONE;
+            GESTURES.current = std::to_underlying(Gesture::GESTURE_NONE);
         }
     }
     else if (GESTURES.Touch.pointCount > 2)     // More than two touch points
@@ -411,16 +411,16 @@ void UpdateGestures(void)
     // NOTE: Gestures are processed through system callbacks on touch events
 
     // Detect GESTURE_HOLD
-    if (((GESTURES.current == GESTURE_TAP) || (GESTURES.current == GESTURE_DOUBLETAP)) && (GESTURES.Touch.pointCount < 2))
+    if (((GESTURES.current == std::to_underlying(Gesture::GESTURE_TAP)) || (GESTURES.current == std::to_underlying(Gesture::GESTURE_DOUBLETAP))) && (GESTURES.Touch.pointCount < 2))
     {
-        GESTURES.current = GESTURE_HOLD;
+        GESTURES.current = std::to_underlying(Gesture::GESTURE_HOLD);
         GESTURES.Hold.timeDuration = rgGetCurrentTime();
     }
 
     // Detect GESTURE_NONE
-    if ((GESTURES.current == GESTURE_SWIPE_RIGHT) || (GESTURES.current == GESTURE_SWIPE_UP) || (GESTURES.current == GESTURE_SWIPE_LEFT) || (GESTURES.current == GESTURE_SWIPE_DOWN))
+    if ((GESTURES.current == std::to_underlying(Gesture::GESTURE_SWIPE_RIGHT)) || (GESTURES.current == std::to_underlying(Gesture::GESTURE_SWIPE_UP)) || (GESTURES.current == std::to_underlying(Gesture::GESTURE_SWIPE_LEFT)) || (GESTURES.current == std::to_underlying(Gesture::GESTURE_SWIPE_DOWN)))
     {
-        GESTURES.current = GESTURE_NONE;
+        GESTURES.current = std::to_underlying(Gesture::GESTURE_NONE);
     }
 }
 
@@ -438,7 +438,7 @@ float GetGestureHoldDuration(void)
 
     double time = 0.0;
 
-    if (GESTURES.current == GESTURE_HOLD) time = rgGetCurrentTime() - GESTURES.Hold.timeDuration;
+    if (GESTURES.current == std::to_underlying(Gesture::GESTURE_HOLD)) time = rgGetCurrentTime() - GESTURES.Hold.timeDuration;
 
     return (float)time;
 }

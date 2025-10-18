@@ -574,7 +574,7 @@ void SetWindowIcon(Image image)
     }
     else
     {
-        if (image.format == PIXELFORMAT_UNCOMPRESSED_R8G8B8A8)
+        if (image.format == PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8)
         {
             GLFWimage icon[1] = { 0 };
 
@@ -608,7 +608,7 @@ void SetWindowIcons(Image *images, int count)
 
         for (int i = 0; i < count; i++)
         {
-            if (images[i].format == PIXELFORMAT_UNCOMPRESSED_R8G8B8A8)
+            if (images[i].format == PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8)
             {
                 icons[valid].width = images[i].width;
                 icons[valid].height = images[i].height;
@@ -1359,8 +1359,8 @@ int InitPlatform(void)
 
     const GLFWallocator allocator = {
         .allocate = AllocateWrapper,
-        .deallocate = DeallocateWrapper,
         .reallocate = ReallocateWrapper,
+        .deallocate = DeallocateWrapper,
         .user = nullptr, // RL_*ALLOC macros are not capable of handling user-provided data
     };
 

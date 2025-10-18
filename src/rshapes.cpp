@@ -83,7 +83,7 @@
 namespace raylib
 {
 
-static Texture2D texShapes = { 1, 1, 1, 1, 7 };                // Texture used on shapes drawing (white pixel loaded by rlgl)
+static Texture2D texShapes = { 1, 1, 1, 1, PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };                // Texture used on shapes drawing (white pixel loaded by rlgl)
 static Rectangle texShapesRec = { 0.0f, 0.0f, 1.0f, 1.0f };    // Texture source rectangle used on shapes drawing
 
 //----------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ void SetShapesTexture(Texture2D texture, Rectangle source)
     // it can break the rendering of all shapes if misused
     if ((texture.id == 0) || (source.width == 0) || (source.height == 0))
     {
-        texShapes = (Texture2D){ 1, 1, 1, 1, 7 };
+        texShapes = (Texture2D){ 1, 1, 1, 1, PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
         texShapesRec = (Rectangle){ 0.0f, 0.0f, 1.0f, 1.0f };
     }
     else

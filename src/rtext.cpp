@@ -246,7 +246,7 @@ extern void LoadFontDefault(void)
         .width = 128,
         .height = 128,
         .mipmaps = 1,
-        .format = PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA
+        .format = PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA
     };
 
     // Fill image.data with defaultFontData (convert from bit to pixel!)
@@ -399,7 +399,7 @@ Font LoadFont(const char *fileName)
         if (font.texture.id == 0) TRACELOG(TraceLogLevel::LOG_WARNING, "FONT: [%s] Failed to load font texture -> Using default font", fileName);
         else
         {
-            SetTextureFilter(font.texture, TEXTURE_FILTER_POINT);    // By default, we set point filter (the best performance)
+            SetTextureFilter(font.texture, TextureFilter::TEXTURE_FILTER_POINT);    // By default, we set point filter (the best performance)
             TRACELOG(TraceLogLevel::LOG_INFO, "FONT: Data loaded successfully (%i pixel size | %i glyphs)", font.baseSize, font.glyphCount);
         }
     }
@@ -518,7 +518,7 @@ Font LoadFontFromImage(Image image, Color key, int firstChar)
         .width = image.width,
         .height = image.height,
         .mipmaps = 1,
-        .format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
+        .format = PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
     };
 
     // Set font with all data parsed from image
@@ -569,7 +569,7 @@ Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int
     if (TextIsEqual(fileExtLower, ".ttf") ||
         TextIsEqual(fileExtLower, ".otf"))
     {
-        font.glyphs = LoadFontData(fileData, dataSize, font.baseSize, codepoints, (codepointCount > 0)? codepointCount : 95, FONT_DEFAULT, &font.glyphCount);
+        font.glyphs = LoadFontData(fileData, dataSize, font.baseSize, codepoints, (codepointCount > 0)? codepointCount : 95, FontType::FONT_DEFAULT, &font.glyphCount);
     }
     else
 #endif
@@ -626,7 +626,7 @@ bool IsFontValid(Font font)
 
 // Load font data for further use
 // NOTE: Requires TTF font memory data and can generate SDF data
-GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSize, const int *codepoints, int codepointCount, int type, int *glyphCount)
+GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSize, const int *codepoints, int codepointCount, const FontType type, int *glyphCount)
 {
     // NOTE: Using some SDF generation default values,
     // trades off precision with ability to handle *smaller* sizes
@@ -710,6 +710,8 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
 
                     switch (type)
                     {
+                        using enum FontType;
+
                         case FONT_DEFAULT:
                         case FONT_BITMAP: glyphs[k].image.data = stbtt_GetCodepointBitmap(&fontInfo, scaleFactor, scaleFactor, cp, &cpWidth, &cpHeight, &glyphs[k].offsetX, &glyphs[k].offsetY); break;
                         case FONT_SDF:
@@ -736,7 +738,7 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
                         glyphs[k].image.width = cpWidth;
                         glyphs[k].image.height = cpHeight;
                         glyphs[k].image.mipmaps = 1;
-                        glyphs[k].image.format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
+                        glyphs[k].image.format = PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
 
                         glyphs[k].offsetY += (int)((float)ascent*scaleFactor);
                     }
@@ -754,13 +756,13 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
                             .width = glyphs[k].advanceX,
                             .height = fontSize,
                             .mipmaps = 1,
-                            .format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE
+                            .format = PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAYSCALE
                         };
 
                         glyphs[k].image = imSpace;
                     }
 
-                    if (type == FONT_BITMAP)
+                    if (type == FontType::FONT_BITMAP)
                     {
                         // Aliased bitmap (black & white) font generation, avoiding anti-aliasing
                         // NOTE: For optimum results, bitmap font should be generated at base pixel size
@@ -860,7 +862,7 @@ Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyp
 #endif
 
     atlas.data = (unsigned char *)RL_CALLOC(1, atlas.width*atlas.height);   // Create a bitmap to store characters (8 bpp)
-    atlas.format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
+    atlas.format = PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
     atlas.mipmaps = 1;
 
     // DEBUG: We can see padding in the generated image setting a gray background...
@@ -988,7 +990,7 @@ Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyp
 
     RL_FREE(atlas.data);
     atlas.data = dataGrayAlpha;
-    atlas.format = PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA;
+    atlas.format = PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA;
 
     *glyphRecs = recs;
 
@@ -1063,7 +1065,7 @@ bool ExportFontAsCode(Font font, const char *fileName)
     // Support font export and initialization
     // NOTE: This mechanism is highly coupled to raylib
     Image image = LoadImageFromTexture(font.texture);
-    if (image.format != PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA) TRACELOG(TraceLogLevel::LOG_WARNING, "Font export as code: Font image format is not GRAY+ALPHA!");
+    if (image.format != PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA) TRACELOG(TraceLogLevel::LOG_WARNING, "Font export as code: Font image format is not GRAY+ALPHA!");
     int imageDataSize = GetPixelDataSize(image.width, image.height, image.format);
 
     // Image data is usually GRAYSCALE + ALPHA and can be reduced to GRAYSCALE
@@ -1129,7 +1131,7 @@ bool ExportFontAsCode(Font font, const char *fileName)
     byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    // NOTE: Compressed font image data (DEFLATE), it requires DecompressData() function\n");
     byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    int fontDataSize_%s = 0;\n", fileNamePascal);
     byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    unsigned char *data = DecompressData(fontData_%s, COMPRESSED_DATA_SIZE_FONT_%s, &fontDataSize_%s);\n", fileNamePascal, TextToUpper(fileNamePascal), fileNamePascal);
-    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    Image imFont = { data, %i, %i, 1, %i };\n\n", image.width, image.height, image.format);
+    byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    Image imFont = { data, %i, %i, 1, %i };\n\n", image.width, image.height, std::to_underlying(image.format));
 #else
     byteCount += std::snprintf(txtData + byteCount, MAX_FONT_DATA_SIZE - byteCount, "    Image imFont = { fontImageData_%s, %i, %i, 1, %i };\n\n", styleName, image.width, image.height, image.format);
 #endif
@@ -2407,7 +2409,7 @@ static Font LoadBMFont(const char *fileName)
     {
         imFonts[i] = LoadImage(TextFormat("%s/%s", GetDirectoryPath(fileName), imFileName[i]));
 
-        if (imFonts[i].format == PIXELFORMAT_UNCOMPRESSED_GRAYSCALE)
+        if (imFonts[i].format == PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAYSCALE)
         {
             // Convert image to GRAYSCALE + ALPHA, using the mask as the alpha channel
             Image imFontAlpha = {
@@ -2415,7 +2417,7 @@ static Font LoadBMFont(const char *fileName)
                 .width = imFonts[i].width,
                 .height = imFonts[i].height,
                 .mipmaps = 1,
-                .format = PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA
+                .format = PixelFormat::PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA
             };
 
             for (int p = 0, pi = 0; p < (imFonts[i].width*imFonts[i].height*2); p += 2, pi++)

@@ -1187,7 +1187,7 @@ void BeginBlendMode(int mode)
 // End blending mode (reset to default: alpha blending)
 void EndBlendMode(void)
 {
-    rlSetBlendMode(BLEND_ALPHA);
+    rlSetBlendMode(std::to_underlying(BlendMode::BLEND_ALPHA));
 }
 
 // Begin scissor mode (define screen area for following drawing)
@@ -1903,7 +1903,7 @@ void TakeScreenshot(const char *fileName)
     if (IsWindowState(FLAG_WINDOW_HIGHDPI)) scale = GetWindowScaleDPI();
 
     unsigned char *imgData = rlReadScreenPixels((int)((float)CORE.Window.render.width*scale.x), (int)((float)CORE.Window.render.height*scale.y));
-    Image image = { imgData, (int)((float)CORE.Window.render.width*scale.x), (int)((float)CORE.Window.render.height*scale.y), 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
+    Image image = { imgData, (int)((float)CORE.Window.render.width*scale.x), (int)((float)CORE.Window.render.height*scale.y), 1, PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
 
     char path[512] = { 0 };
     strcpy(path, TextFormat("%s/%s", CORE.Storage.basePath, fileName));
@@ -2762,16 +2762,18 @@ unsigned char *DecodeDataBase64(const char *text, int *outputSize)
     // Base64 decode table
     // NOTE: Following ASCII order [0..255] assigning the expected sixtet value to
     // every character in the corresponding ASCII position
-    static const unsigned char base64DecodeTable[256] = {
-        ['A'] =  0, ['B'] =  1, ['C'] =  2, ['D'] =  3, ['E'] =  4, ['F'] =  5, ['G'] =  6, ['H'] =  7,
-        ['I'] =  8, ['J'] =  9, ['K'] = 10, ['L'] = 11, ['M'] = 12, ['N'] = 13, ['O'] = 14, ['P'] = 15,
-        ['Q'] = 16, ['R'] = 17, ['S'] = 18, ['T'] = 19, ['U'] = 20, ['V'] = 21, ['W'] = 22, ['X'] = 23, ['Y'] = 24, ['Z'] = 25,
-        ['a'] = 26, ['b'] = 27, ['c'] = 28, ['d'] = 29, ['e'] = 30, ['f'] = 31, ['g'] = 32, ['h'] = 33,
-        ['i'] = 34, ['j'] = 35, ['k'] = 36, ['l'] = 37, ['m'] = 38, ['n'] = 39, ['o'] = 40, ['p'] = 41,
-        ['q'] = 42, ['r'] = 43, ['s'] = 44, ['t'] = 45, ['u'] = 46, ['v'] = 47, ['w'] = 48, ['x'] = 49, ['y'] = 50, ['z'] = 51,
-        ['0'] = 52, ['1'] = 53, ['2'] = 54, ['3'] = 55, ['4'] = 56, ['5'] = 57, ['6'] = 58, ['7'] = 59,
-        ['8'] = 60, ['9'] = 61, ['+'] = 62, ['/'] = 63
-    };
+    static constexpr auto base64DecodeTable = []{
+        std::array<unsigned char, 256> table{};
+        table['A'] =  0, table['B'] =  1, table['C'] =  2, table['D'] =  3, table['E'] =  4, table['F'] =  5, table['G'] =  6, table['H'] =  7,
+        table['I'] =  8, table['J'] =  9, table['K'] = 10, table['L'] = 11, table['M'] = 12, table['N'] = 13, table['O'] = 14, table['P'] = 15,
+        table['Q'] = 16, table['R'] = 17, table['S'] = 18, table['T'] = 19, table['U'] = 20, table['V'] = 21, table['W'] = 22, table['X'] = 23, table['Y'] = 24, table['Z'] = 25,
+        table['a'] = 26, table['b'] = 27, table['c'] = 28, table['d'] = 29, table['e'] = 30, table['f'] = 31, table['g'] = 32, table['h'] = 33,
+        table['i'] = 34, table['j'] = 35, table['k'] = 36, table['l'] = 37, table['m'] = 38, table['n'] = 39, table['o'] = 40, table['p'] = 41,
+        table['q'] = 42, table['r'] = 43, table['s'] = 44, table['t'] = 45, table['u'] = 46, table['v'] = 47, table['w'] = 48, table['x'] = 49, table['y'] = 50, table['z'] = 51,
+        table['0'] = 52, table['1'] = 53, table['2'] = 54, table['3'] = 55, table['4'] = 56, table['5'] = 57, table['6'] = 58, table['7'] = 59,
+        table['8'] = 60, table['9'] = 61, table['+'] = 62, table['/'] = 63;
+        return table;
+    }();
 
     // Compute expected size and padding
     int dataSize = (int)strlen(text); // WARNING: Expecting nullptr terminated strings!
@@ -4254,7 +4256,7 @@ static void RecordAutomationEvent(void)
 #if defined(SUPPORT_GESTURES_SYSTEM)
     // Gestures input currentEventList->events recording
     //-------------------------------------------------------------------------------------
-    if (GESTURES.current != GESTURE_NONE)
+    if (GESTURES.current != std::to_underlying(Gesture::GESTURE_NONE))
     {
         // Event type: INPUT_GESTURE
         currentEventList->events[currentEventList->count].frame = CORE.Time.frameCounter;

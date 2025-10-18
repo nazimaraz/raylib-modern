@@ -243,13 +243,15 @@ struct Rectangle {
     float height;           // Rectangle height
 };
 
+enum class PixelFormat;
+
 // Image, pixel data stored in CPU memory (RAM)
 struct Image {
     void *data;             // Image raw data
     int width;              // Image base width
     int height;             // Image base height
     int mipmaps;            // Mipmap levels, 1 by default
-    int format;             // Data format (PixelFormat type)
+    PixelFormat format;             // Data format (PixelFormat type)
 };
 
 // Texture, tex data stored in GPU memory (VRAM)
@@ -258,7 +260,7 @@ struct Texture {
     int width;              // Texture base width
     int height;             // Texture base height
     int mipmaps;            // Mipmap levels, 1 by default
-    int format;             // Data format (PixelFormat type)
+    PixelFormat format;             // Data format (PixelFormat type)
 };
 
 // Texture2D, same as Texture
@@ -277,6 +279,8 @@ struct RenderTexture {
 // RenderTexture2D, same as RenderTexture
 using RenderTexture2D = RenderTexture;
 
+enum class NPatchLayout;
+
 // NPatchInfo, n-patch layout info
 struct NPatchInfo {
     Rectangle source;       // Texture source rectangle
@@ -284,7 +288,7 @@ struct NPatchInfo {
     int top;                // Top border offset
     int right;              // Right border offset
     int bottom;             // Bottom border offset
-    int layout;             // Layout of the n-patch: 3x3, 1x3 or 3x1
+    NPatchLayout layout;             // Layout of the n-patch: 3x3, 1x3 or 3x1
 };
 
 // GlyphInfo, font characters glyphs info
@@ -797,7 +801,7 @@ static constexpr auto SHADER_LOC_MAP_DIFFUSE = ShaderLocationIndex::SHADER_LOC_M
 static constexpr auto SHADER_LOC_MAP_SPECULAR = ShaderLocationIndex::SHADER_LOC_MAP_METALNESS;
 
 // Shader uniform data type
-enum ShaderUniformDataType {
+enum class ShaderUniformDataType {
     SHADER_UNIFORM_FLOAT = 0,       // Shader uniform type: float
     SHADER_UNIFORM_VEC2,            // Shader uniform type: vec2 (2 float)
     SHADER_UNIFORM_VEC3,            // Shader uniform type: vec3 (3 float)
@@ -814,7 +818,7 @@ enum ShaderUniformDataType {
 };
 
 // Shader attribute data types
-enum ShaderAttributeDataType {
+enum class ShaderAttributeDataType {
     SHADER_ATTRIB_FLOAT = 0,        // Shader attribute type: float
     SHADER_ATTRIB_VEC2,             // Shader attribute type: vec2 (2 float)
     SHADER_ATTRIB_VEC3,             // Shader attribute type: vec3 (3 float)
@@ -823,7 +827,7 @@ enum ShaderAttributeDataType {
 
 // Pixel formats
 // NOTE: Support depends on OpenGL version and platform
-enum PixelFormat {
+enum class PixelFormat {
     PIXELFORMAT_UNCOMPRESSED_GRAYSCALE = 1, // 8 bit per pixel (no alpha)
     PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA,    // 8*2 bpp (2 channels)
     PIXELFORMAT_UNCOMPRESSED_R5G6B5,        // 16 bpp
@@ -853,7 +857,7 @@ enum PixelFormat {
 // Texture parameters: filter mode
 // NOTE 1: Filtering considers mipmaps if available in the texture
 // NOTE 2: Filter is accordingly set for minification and magnification
-enum TextureFilter {
+enum class TextureFilter {
     TEXTURE_FILTER_POINT = 0,               // No filter, just pixel approximation
     TEXTURE_FILTER_BILINEAR,                // Linear filtering
     TEXTURE_FILTER_TRILINEAR,               // Trilinear filtering (linear with mipmaps)
@@ -863,7 +867,7 @@ enum TextureFilter {
 };
 
 // Texture parameters: wrap mode
-enum TextureWrap {
+enum class TextureWrap {
     TEXTURE_WRAP_REPEAT = 0,                // Repeats texture in tiled mode
     TEXTURE_WRAP_CLAMP,                     // Clamps texture to edge pixel in tiled mode
     TEXTURE_WRAP_MIRROR_REPEAT,             // Mirrors and repeats the texture in tiled mode
@@ -871,7 +875,7 @@ enum TextureWrap {
 };
 
 // Cubemap layouts
-enum CubemapLayout {
+enum class CubemapLayout {
     CUBEMAP_LAYOUT_AUTO_DETECT = 0,         // Automatically detect layout type
     CUBEMAP_LAYOUT_LINE_VERTICAL,           // Layout is defined by a vertical line with faces
     CUBEMAP_LAYOUT_LINE_HORIZONTAL,         // Layout is defined by a horizontal line with faces
@@ -880,14 +884,14 @@ enum CubemapLayout {
 };
 
 // Font type, defines generation method
-enum FontType {
+enum class FontType {
     FONT_DEFAULT = 0,               // Default font generation, anti-aliased
     FONT_BITMAP,                    // Bitmap font generation, no anti-aliasing
     FONT_SDF                        // SDF font generation, requires external shader
 };
 
 // Color blending modes (pre-defined)
-enum BlendMode {
+enum class BlendMode {
     BLEND_ALPHA = 0,                // Blend textures considering alpha (default)
     BLEND_ADDITIVE,                 // Blend textures adding colors
     BLEND_MULTIPLIED,               // Blend textures multiplying colors
@@ -900,7 +904,7 @@ enum BlendMode {
 
 // Gesture
 // NOTE: Provided as bit-wise flags to enable only desired gestures
-enum Gesture {
+enum class Gesture {
     GESTURE_NONE        = 0,        // No gesture
     GESTURE_TAP         = 1,        // Tap gesture
     GESTURE_DOUBLETAP   = 2,        // Double tap gesture
@@ -931,7 +935,7 @@ enum class CameraProjection {
 };
 
 // N-patch layout
-enum NPatchLayout {
+enum class NPatchLayout {
     NPATCH_NINE_PATCH = 0,          // Npatch layout: 3x3 tiles
     NPATCH_THREE_PATCH_VERTICAL,    // Npatch layout: 1x3 tiles
     NPATCH_THREE_PATCH_HORIZONTAL   // Npatch layout: 3x1 tiles
@@ -1320,7 +1324,7 @@ RLAPI Rectangle GetCollisionRec(Rectangle rec1, Rectangle rec2);                
 // Image loading functions
 // NOTE: These functions do not require GPU access
 RLAPI Image LoadImage(const char *fileName);                                                             // Load image from file into CPU memory (RAM)
-RLAPI Image LoadImageRaw(const char *fileName, int width, int height, int format, int headerSize);       // Load image from RAW file data
+RLAPI Image LoadImageRaw(const char *fileName, int width, int height, PixelFormat format, int headerSize);       // Load image from RAW file data
 RLAPI Image LoadImageAnim(const char *fileName, int *frames);                                            // Load image sequence from file (frames appended to image.data)
 RLAPI Image LoadImageAnimFromMemory(const char *fileType, const unsigned char *fileData, int dataSize, int *frames); // Load image sequence from memory buffer
 RLAPI Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, int dataSize);      // Load image from memory buffer, fileType refers to extension: i.e. '.png'
@@ -1349,7 +1353,7 @@ RLAPI Image ImageFromImage(Image image, Rectangle rec);                         
 RLAPI Image ImageFromChannel(Image image, int selectedChannel);                                          // Create an image from a selected channel of another image (GRAYSCALE)
 RLAPI Image ImageText(const char *text, int fontSize, Color color);                                      // Create an image from text (default font)
 RLAPI Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Color tint);         // Create an image from text (custom sprite font)
-RLAPI void ImageFormat(Image *image, int newFormat);                                                     // Convert image data to desired format
+RLAPI void ImageFormat(Image *image, PixelFormat newFormat);                                                     // Convert image data to desired format
 RLAPI void ImageToPOT(Image *image, Color fill);                                                         // Convert image to POT (power-of-two)
 RLAPI void ImageCrop(Image *image, Rectangle crop);                                                      // Crop an image to a defined rectangle
 RLAPI void ImageAlphaCrop(Image *image, float threshold);                                                // Crop image depending on alpha value
@@ -1410,7 +1414,7 @@ RLAPI void ImageDrawTextEx(Image *dst, Font font, const char *text, Vector2 posi
 // NOTE: These functions require GPU access
 RLAPI Texture2D LoadTexture(const char *fileName);                                                       // Load texture from file into GPU memory (VRAM)
 RLAPI Texture2D LoadTextureFromImage(Image image);                                                       // Load texture from image data
-RLAPI TextureCubemap LoadTextureCubemap(Image image, int layout);                                        // Load cubemap from image, multiple image cubemap layouts supported
+RLAPI TextureCubemap LoadTextureCubemap(Image image, CubemapLayout layout);                                        // Load cubemap from image, multiple image cubemap layouts supported
 RLAPI RenderTexture2D LoadRenderTexture(int width, int height);                                          // Load texture for rendering (framebuffer)
 RLAPI bool IsTextureValid(Texture2D texture);                                                            // Check if a texture is valid (loaded in GPU)
 RLAPI void UnloadTexture(Texture2D texture);                                                             // Unload texture from GPU memory (VRAM)
@@ -1421,8 +1425,8 @@ RLAPI void UpdateTextureRec(Texture2D texture, Rectangle rec, const void *pixels
 
 // Texture configuration functions
 RLAPI void GenTextureMipmaps(Texture2D *texture);                                                        // Generate GPU mipmaps for a texture
-RLAPI void SetTextureFilter(Texture2D texture, int filter);                                              // Set texture scaling filter mode
-RLAPI void SetTextureWrap(Texture2D texture, int wrap);                                                  // Set texture wrapping mode
+RLAPI void SetTextureFilter(Texture2D texture, TextureFilter filter);                                              // Set texture scaling filter mode
+RLAPI void SetTextureWrap(Texture2D texture, TextureWrap wrap);                                                  // Set texture wrapping mode
 
 // Texture drawing functions
 RLAPI void DrawTexture(Texture2D texture, int posX, int posY, Color tint);                               // Draw a Texture2D
@@ -1447,9 +1451,9 @@ RLAPI Color ColorAlpha(Color color, float alpha);                           // G
 RLAPI Color ColorAlphaBlend(Color dst, Color src, Color tint);              // Get src alpha-blended into dst color with tint
 RLAPI Color ColorLerp(Color color1, Color color2, float factor);            // Get color lerp interpolation between two colors, factor [0.0f..1.0f]
 RLAPI Color GetColor(unsigned int hexValue);                                // Get Color structure from hexadecimal value
-RLAPI Color GetPixelColor(void *srcPtr, int format);                        // Get Color from a source pixel pointer of certain format
-RLAPI void SetPixelColor(void *dstPtr, Color color, int format);            // Set color formatted into destination pixel pointer
-RLAPI int GetPixelDataSize(int width, int height, int format);              // Get pixel data size in bytes for certain format
+RLAPI Color GetPixelColor(void *srcPtr, PixelFormat format);                        // Get Color from a source pixel pointer of certain format
+RLAPI void SetPixelColor(void *dstPtr, Color color, PixelFormat format);            // Set color formatted into destination pixel pointer
+RLAPI int GetPixelDataSize(int width, int height, PixelFormat format);              // Get pixel data size in bytes for certain format
 
 //------------------------------------------------------------------------------------
 // Font Loading and Text Drawing Functions (Module: text)
@@ -1462,7 +1466,7 @@ RLAPI Font LoadFontEx(const char *fileName, int fontSize, const int *codepoints,
 RLAPI Font LoadFontFromImage(Image image, Color key, int firstChar);                        // Load font from Image (XNA style)
 RLAPI Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int dataSize, int fontSize, const int *codepoints, int codepointCount); // Load font from memory buffer, fileType refers to extension: i.e. '.ttf'
 RLAPI bool IsFontValid(Font font);                                                          // Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
-RLAPI GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSize, const int *codepoints, int codepointCount, int type, int *glyphCount); // Load font data for further use
+RLAPI GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSize, const int *codepoints, int codepointCount, FontType type, int *glyphCount); // Load font data for further use
 RLAPI Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyphCount, int fontSize, int padding, int packMethod); // Generate image font atlas using chars info
 RLAPI void UnloadFontData(GlyphInfo *glyphs, int glyphCount);                               // Unload font chars info data (RAM)
 RLAPI void UnloadFont(Font font);                                                           // Unload font from GPU memory (VRAM)
