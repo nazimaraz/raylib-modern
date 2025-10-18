@@ -197,6 +197,22 @@ void DrawLineV(Vector2 startPos, Vector2 endPos, Color color)
 }
 
 // Draw lines sequuence (using gl lines)
+void DrawLineStrip(const std::vector<Vector2> &points, Color color)
+{
+    if (points.size() < 2) return; // Security check
+
+    rlBegin(RL_LINES);
+    rlColor4ub(color.r, color.g, color.b, color.a);
+
+    for (int i = 0; i < points.size() - 1; i++)
+    {
+        rlVertex2f(points[i].x, points[i].y);
+        rlVertex2f(points[i + 1].x, points[i + 1].y);
+    }
+    rlEnd();
+}
+
+// Draw lines sequuence (using gl lines)
 void DrawLineStrip(const Vector2 *points, int pointCount, Color color)
 {
     if (pointCount < 2) return; // Security check

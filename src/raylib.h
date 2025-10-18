@@ -88,6 +88,7 @@
 #include <cstdarg>     // Required for: va_list - Only used by TraceLogCallback
 #include <utility>
 #include <numbers>
+#include <vector>
 
 namespace raylib
 {
@@ -1250,6 +1251,7 @@ RLAPI void DrawPixelV(Vector2 position, Color color);                           
 RLAPI void DrawLine(int startPosX, int startPosY, int endPosX, int endPosY, Color color);                // Draw a line
 RLAPI void DrawLineV(Vector2 startPos, Vector2 endPos, Color color);                                     // Draw a line (using gl lines)
 RLAPI void DrawLineEx(Vector2 startPos, Vector2 endPos, float thick, Color color);                       // Draw a line (using triangles/quads)
+RLAPI void DrawLineStrip(const std::vector<Vector2> &points, Color color);                            // Draw lines sequence (using gl lines)
 RLAPI void DrawLineStrip(const Vector2 *points, int pointCount, Color color);                            // Draw lines sequence (using gl lines)
 RLAPI void DrawLineBezier(Vector2 startPos, Vector2 endPos, float thick, Color color);                   // Draw line segment cubic-bezier in-out interpolation
 RLAPI void DrawCircle(int centerX, int centerY, float radius, Color color);                              // Draw a color-filled circle
