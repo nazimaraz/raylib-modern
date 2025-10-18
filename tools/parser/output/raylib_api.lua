@@ -1796,6 +1796,15 @@ return {
       description = "Draw lines sequence (using gl lines)",
       returnType = "void",
       params = {
+        {type = "const std::vector<Vector2>", name = "&points"},
+        {type = "Color", name = "color"}
+      }
+    },
+    {
+      name = "DrawLineStrip",
+      description = "Draw lines sequence (using gl lines)",
+      returnType = "void",
+      params = {
         {type = "const Vector2 *", name = "points"},
         {type = "int", name = "pointCount"},
         {type = "Color", name = "color"}

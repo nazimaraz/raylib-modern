@@ -29,7 +29,7 @@
     </Enums>
     <Callbacks count="0">
     </Callbacks>
-    <Functions count="596">
+    <Functions count="597">
         <Function name="InitWindow" retType="void" paramCount="3" desc="Initialize window and OpenGL context">
             <Param type="int" name="width" desc="" />
             <Param type="int" name="height" desc="" />
@@ -723,6 +723,10 @@
             <Param type="Vector2" name="startPos" desc="" />
             <Param type="Vector2" name="endPos" desc="" />
             <Param type="float" name="thick" desc="" />
+            <Param type="Color" name="color" desc="" />
+        </Function>
+        <Function name="DrawLineStrip" retType="void" paramCount="2" desc="Draw lines sequence (using gl lines)">
+            <Param type="const std::vector<Vector2>" name="&points" desc="" />
             <Param type="Color" name="color" desc="" />
         </Function>
         <Function name="DrawLineStrip" retType="void" paramCount="3" desc="Draw lines sequence (using gl lines)">
