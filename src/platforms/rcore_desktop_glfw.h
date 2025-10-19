@@ -1003,7 +1003,7 @@ Vector2 GetWindowPosition(void)
 // Get window scale DPI factor for current monitor
 Vector2 GetWindowScaleDPI(void)
 {
-    Vector2 scale = { 0 };
+    Vector2 scale{};
     glfwGetWindowContentScale(platform.handle, &scale.x, &scale.y);
     return scale;
 }

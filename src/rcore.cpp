@@ -386,7 +386,7 @@ struct CoreData {
 //----------------------------------------------------------------------------------
 RLAPI const char *raylib_version = RAYLIB_VERSION;  // raylib version exported symbol, required for some bindings
 
-CoreData CORE = { 0 };                      // Global CORE state context
+CoreData CORE{};                      // Global CORE state context
 
 // Flag to note GPU acceleration is available,
 // referenced from other modules to support GPU data loading
@@ -400,7 +400,7 @@ static int screenshotCounter = 0;           // Screenshots counter
 #if defined(SUPPORT_GIF_RECORDING)
 static unsigned int gifFrameCounter = 0;    // GIF frames counter
 static bool gifRecording = false;           // GIF recording state
-static MsfGifState gifState = { 0 };        // MSGIF context state
+static MsfGifState gifState{};        // MSGIF context state
 #endif
 
 #if defined(SUPPORT_AUTOMATION_EVENTS)
@@ -1247,7 +1247,7 @@ void EndVrStereoMode(void)
 // Load VR stereo config for VR simulator device parameters
 VrStereoConfig LoadVrStereoConfig(VrDeviceInfo device)
 {
-    VrStereoConfig config = { 0 };
+    VrStereoConfig config{};
 
     if (rlGetVersion() != RL_OPENGL_11)
     {
@@ -1332,7 +1332,7 @@ void UnloadVrStereoConfig(VrStereoConfig config)
 // NOTE: If shader string is nullptr, using default vertex/fragment shaders
 Shader LoadShader(const char *vsFileName, const char *fsFileName)
 {
-    Shader shader = { 0 };
+    Shader shader{};
 
     char *vShaderStr = nullptr;
     char *fShaderStr = nullptr;
@@ -1353,7 +1353,7 @@ Shader LoadShader(const char *vsFileName, const char *fsFileName)
 // Load shader from code strings and bind default locations
 Shader LoadShaderFromMemory(const char *vsCode, const char *fsCode)
 {
-    Shader shader = { 0 };
+    Shader shader{};
 
     shader.id = rlLoadShaderCode(vsCode, fsCode);
 
@@ -1517,7 +1517,7 @@ Ray GetScreenToWorldRay(Vector2 position, Camera camera)
 // Get a ray trace from the screen position (i.e mouse) within a specific section of the screen
 Ray GetScreenToWorldRayEx(Vector2 position, Camera camera, int width, int height)
 {
-    Ray ray = { 0 };
+    Ray ray{};
 
     // Calculate normalized device coordinates
     // NOTE: y value is negative
@@ -1581,7 +1581,7 @@ Matrix GetCameraMatrix(Camera camera)
 // Get camera 2d transform matrix
 Matrix GetCameraMatrix2D(Camera2D camera)
 {
-    Matrix matTransform = { 0 };
+    Matrix matTransform{};
     // The camera in world-space is set by
     //   1. Move it to target
     //   2. Rotate by -rotation and scale by (1/zoom)
@@ -1704,7 +1704,7 @@ int GetFPS(void)
     #define FPS_STEP (FPS_AVERAGE_TIME_SECONDS/FPS_CAPTURE_FRAMES_COUNT)
 
     static int index = 0;
-    static float history[FPS_CAPTURE_FRAMES_COUNT] = { 0 };
+    static float history[FPS_CAPTURE_FRAMES_COUNT]{};
     static float average = 0, last = 0;
     float fpsFrame = GetFrameTime();
 
@@ -1776,7 +1776,7 @@ void WaitTime(double seconds)
         Sleep((unsigned long)(sleepSeconds*1000.0));
     #endif
     #if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__EMSCRIPTEN__)
-        struct timespec req = { 0 };
+        struct timespec req{};
         time_t sec = sleepSeconds;
         long nsec = (sleepSeconds - sec)*1000000000L;
         req.tv_sec = sec;
@@ -1905,7 +1905,7 @@ void TakeScreenshot(const char *fileName)
     unsigned char *imgData = rlReadScreenPixels((int)((float)CORE.Window.render.width*scale.x), (int)((float)CORE.Window.render.height*scale.y));
     Image image = { imgData, (int)((float)CORE.Window.render.width*scale.x), (int)((float)CORE.Window.render.height*scale.y), 1, PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
 
-    char path[512] = { 0 };
+    char path[512]{};
     strcpy(path, TextFormat("%s/%s", CORE.Storage.basePath, fileName));
 
     ExportImage(image, path); // WARNING: Module required: rtextures
@@ -2009,7 +2009,7 @@ int FileTextReplace(const char *fileName, const char *search, const char *replac
 {
     int result = 0;
     char *fileText = nullptr;
-    char *fileTextUpdated = { 0 };
+    char *fileTextUpdated{};
 
 #if defined(SUPPORT_MODULE_RTEXT)
     if (FileExists(fileName))
@@ -2077,7 +2077,7 @@ bool IsFileExtension(const char *fileName, const char *ext)
     if (fileExt != nullptr)
     {
         int fileExtLen = (int)strlen(fileExt);
-        char fileExtLower[16] = { 0 };
+        char fileExtLower[16]{};
         char *fileExtLowerPtr = fileExtLower;
         for (int i = 0; (i < fileExtLen) && (i < 16); i++)
         {
@@ -2089,7 +2089,7 @@ bool IsFileExtension(const char *fileName, const char *ext)
         int extCount = 1;
         int extLen = (int)strlen(ext);
         char *extList = (char *)RL_CALLOC(extLen + 1, 1);
-        char *extListPtrs[MAX_FILE_EXTENSIONS] = { 0 };
+        char *extListPtrs[MAX_FILE_EXTENSIONS]{};
         strcpy(extList, ext);
         extListPtrs[0] = extList;
 
@@ -2150,7 +2150,7 @@ int GetFileLength(const char *fileName)
 
     // NOTE: On Unix-like systems, it can by used the POSIX system call: stat(),
     // but depending on the platform that call could not be available
-    //struct stat result = { 0 };
+    //struct stat result{};
     //stat(fileName, &result);
     //return result.st_size;
 
@@ -2174,7 +2174,7 @@ int GetFileLength(const char *fileName)
 // Get file modification time (last write time)
 long GetFileModTime(const char *fileName)
 {
-    struct stat result = { 0 };
+    struct stat result{};
     long modTime = 0;
 
     if (stat(fileName, &result) == 0)
@@ -2224,7 +2224,7 @@ const char *GetFileNameWithoutExt(const char *filePath)
 {
     #define MAX_FILENAME_LENGTH     256
 
-    static char fileName[MAX_FILENAME_LENGTH] = { 0 };
+    static char fileName[MAX_FILENAME_LENGTH]{};
     memset(fileName, 0, MAX_FILENAME_LENGTH);
 
     if (filePath != nullptr)
@@ -2259,7 +2259,7 @@ const char *GetDirectoryPath(const char *filePath)
     #endif
     */
     const char *lastSlash = nullptr;
-    static char dirPath[MAX_FILEPATH_LENGTH] = { 0 };
+    static char dirPath[MAX_FILEPATH_LENGTH]{};
     memset(dirPath, 0, MAX_FILEPATH_LENGTH);
 
     // In case provided path does not contain a root drive letter (C:\, D:\) nor leading path separator (\, /),
@@ -2297,7 +2297,7 @@ const char *GetDirectoryPath(const char *filePath)
 // Get previous directory path for a given path
 const char *GetPrevDirectoryPath(const char *dirPath)
 {
-    static char prevDirPath[MAX_FILEPATH_LENGTH] = { 0 };
+    static char prevDirPath[MAX_FILEPATH_LENGTH]{};
     memset(prevDirPath, 0, MAX_FILEPATH_LENGTH);
     int pathLen = (int)strlen(dirPath);
 
@@ -2321,7 +2321,7 @@ const char *GetPrevDirectoryPath(const char *dirPath)
 // Get current working directory
 const char *GetWorkingDirectory(void)
 {
-    static char currentDir[MAX_FILEPATH_LENGTH] = { 0 };
+    static char currentDir[MAX_FILEPATH_LENGTH]{};
     memset(currentDir, 0, MAX_FILEPATH_LENGTH);
 
     char *path = GETCWD(currentDir, MAX_FILEPATH_LENGTH - 1);
@@ -2331,7 +2331,7 @@ const char *GetWorkingDirectory(void)
 
 const char *GetApplicationDirectory(void)
 {
-    static char appDir[MAX_FILEPATH_LENGTH] = { 0 };
+    static char appDir[MAX_FILEPATH_LENGTH]{};
     memset(appDir, 0, MAX_FILEPATH_LENGTH);
 
 #if defined(_WIN32)
@@ -2433,7 +2433,7 @@ const char *GetApplicationDirectory(void)
 // No recursive scanning is done!
 FilePathList LoadDirectoryFiles(const char *dirPath)
 {
-    FilePathList files = { 0 };
+    FilePathList files{};
     unsigned int fileCounter = 0;
 
     struct dirent *entity;
@@ -2471,7 +2471,7 @@ FilePathList LoadDirectoryFiles(const char *dirPath)
 // NOTE: On recursive loading we do not pre-scan for file count, we use MAX_FILEPATH_CAPACITY
 FilePathList LoadDirectoryFilesEx(const char *basePath, const char *filter, bool scanSubdirs)
 {
-    FilePathList files = { 0 };
+    FilePathList files{};
 
     files.capacity = MAX_FILEPATH_CAPACITY;
     files.paths = (char **)RL_CALLOC(files.capacity, sizeof(char *));
@@ -2547,7 +2547,7 @@ bool ChangeDirectory(const char *dir)
 // Check if a given path point to a file
 bool IsPathFile(const char *path)
 {
-    struct stat result = { 0 };
+    struct stat result{};
     stat(path, &result);
 
     return S_ISREG(result.st_mode);
@@ -2624,7 +2624,7 @@ bool IsFileDropped(void)
 // Load dropped filepaths
 FilePathList LoadDroppedFiles(void)
 {
-    FilePathList files = { 0 };
+    FilePathList files{};
 
     files.count = CORE.Window.dropFileCount;
     files.paths = CORE.Window.dropFilepaths;
@@ -2875,7 +2875,7 @@ unsigned int *ComputeMD5(unsigned char *data, int dataSize)
 {
     #define ROTATE_LEFT(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
 
-    static unsigned int hash[4] = { 0 };  // Hash to be returned
+    static unsigned int hash[4]{};  // Hash to be returned
 
     // WARNING: All variables are unsigned 32 bit and wrap modulo 2^32 when calculating
 
@@ -2993,7 +2993,7 @@ unsigned int *ComputeSHA1(unsigned char *data, int dataSize)
 {
     #define ROTATE_LEFT(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
 
-    static unsigned int hash[5] = { 0 };  // Hash to be returned
+    static unsigned int hash[5]{};  // Hash to be returned
 
     // Initialize hash values
     hash[0] = 0x67452301;
@@ -3024,7 +3024,7 @@ unsigned int *ComputeSHA1(unsigned char *data, int dataSize)
     for (int offset = 0; offset < newDataSize; offset += (512/8))
     {
         // Break chunk into sixteen 32-bit words w[j], 0 <= j <= 15
-        unsigned int w[80] = { 0 };
+        unsigned int w[80]{};
         for (int i = 0; i < 16; i++)
         {
             w[i] = (msg[offset + (i*4) + 0] << 24) |
@@ -3097,7 +3097,7 @@ unsigned int *ComputeSHA1(unsigned char *data, int dataSize)
 // Load automation events list from file, nullptr for empty list, capacity = MAX_AUTOMATION_EVENTS
 AutomationEventList LoadAutomationEventList(const char *fileName)
 {
-    AutomationEventList list = { 0 };
+    AutomationEventList list{};
 
     // Allocate and empty automation event list, ready to record new events
     list.events = (AutomationEvent *)RL_CALLOC(MAX_AUTOMATION_EVENTS, sizeof(AutomationEvent));
@@ -3113,7 +3113,7 @@ AutomationEventList LoadAutomationEventList(const char *fileName)
         //unsigned char *data = LoadFileData(fileName, &dataSize);
 
         FILE *raeFile = fopen(fileName, "rb");
-        unsigned char fileId[4] = { 0 };
+        unsigned char fileId[4]{};
 
         fread(fileId, 1, 4, raeFile);
 
@@ -3134,8 +3134,8 @@ AutomationEventList LoadAutomationEventList(const char *fileName)
         if (raeFile != nullptr)
         {
             unsigned int counter = 0;
-            char buffer[256] = { 0 };
-            char eventDesc[64] = { 0 };
+            char buffer[256]{};
+            char eventDesc[64]{};
 
             char *result = fgets(buffer, 256, raeFile);
             if (result != buffer) TRACELOG(TraceLogLevel::LOG_WARNING, "AUTOMATION: [%s] Issue reading line to buffer", fileName);
@@ -3637,7 +3637,7 @@ int GetMouseY(void)
 // Get mouse position XY
 Vector2 GetMousePosition(void)
 {
-    Vector2 position = { 0 };
+    Vector2 position{};
 
     position.x = (CORE.Input.Mouse.currentPosition.x + CORE.Input.Mouse.offset.x)*CORE.Input.Mouse.scale.x;
     position.y = (CORE.Input.Mouse.currentPosition.y + CORE.Input.Mouse.offset.y)*CORE.Input.Mouse.scale.y;
@@ -3648,7 +3648,7 @@ Vector2 GetMousePosition(void)
 // Get mouse delta between frames
 Vector2 GetMouseDelta(void)
 {
-    Vector2 delta = { 0 };
+    Vector2 delta{};
 
     delta.x = CORE.Input.Mouse.currentPosition.x - CORE.Input.Mouse.previousPosition.x;
     delta.y = CORE.Input.Mouse.currentPosition.y - CORE.Input.Mouse.previousPosition.y;
@@ -3684,7 +3684,7 @@ float GetMouseWheelMove(void)
 // Get mouse wheel movement X/Y as a vector
 Vector2 GetMouseWheelMoveV(void)
 {
-    Vector2 result = { 0 };
+    Vector2 result{};
 
     result = CORE.Input.Mouse.currentWheelMove;
 
@@ -3757,7 +3757,7 @@ void InitTimer(void)
 #endif
 
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__EMSCRIPTEN__)
-    struct timespec now = { 0 };
+    struct timespec now{};
 
     if (clock_gettime(CLOCK_MONOTONIC, &now) == 0)  // Success
     {
@@ -3879,7 +3879,7 @@ void SetupFramebuffer(int width, int height)
 // contain enough space to store all required paths
 static void ScanDirectoryFiles(const char *basePath, FilePathList *files, const char *filter)
 {
-    static char path[MAX_FILEPATH_LENGTH] = { 0 };
+    static char path[MAX_FILEPATH_LENGTH]{};
     memset(path, 0, MAX_FILEPATH_LENGTH);
 
     struct dirent *dp = nullptr;
@@ -3938,7 +3938,7 @@ static void ScanDirectoryFiles(const char *basePath, FilePathList *files, const 
 static void ScanDirectoryFilesRecursively(const char *basePath, FilePathList *files, const char *filter)
 {
     // WARNING: Path can not be static or it will be reused between recursive function calls!
-    char path[MAX_FILEPATH_LENGTH] = { 0 };
+    char path[MAX_FILEPATH_LENGTH]{};
     memset(path, 0, MAX_FILEPATH_LENGTH);
 
     struct dirent *dp = nullptr;
@@ -4288,7 +4288,7 @@ const char *TextFormat(const char *text, ...)
 #endif
 
     // We create an array of buffers so strings don't expire until MAX_TEXTFORMAT_BUFFERS invocations
-    static char buffers[MAX_TEXTFORMAT_BUFFERS][MAX_TEXT_BUFFER_LENGTH] = { 0 };
+    static char buffers[MAX_TEXTFORMAT_BUFFERS][MAX_TEXT_BUFFER_LENGTH]{};
     static int index = 0;
 
     char *currentBuffer = buffers[index];

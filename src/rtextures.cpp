@@ -273,7 +273,7 @@ static Vector4 *LoadImageDataNormalized(Image image);       // Load pixel data f
 // Load image from file into CPU memory (RAM)
 Image LoadImage(const char *fileName)
 {
-    Image image = { 0 };
+    Image image{};
 
 #if defined(SUPPORT_FILEFORMAT_PNG) || \
     defined(SUPPORT_FILEFORMAT_BMP) || \
@@ -306,7 +306,7 @@ Image LoadImage(const char *fileName)
 // Load an image from RAW file data
 Image LoadImageRaw(const char *fileName, int width, int height, const PixelFormat format, int headerSize)
 {
-    Image image = { 0 };
+    Image image{};
 
     int dataSize = 0;
     unsigned char *fileData = LoadFileData(fileName, &dataSize);
@@ -342,7 +342,7 @@ Image LoadImageRaw(const char *fileName, int width, int height, const PixelForma
 //  - Frames delay data is discarded
 Image LoadImageAnim(const char *fileName, int *frames)
 {
-    Image image = { 0 };
+    Image image{};
     int frameCount = 0;
 
 #if defined(SUPPORT_FILEFORMAT_GIF)
@@ -384,7 +384,7 @@ Image LoadImageAnim(const char *fileName, int *frames)
 //  - Frames delay data is discarded
 Image LoadImageAnimFromMemory(const char *fileType, const unsigned char *fileData, int dataSize, int *frames)
 {
-    Image image = { 0 };
+    Image image{};
     int frameCount = 0;
 
     // Security check for input data
@@ -422,7 +422,7 @@ Image LoadImageAnimFromMemory(const char *fileType, const unsigned char *fileDat
 // WARNING: File extension must be provided in lower-case
 Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, int dataSize)
 {
-    Image image = { 0 };
+    Image image{};
 
     // Security checks for input data
     if ((fileData == nullptr) || (dataSize == 0))
@@ -513,7 +513,7 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
     {
         if (fileData != nullptr)
         {
-            qoi_desc desc = { 0 };
+            qoi_desc desc{};
             image.data = qoi_decode(fileData, dataSize, &desc, (int) fileData[12]);
             image.width = desc.width;
             image.height = desc.height;
@@ -564,7 +564,7 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
 // NOTE: Compressed texture formats not supported
 Image LoadImageFromTexture(Texture2D texture)
 {
-    Image image = { 0 };
+    Image image{};
 
     if (texture.format < PixelFormat::PIXELFORMAT_COMPRESSED_DXT1_RGB)
     {
@@ -595,7 +595,7 @@ Image LoadImageFromTexture(Texture2D texture)
 // Load image from screen buffer and (screenshot)
 Image LoadImageFromScreen(void)
 {
-    Image image = { 0 };
+    Image image{};
 
     image.width = (int)(GetRenderWidth());
     image.height = (int)(GetRenderHeight());
@@ -681,7 +681,7 @@ bool ExportImage(Image image, const char *fileName)
 
         if ((channels == 3) || (channels == 4))
         {
-            qoi_desc desc = { 0 };
+            qoi_desc desc{};
             desc.width = image.width;
             desc.height = image.height;
             desc.channels = channels;
@@ -774,7 +774,7 @@ bool ExportImageAsCode(Image image, const char *fileName)
     byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
 
     // Get file name from path and convert variable name to uppercase
-    char varFileName[256] = { 0 };
+    char varFileName[256]{};
     strcpy(varFileName, GetFileNameWithoutExt(fileName));
     for (int i = 0; varFileName[i] != '\0'; i++) if ((varFileName[i] >= 'a') && (varFileName[i] <= 'z')) { varFileName[i] = varFileName[i] - 32; }
 
@@ -1127,7 +1127,7 @@ Image GenImageCellular(int width, int height, int tileSize)
 // Generate image: grayscale image from text data
 Image GenImageText(int width, int height, const char *text)
 {
-    Image image = { 0 };
+    Image image{};
 
     int textLength = (int)strlen(text);
     int imageViewSize = width*height;
@@ -1150,7 +1150,7 @@ Image GenImageText(int width, int height, const char *text)
 // Copy an image to a new image
 Image ImageCopy(Image image)
 {
-    Image newImage = { 0 };
+    Image newImage{};
 
     int width = image.width;
     int height = image.height;
@@ -1187,7 +1187,7 @@ Image ImageCopy(Image image)
 // Create an image from another image piece
 Image ImageFromImage(Image image, Rectangle rec)
 {
-    Image result = { 0 };
+    Image result{};
 
     int bytesPerPixel = GetPixelDataSize(1, 1, image.format);
 
@@ -1468,7 +1468,7 @@ void ImageFormat(Image *image, const PixelFormat newFormat)
 // Create an image from text (default font)
 Image ImageText(const char *text, int fontSize, Color color)
 {
-    Image imText = { 0 };
+    Image imText{};
 #if defined(SUPPORT_MODULE_RTEXT)
     int defaultFontSize = 10;   // Default Font chars height in pixel
     if (fontSize < defaultFontSize) fontSize = defaultFontSize;
@@ -1485,7 +1485,7 @@ Image ImageText(const char *text, int fontSize, Color color)
 // WARNING: Module required: rtext
 Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Color tint)
 {
-    Image imText = { 0 };
+    Image imText{};
 #if defined(SUPPORT_MODULE_RTEXT)
     int size = (int)strlen(text);   // Get size in bytes of text
 
@@ -1549,7 +1549,7 @@ Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Co
 // Create an image from a selected channel of another image
 Image ImageFromChannel(Image image, int selectedChannel)
 {
-    Image result = { 0 };
+    Image result{};
 
     // Security check to avoid program crash
     if ((image.data == nullptr) || (image.width == 0) || (image.height == 0)) return result;
@@ -3166,7 +3166,7 @@ void UnloadImagePalette(Color *colors)
 // NOTE: Threshold is defined as a percentage: 0.0f -> 1.0f
 Rectangle GetImageAlphaBorder(Image image, float threshold)
 {
-    Rectangle crop = { 0 };
+    Rectangle crop{};
 
     Color *pixels = LoadImageColors(image);
 
@@ -3206,7 +3206,7 @@ Rectangle GetImageAlphaBorder(Image image, float threshold)
 // Get image pixel color at (x, y) position
 Color GetImageColor(Image image, int x, int y)
 {
-    Color color = { 0 };
+    Color color{};
 
     if ((x >=0) && (x < image.width) && (y >= 0) && (y < image.height))
     {
@@ -3881,7 +3881,7 @@ void ImageDrawTriangleEx(Image *dst, Vector2 v1, Vector2 v2, Vector2 v3, Color c
                 unsigned char aW3 = (unsigned char)((float)w3*wInvSum);
 
                 // Interpolate the color using the barycentric coordinates
-                Color finalColor = { 0 };
+                Color finalColor{};
                 finalColor.r = (c1.r*aW1 + c2.r*aW2 + c3.r*aW3)/255;
                 finalColor.g = (c1.g*aW1 + c2.g*aW2 + c3.g*aW3)/255;
                 finalColor.b = (c1.b*aW1 + c2.b*aW2 + c3.b*aW3)/255;
@@ -3948,7 +3948,7 @@ void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color 
     if (dst->format >= PixelFormat::PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(TraceLogLevel::LOG_WARNING, "Image drawing not supported for compressed formats");
     else
     {
-        Image srcMod = { 0 };       // Source copy (in case it was required)
+        Image srcMod{};       // Source copy (in case it was required)
         Image *srcPtr = &src;       // Pointer to source image
         bool useSrcMod = false;     // Track source copy required
 
@@ -4122,7 +4122,7 @@ void ImageDrawTextEx(Image *dst, Font font, const char *text, Vector2 position, 
 // Load texture from file into GPU memory (VRAM)
 Texture2D LoadTexture(const char *fileName)
 {
-    Texture2D texture = { 0 };
+    Texture2D texture{};
 
     Image image = LoadImage(fileName);
 
@@ -4139,7 +4139,7 @@ Texture2D LoadTexture(const char *fileName)
 // NOTE: image is not unloaded, it must be done manually
 Texture2D LoadTextureFromImage(Image image)
 {
-    Texture2D texture = { 0 };
+    Texture2D texture{};
 
     if ((image.width != 0) && (image.height != 0))
     {
@@ -4158,7 +4158,7 @@ Texture2D LoadTextureFromImage(Image image)
 // Load cubemap from image, multiple image cubemap layouts supported
 TextureCubemap LoadTextureCubemap(Image image, CubemapLayout layout)
 {
-    TextureCubemap cubemap = { 0 };
+    TextureCubemap cubemap{};
 
     if (layout == CubemapLayout::CUBEMAP_LAYOUT_AUTO_DETECT)      // Try to automatically guess layout type
     {
@@ -4189,8 +4189,8 @@ TextureCubemap LoadTextureCubemap(Image image, CubemapLayout layout)
     {
         int size = cubemap.width;
 
-        Image faces = { 0 };                // Vertical column image
-        Rectangle faceRecs[6] = { 0 };      // Face source rectangles
+        Image faces{};                // Vertical column image
+        Rectangle faceRecs[6]{};      // Face source rectangles
 
         for (int i = 0; i < 6; i++) faceRecs[i] = (Rectangle){ 0, 0, (float)size, (float)size };
 
@@ -4267,7 +4267,7 @@ TextureCubemap LoadTextureCubemap(Image image, CubemapLayout layout)
 // NOTE: Render texture is loaded by default with RGBA color attachment and depth RenderBuffer
 RenderTexture2D LoadRenderTexture(int width, int height)
 {
-    RenderTexture2D target = { 0 };
+    RenderTexture2D target{};
 
     target.id = rlLoadFramebuffer(); // Load an empty framebuffer
 
@@ -4539,10 +4539,10 @@ void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2
         if (dest.width < 0) dest.width *= -1;
         if (dest.height < 0) dest.height *= -1;
 
-        Vector2 topLeft = { 0 };
-        Vector2 topRight = { 0 };
-        Vector2 bottomLeft = { 0 };
-        Vector2 bottomRight = { 0 };
+        Vector2 topLeft{};
+        Vector2 topRight{};
+        Vector2 bottomLeft{};
+        Vector2 bottomRight{};
 
         // Only calculate rotation if needed
         if (rotation == 0.0f)
@@ -4910,7 +4910,7 @@ Color ColorFromNormalized(Vector4 normalized)
 // NOTE: Hue is returned as degrees [0..360]
 Vector3 ColorToHSV(Color color)
 {
-    Vector3 hsv = { 0 };
+    Vector3 hsv{};
     Vector3 rgb = { (float)color.r/255.0f, (float)color.g/255.0f, (float)color.b/255.0f };
     float min, max, delta;
 
@@ -5138,7 +5138,7 @@ Color ColorAlphaBlend(Color dst, Color src, Color tint)
         Vector4 fdst = ColorNormalize(dst);
         Vector4 fsrc = ColorNormalize(src);
         Vector4 ftint = ColorNormalize(tint);
-        Vector4 fout = { 0 };
+        Vector4 fout{};
 
         fout.w = fsrc.w + fdst.w*(1.0f - fsrc.w);
 
@@ -5159,7 +5159,7 @@ Color ColorAlphaBlend(Color dst, Color src, Color tint)
 // Get color lerp interpolation between two colors, factor [0.0f..1.0f]
 Color ColorLerp(Color color1, Color color2, float factor)
 {
-    Color color = { 0 };
+    Color color{};
 
     if (factor < 0.0f) factor = 0.0f;
     else if (factor > 1.0f) factor = 1.0f;
@@ -5188,7 +5188,7 @@ Color GetColor(unsigned int hexValue)
 // Get color from a pixel from certain format
 Color GetPixelColor(void *srcPtr, const PixelFormat format)
 {
-    Color color = { 0 };
+    Color color{};
 
     switch (format)
     {

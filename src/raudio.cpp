@@ -776,7 +776,7 @@ void UntrackAudioBuffer(AudioBuffer *buffer)
 // Load wave data from file
 Wave LoadWave(const char *fileName)
 {
-    Wave wave = { 0 };
+    Wave wave{};
 
     // Loading file to memory
     int dataSize = 0;
@@ -794,13 +794,13 @@ Wave LoadWave(const char *fileName)
 // WARNING: File extension must be provided in lower-case
 Wave LoadWaveFromMemory(const char *fileType, const unsigned char *fileData, int dataSize)
 {
-    Wave wave = { 0 };
+    Wave wave{};
 
     if (false) { }
 #if defined(SUPPORT_FILEFORMAT_WAV)
     else if ((strcmp(fileType, ".wav") == 0) || (strcmp(fileType, ".WAV") == 0))
     {
-        drwav wav = { 0 };
+        drwav wav{};
         bool success = drwav_init_memory(&wav, fileData, dataSize, nullptr);
 
         if (success)
@@ -844,7 +844,7 @@ Wave LoadWaveFromMemory(const char *fileType, const unsigned char *fileData, int
 #if defined(SUPPORT_FILEFORMAT_MP3)
     else if ((strcmp(fileType, ".mp3") == 0) || (strcmp(fileType, ".MP3") == 0))
     {
-        drmp3_config config = { 0 };
+        drmp3_config config{};
         unsigned long long int totalFrameCount = 0;
 
         // NOTE: We are forcing conversion to 32bit float sample size on reading
@@ -864,7 +864,7 @@ Wave LoadWaveFromMemory(const char *fileType, const unsigned char *fileData, int
 #if defined(SUPPORT_FILEFORMAT_QOA)
     else if ((strcmp(fileType, ".qoa") == 0) || (strcmp(fileType, ".QOA") == 0))
     {
-        qoa_desc qoa = { 0 };
+        qoa_desc qoa{};
 
         // NOTE: Returned sample data is always 16 bit?
         wave.data = qoa_decode(fileData, dataSize, &qoa);
@@ -931,7 +931,7 @@ Sound LoadSound(const char *fileName)
 // NOTE: Wave data must be unallocated manually
 Sound LoadSoundFromWave(Wave wave)
 {
-    Sound sound = { 0 };
+    Sound sound{};
 
     if (wave.data != nullptr)
     {
@@ -974,7 +974,7 @@ Sound LoadSoundFromWave(Wave wave)
 // NOTE: Wave data must be unallocated manually and will be shared across all clones
 Sound LoadSoundAlias(Sound source)
 {
-    Sound sound = { 0 };
+    Sound sound{};
 
     if (source.stream.buffer->data != nullptr)
     {
@@ -1065,7 +1065,7 @@ bool ExportWave(Wave wave, const char *fileName)
 #if defined(SUPPORT_FILEFORMAT_WAV)
     else if (IsFileExtension(fileName, ".wav"))
     {
-        drwav wav = { 0 };
+        drwav wav{};
         drwav_data_format format{};
         format.container = drwav_container_riff;
         if (wave.sampleSize == 32) format.format = DR_WAVE_FORMAT_IEEE_FLOAT;
@@ -1090,7 +1090,7 @@ bool ExportWave(Wave wave, const char *fileName)
     {
         if (wave.sampleSize == 16)
         {
-            qoa_desc qoa = { 0 };
+            qoa_desc qoa{};
             qoa.channels = wave.channels;
             qoa.samplerate = wave.sampleRate;
             qoa.samples = wave.frameCount;
@@ -1144,7 +1144,7 @@ bool ExportWaveAsCode(Wave wave, const char *fileName)
     byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "//////////////////////////////////////////////////////////////////////////////////\n\n");
 
     // Get file name from path and convert variable name to uppercase
-    char varFileName[256] = { 0 };
+    char varFileName[256]{};
     strcpy(varFileName, GetFileNameWithoutExt(fileName));
     for (int i = 0; varFileName[i] != '\0'; i++) if (varFileName[i] >= 'a' && varFileName[i] <= 'z') { varFileName[i] = varFileName[i] - 32; }
 
@@ -1271,7 +1271,7 @@ void WaveFormat(Wave *wave, int sampleRate, int sampleSize, int channels)
 // Copy a wave to a new wave
 Wave WaveCopy(Wave wave)
 {
-    Wave newWave = { 0 };
+    Wave newWave{};
 
     newWave.data = RL_MALLOC(wave.frameCount*wave.channels*wave.sampleSize/8);
 
@@ -1340,7 +1340,7 @@ void UnloadWaveSamples(float *samples)
 // Load music stream from file
 Music LoadMusicStream(const char *fileName)
 {
-    Music music = { 0 };
+    Music music{};
     bool musicLoaded = false;
 
     if (false) { }
@@ -1532,7 +1532,7 @@ Music LoadMusicStream(const char *fileName)
 // WARNING: File extension must be provided in lower-case
 Music LoadMusicStreamFromMemory(const char *fileType, const unsigned char *data, int dataSize)
 {
-    Music music = { 0 };
+    Music music{};
     bool musicLoaded = false;
 
     if (false) { }
@@ -2114,7 +2114,7 @@ float GetMusicTimePlayed(Music music)
 // Load audio stream (to stream audio pcm data)
 AudioStream LoadAudioStream(unsigned int sampleRate, unsigned int sampleSize, unsigned int channels)
 {
-    AudioStream stream = { 0 };
+    AudioStream stream{};
 
     stream.sampleRate = sampleRate;
     stream.sampleSize = sampleSize;
@@ -2385,7 +2385,7 @@ static ma_uint32 ReadAudioBufferFramesInInternalFormat(AudioBuffer *audioBuffer,
 
     // Another thread can update the processed state of buffers, so
     // we just take a copy here to try and avoid potential synchronization problems
-    bool isSubBufferProcessed[2] = { 0 };
+    bool isSubBufferProcessed[2]{};
     isSubBufferProcessed[0] = audioBuffer->isSubBufferProcessed[0];
     isSubBufferProcessed[1] = audioBuffer->isSubBufferProcessed[1];
 
@@ -2468,7 +2468,7 @@ static ma_uint32 ReadAudioBufferFramesInMixingFormat(AudioBuffer *audioBuffer, f
     // should be defined by the output format of the data converter. We do this until frameCount frames have been output. The important
     // detail to remember here is that we never, ever attempt to read more input data than is required for the specified number of output
     // frames. This can be achieved with ma_data_converter_get_required_input_frame_count()
-    ma_uint8 inputBuffer[4096] = { 0 };
+    ma_uint8 inputBuffer[4096]{};
     ma_uint32 inputBufferFrameCap = sizeof(inputBuffer)/ma_get_bytes_per_frame(audioBuffer->converter.formatIn, audioBuffer->converter.channelsIn);
 
     ma_uint32 totalOutputFramesProcessed = 0;
@@ -2532,7 +2532,7 @@ static void OnSendAudioDataToDevice(ma_device *pDevice, void *pFramesOut, const 
 
                 while (framesToRead > 0)
                 {
-                    float tempBuffer[1024] = { 0 }; // Frames for stereo
+                    float tempBuffer[1024]{}; // Frames for stereo
 
                     ma_uint32 framesToReadRightNow = framesToRead;
                     if (framesToReadRightNow > sizeof(tempBuffer)/sizeof(tempBuffer[0])/AUDIO_DEVICE_CHANNELS)
@@ -2770,7 +2770,7 @@ static const char *GetFileNameWithoutExt(const char *filePath)
 {
     #define MAX_FILENAMEWITHOUTEXT_LENGTH   256
 
-    static char fileName[MAX_FILENAMEWITHOUTEXT_LENGTH] = { 0 };
+    static char fileName[MAX_FILENAMEWITHOUTEXT_LENGTH]{};
     memset(fileName, 0, MAX_FILENAMEWITHOUTEXT_LENGTH);
 
     if (filePath != nullptr) strcpy(fileName, GetFileName(filePath));   // Get filename with extension

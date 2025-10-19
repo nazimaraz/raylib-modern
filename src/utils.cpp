@@ -136,7 +136,7 @@ void TraceLog(const int logLevel, const char *text, ...)
         default: break;
     }
 #else
-    char buffer[MAX_TRACELOG_MSG_LENGTH] = { 0 };
+    char buffer[MAX_TRACELOG_MSG_LENGTH]{};
 
     switch (logType)
     {
@@ -196,7 +196,7 @@ void TraceLog(const TraceLogLevel logType, const char *text, ...)
         default: break;
     }
 #else
-    char buffer[MAX_TRACELOG_MSG_LENGTH] = { 0 };
+    char buffer[MAX_TRACELOG_MSG_LENGTH]{};
 
     switch (logType)
     {
@@ -382,7 +382,7 @@ bool ExportDataAsCode(const unsigned char *data, int dataSize, const char *fileN
     byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
 
     // Get file name from path
-    char varFileName[256] = { 0 };
+    char varFileName[256]{};
     strcpy(varFileName, GetFileNameWithoutExt(fileName));
     for (int i = 0; varFileName[i] != '\0'; i++)
     {

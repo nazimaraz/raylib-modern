@@ -205,12 +205,6 @@ static constexpr auto RAYWHITE  = Color{245, 245, 245, 255};   // My own White (
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
 
-// Vector2, 2 components
-struct Vector2 {
-    float x;                // Vector x component
-    float y;                // Vector y component
-};
-
 // Vector3, 3 components
 struct Vector3 {
     float x;                // Vector x component

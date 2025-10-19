@@ -487,7 +487,7 @@ void DrawSphereEx(Vector3 centerPos, float radius, int rings, int slices, Color 
             float cosslice = cosf(sliceangle);
             float sinslice = sinf(sliceangle);
 
-            Vector3 vertices[4] = { 0 }; // Required to store face vertices
+            Vector3 vertices[4]{}; // Required to store face vertices
             vertices[2] = (Vector3){ 0, 1, 0 };
             vertices[3] = (Vector3){ sinring, cosring, 0 };
 
@@ -1100,7 +1100,7 @@ void DrawGrid(int slices, float spacing)
 // Load model from files (mesh and material)
 Model LoadModel(const char *fileName)
 {
-    Model model = { 0 };
+    Model model{};
 
 #if defined(SUPPORT_FILEFORMAT_OBJ)
     if (IsFileExtension(fileName, ".obj")) model = LoadOBJ(fileName);
@@ -1148,7 +1148,7 @@ Model LoadModel(const char *fileName)
 // of mesh pointing to same data as original version... be careful!
 Model LoadModelFromMesh(Mesh mesh)
 {
-    Model model = { 0 };
+    Model model{};
 
     model.transform = MatrixIdentity();
 
@@ -1227,11 +1227,11 @@ void UnloadModel(Model model)
 // Compute model bounding box limits (considers all meshes)
 BoundingBox GetModelBoundingBox(Model model)
 {
-    BoundingBox bounds = { 0 };
+    BoundingBox bounds{};
 
     if (model.meshCount > 0)
     {
-        Vector3 temp = { 0 };
+        Vector3 temp{};
         bounds = GetMeshBoundingBox(model.meshes[0]);
 
         for (int i = 1; i < model.meshCount; i++)
@@ -2057,7 +2057,7 @@ bool ExportMeshAsCode(Mesh mesh, const char *fileName)
     byteCount += std::snprintf(txtData + byteCount, bufferSize - byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n\n");
 
     // Get file name from path and convert variable name to uppercase
-    char varFileName[256] = { 0 };
+    char varFileName[256]{};
     strcpy(varFileName, GetFileNameWithoutExt(fileName));
     for (int i = 0; varFileName[i] != '\0'; i++) if ((varFileName[i] >= 'a') && (varFileName[i] <= 'z')) { varFileName[i] = varFileName[i] - 32; }
 
@@ -2197,7 +2197,7 @@ Material *LoadMaterials(const char *fileName, int *materialCount)
 // Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
 Material LoadMaterialDefault(void)
 {
-    Material material = { 0 };
+    Material material{};
     material.maps = (MaterialMap *)RL_CALLOC(MAX_MATERIAL_MAPS, sizeof(MaterialMap));
 
     // Using rlgl default shader
@@ -2348,8 +2348,8 @@ void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
     for (int m = 0; m < model.meshCount; m++)
     {
         Mesh mesh = model.meshes[m];
-        Vector3 animVertex = { 0 };
-        Vector3 animNormal = { 0 };
+        Vector3 animVertex{};
+        Vector3 animNormal{};
         int boneId = 0;
         int boneCounter = 0;
         float boneWeight = 0.0;
@@ -2445,7 +2445,7 @@ bool IsModelAnimationValid(Model model, ModelAnimation anim)
 // Generate polygonal mesh
 Mesh GenMeshPoly(int sides, float radius)
 {
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
     if (sides < 3) return mesh; // Security check
 
@@ -2514,7 +2514,7 @@ Mesh GenMeshPoly(int sides, float radius)
 // Generate plane mesh (with subdivisions)
 Mesh GenMeshPlane(float width, float length, int resX, int resZ)
 {
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
 #define CUSTOM_MESH_GEN_PLANE
 #if defined(CUSTOM_MESH_GEN_PLANE)
@@ -2647,7 +2647,7 @@ Mesh GenMeshPlane(float width, float length, int resX, int resZ)
 // Generated cuboid mesh
 Mesh GenMeshCube(float width, float height, float length)
 {
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
 #define CUSTOM_MESH_GEN_CUBE
 #if defined(CUSTOM_MESH_GEN_CUBE)
@@ -2812,7 +2812,7 @@ par_shapes_mesh *par_shapes_create_icosahedron();       // 20 sides polyhedron
 // Generate sphere mesh (standard sphere)
 Mesh GenMeshSphere(float radius, int rings, int slices)
 {
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
     if ((rings >= 3) && (slices >= 3))
     {
@@ -2855,7 +2855,7 @@ Mesh GenMeshSphere(float radius, int rings, int slices)
 // Generate hemisphere mesh (half sphere, no bottom cap)
 Mesh GenMeshHemiSphere(float radius, int rings, int slices)
 {
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
     if ((rings >= 3) && (slices >= 3))
     {
@@ -2899,7 +2899,7 @@ Mesh GenMeshHemiSphere(float radius, int rings, int slices)
 // Generate cylinder mesh
 Mesh GenMeshCylinder(float radius, float height, int slices)
 {
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
     if (slices >= 3)
     {
@@ -2963,7 +2963,7 @@ Mesh GenMeshCylinder(float radius, float height, int slices)
 // Generate cone/pyramid mesh
 Mesh GenMeshCone(float radius, float height, int slices)
 {
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
     if (slices >= 3)
     {
@@ -3018,7 +3018,7 @@ Mesh GenMeshCone(float radius, float height, int slices)
 // Generate torus mesh
 Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
 {
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
     if ((sides >= 3) && (radSeg >= 3))
     {
@@ -3064,7 +3064,7 @@ Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
 // Generate trefoil knot mesh
 Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
 {
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
     if ((sides >= 3) && (radSeg >= 3))
     {
@@ -3111,7 +3111,7 @@ Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
 {
     #define GRAY_VALUE(c) ((float)(c.r + c.g + c.b)/3.0f)
 
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
     int mapX = heightmap.width;
     int mapZ = heightmap.height;
@@ -3134,10 +3134,10 @@ Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
 
     Vector3 scaleFactor = { size.x/(mapX - 1), size.y/255.0f, size.z/(mapZ - 1) };
 
-    Vector3 vA = { 0 };
-    Vector3 vB = { 0 };
-    Vector3 vC = { 0 };
-    Vector3 vN = { 0 };
+    Vector3 vA{};
+    Vector3 vB{};
+    Vector3 vC{};
+    Vector3 vN{};
 
     for (int z = 0; z < mapZ-1; z++)
     {
@@ -3243,7 +3243,7 @@ Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
 {
     #define COLOR_EQUAL(col1, col2) ((col1.r == col2.r)&&(col1.g == col2.g)&&(col1.b == col2.b)&&(col1.a == col2.a))
 
-    Mesh mesh = { 0 };
+    Mesh mesh{};
 
     Color *pixels = LoadImageColors(cubicmap);
 
@@ -3591,8 +3591,8 @@ Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
 BoundingBox GetMeshBoundingBox(Mesh mesh)
 {
     // Get min and max vertex to construct bounds (AABB)
-    Vector3 minVertex = { 0 };
-    Vector3 maxVertex = { 0 };
+    Vector3 minVertex{};
+    Vector3 maxVertex{};
 
     if (mesh.vertices != nullptr)
     {
@@ -3607,7 +3607,7 @@ BoundingBox GetMeshBoundingBox(Mesh mesh)
     }
 
     // Create the bounding box
-    BoundingBox box = { 0 };
+    BoundingBox box{};
     box.min = minVertex;
     box.max = maxVertex;
 
@@ -3963,7 +3963,7 @@ void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector
 // Draw a bounding box with wires
 void DrawBoundingBox(BoundingBox box, Color color)
 {
-    Vector3 size = { 0 };
+    Vector3 size{};
 
     size.x = fabsf(box.max.x - box.min.x);
     size.y = fabsf(box.max.y - box.min.y);
@@ -4037,7 +4037,7 @@ bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
 // Get collision info between ray and sphere
 RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius)
 {
-    RayCollision collision = { 0 };
+    RayCollision collision{};
 
     Vector3 raySpherePos = Vector3Subtract(center, ray.position);
     float vector = Vector3DotProduct(raySpherePos, ray.direction);
@@ -4074,7 +4074,7 @@ RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius)
 // Get collision info between ray and box
 RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
 {
-    RayCollision collision = { 0 };
+    RayCollision collision{};
 
     // Note: If ray.position is inside the box, the distance is negative (as if the ray was reversed)
     // Reversing ray.direction will give use the correct result
@@ -4084,7 +4084,7 @@ RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
 
     if (insideBox) ray.direction = Vector3Negate(ray.direction);
 
-    float t[11] = { 0 };
+    float t[11]{};
 
     t[8] = 1.0f/ray.direction.x;
     t[9] = 1.0f/ray.direction.y;
@@ -4134,7 +4134,7 @@ RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
 // Get collision info between ray and mesh
 RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
 {
-    RayCollision collision = { 0 };
+    RayCollision collision{};
 
     // Check if mesh vertex data on CPU for testing
     if (mesh.vertices != nullptr)
@@ -4184,9 +4184,9 @@ RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3
 {
     #define EPSILON 0.000001f        // A small number
 
-    RayCollision collision = { 0 };
-    Vector3 edge1 = { 0 };
-    Vector3 edge2 = { 0 };
+    RayCollision collision{};
+    Vector3 edge1{};
+    Vector3 edge2{};
     Vector3 p, q, tv;
     float det, invDet, u, v, t;
 
@@ -4241,7 +4241,7 @@ RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3
 // NOTE: The points are expected to be in counter-clockwise winding
 RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
 {
-    RayCollision collision = { 0 };
+    RayCollision collision{};
 
     collision = GetRayCollisionTriangle(ray, p1, p2, p4);
 
@@ -4286,14 +4286,14 @@ static void BuildPoseFromParentJoints(BoneInfo *bones, int boneCount, Transform 
 //  - the mesh is automatically triangulated by tinyobj
 static Model LoadOBJ(const char *fileName)
 {
-    tinyobj_attrib_t objAttributes = { 0 };
+    tinyobj_attrib_t objAttributes{};
     tinyobj_shape_t *objShapes = nullptr;
     unsigned int objShapeCount = 0;
 
     tinyobj_material_t *objMaterials = nullptr;
     unsigned int objMaterialCount = 0;
 
-    Model model = { 0 };
+    Model model{};
     model.transform = MatrixIdentity();
 
     char *fileText = LoadFileText(fileName);
@@ -4304,7 +4304,7 @@ static Model LoadOBJ(const char *fileName)
         return model;
     }
 
-    char currentDir[1024] = { 0 };
+    char currentDir[1024]{};
     strcpy(currentDir, GetWorkingDirectory()); // Save current working directory
     const char *workingDir = GetDirectoryPath(fileName); // Switch to OBJ directory for material path correctness
     if (CHDIR(workingDir) != 0) TRACELOG(TraceLogLevel::LOG_WARNING, "MODEL: [%s] Failed to change working directory", workingDir);
@@ -4617,7 +4617,7 @@ static Model LoadIQM(const char *fileName)
         IQM_CUSTOM       = 0x10     // NOTE: Custom vertex values unused by default
     };
 
-    Model model = { 0 };
+    Model model{};
 
     IQMMesh *imesh = nullptr;
     IQMTriangle *tri = nullptr;
@@ -4668,8 +4668,8 @@ static Model LoadIQM(const char *fileName)
     model.materials = (Material *)RL_CALLOC(model.materialCount, sizeof(Material));
     model.meshMaterial = (int *)RL_CALLOC(model.meshCount, sizeof(int));
 
-    char name[MESH_NAME_LENGTH] = { 0 };
-    char material[MATERIAL_NAME_LENGTH] = { 0 };
+    char name[MESH_NAME_LENGTH]{};
+    char material[MATERIAL_NAME_LENGTH]{};
 
     for (int i = 0; i < model.meshCount; i++)
     {
@@ -5165,7 +5165,7 @@ static void ReleaseFileGLTFCallback(const struct cgltf_memory_options *memoryOpt
 // Load image from different glTF provided methods (uri, path, buffer_view)
 static Image LoadImageFromCgltfImage(cgltf_image *cgltfImage, const char *texPath)
 {
-    Image image = { 0 };
+    Image image{};
 
     if (cgltfImage == nullptr) return image;
 
@@ -5320,7 +5320,7 @@ static Model LoadGLTF(const char *fileName)
         }\
     }
 
-    Model model = { 0 };
+    Model model{};
 
     // glTF file loading
     int dataSize = 0;
@@ -5414,8 +5414,8 @@ static Model LoadGLTF(const char *fileName)
                     Image imMetallicRoughness = LoadImageFromCgltfImage(data->materials[i].pbr_metallic_roughness.metallic_roughness_texture.texture->image, texPath);
                     if (imMetallicRoughness.data != nullptr)
                     {
-                        Image imMetallic = { 0 };
-                        Image imRoughness = { 0 };
+                        Image imMetallic{};
+                        Image imRoughness{};
 
                         imMetallic.data = RL_MALLOC(imMetallicRoughness.width*imMetallicRoughness.height);
                         imRoughness.data = RL_MALLOC(imMetallicRoughness.width*imMetallicRoughness.height);
@@ -6246,8 +6246,8 @@ static ModelAnimation *LoadModelAnimationsGLTF(const char *fileName, int *animCo
             *animCount = (int)data->animations_count;
             animations = (ModelAnimation *)RL_CALLOC(data->animations_count, sizeof(ModelAnimation));
 
-            Transform worldTransform = { 0 };
-            cgltf_float cgltf_worldTransform[16] = { 0 };
+            Transform worldTransform{};
+            cgltf_float cgltf_worldTransform[16]{};
             cgltf_node *node = skin.joints[0];
             cgltf_node_transform_world(node->parent, cgltf_worldTransform);
             Matrix worldMatrix = {
@@ -6407,7 +6407,7 @@ static ModelAnimation *LoadModelAnimationsGLTF(const char *fileName, int *animCo
 // Load VOX (MagicaVoxel) mesh data
 static Model LoadVOX(const char *fileName)
 {
-    Model model = { 0 };
+    Model model{};
 
     int nbvertices = 0;
     int meshescount = 0;
@@ -6423,7 +6423,7 @@ static Model LoadVOX(const char *fileName)
     }
 
     // Read and build voxarray description
-    VoxArray3D voxarray = { 0 };
+    VoxArray3D voxarray{};
     int ret = Vox_LoadFromMemory(fileData, dataSize, &voxarray);
 
     if (ret != VOX_SUCCESS)
@@ -6521,7 +6521,7 @@ void m3d_freehook(void *data) { UnloadFileData((unsigned char *)data); }
 // Load M3D mesh data
 static Model LoadM3D(const char *fileName)
 {
-    Model model = { 0 };
+    Model model{};
 
     m3d_t *m3d = nullptr;
     m3dp_t *prop = nullptr;
@@ -6777,7 +6777,7 @@ static Model LoadM3D(const char *fileName)
                     {
                         if (prop->type >= 128)
                         {
-                            Image image = { 0 };
+                            Image image{};
                             image.data = m3d->texture[prop->value.textureid].d;
                             image.width = m3d->texture[prop->value.textureid].w;
                             image.height = m3d->texture[prop->value.textureid].h;
