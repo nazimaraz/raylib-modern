@@ -68,6 +68,9 @@
     #define _POSIX_C_SOURCE 199309L     // Required for: CLOCK_MONOTONIC if compiled with c99 without gnu ext.
 #endif
 
+namespace raylib
+{
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
@@ -835,7 +838,7 @@ void ShowCursor(void)
 {
     if (CORE.Input.Mouse.cursorHidden)
     {
-        EM_ASM( { Module.canvas.style.cursor = UTF8ToString($0); }, cursorLUT[CORE.Input.Mouse.cursor]);
+        EM_ASM( { Module.canvas.style.cursor = UTF8ToString($0); }, cursorLUT[std::to_underlying(CORE.Input.Mouse.cursor)]);
 
         CORE.Input.Mouse.cursorHidden = false;
     }
@@ -960,11 +963,11 @@ void SetMousePosition(int x, int y)
 }
 
 // Set mouse cursor
-void SetMouseCursor(int cursor)
+void SetMouseCursor(const MouseCursor cursor)
 {
     if (CORE.Input.Mouse.cursor != cursor)
     {
-        if (!CORE.Input.Mouse.cursorLocked) EM_ASM( { Module.canvas.style.cursor = UTF8ToString($0); }, cursorLUT[cursor]);
+        if (!CORE.Input.Mouse.cursorLocked) EM_ASM( { Module.canvas.style.cursor = UTF8ToString($0); }, cursorLUT[std::to_underlying(cursor)]);
 
         CORE.Input.Mouse.cursor = cursor;
     }
@@ -1042,11 +1045,13 @@ void PollInputEvents(void)
             // Register buttons data for every connected gamepad
             for (int j = 0; (j < gamepadState.numButtons) && (j < MAX_GAMEPAD_BUTTONS); j++)
             {
-                GamepadButton button = -1;
+                GamepadButton button = static_cast<GamepadButton>(-1);
 
                 // Gamepad Buttons reference: https://www.w3.org/TR/gamepad/#gamepad-interface
                 switch (j)
                 {
+                    using enum GamepadButton;
+
                     case 0: button = GAMEPAD_BUTTON_RIGHT_FACE_DOWN; break;
                     case 1: button = GAMEPAD_BUTTON_RIGHT_FACE_RIGHT; break;
                     case 2: button = GAMEPAD_BUTTON_RIGHT_FACE_LEFT; break;
@@ -1066,14 +1071,14 @@ void PollInputEvents(void)
                     default: break;
                 }
 
-                if (button + 1 != 0)   // Check for valid button
+                if (std::to_underlying(button) + 1 != 0)   // Check for valid button
                 {
                     if (gamepadState.digitalButton[j] == 1)
                     {
-                        CORE.Input.Gamepad.currentButtonState[i][button] = 1;
-                        CORE.Input.Gamepad.lastButtonPressed = button;
+                        CORE.Input.Gamepad.currentButtonState[i][std::to_underlying(button)] = 1;
+                        CORE.Input.Gamepad.lastButtonPressed = std::to_underlying(button);
                     }
-                    else CORE.Input.Gamepad.currentButtonState[i][button] = 0;
+                    else CORE.Input.Gamepad.currentButtonState[i][std::to_underlying(button)] = 0;
                 }
 
                 //TRACELOGD("INPUT: Gamepad %d, button %d: Digital: %d, Analog: %g", gamepadState.index, j, gamepadState.digitalButton[j], gamepadState.analogButton[j]);
@@ -1345,7 +1350,7 @@ int InitPlatform(void)
 
     // Load OpenGL extensions
     // NOTE: GL procedures address loader is required to load extensions
-    rlLoadExtensions(glfwGetProcAddress);
+    rlLoadExtensions(reinterpret_cast<void*>(glfwGetProcAddress));
     //----------------------------------------------------------------------------
 
     // Initialize events callbacks
@@ -1704,7 +1709,7 @@ static EM_BOOL EmscriptenTouchCallback(int eventType, const EmscriptenTouchEvent
         CORE.Input.Touch.pointId[i] = touchEvent->touches[i].identifier;
 
         // Register touch points position
-        CORE.Input.Touch.position[i] = (Vector2){touchEvent->touches[i].targetX, touchEvent->touches[i].targetY};
+        CORE.Input.Touch.position[i] = Vector2{static_cast<float>(touchEvent->touches[i].targetX), static_cast<float>(touchEvent->touches[i].targetY)};
 
         // Normalize gestureEvent.position[x] for CORE.Window.screen.width and CORE.Window.screen.height
         CORE.Input.Touch.position[i].x *= ((float)GetScreenWidth()/(float)canvasWidth);
@@ -1834,8 +1839,8 @@ static EM_BOOL EmscriptenFocusCallback(int eventType, const EmscriptenFocusEvent
     EM_BOOL consumed = 1;
     switch (eventType)
     {
-        case EMSCRIPTEN_EVENT_BLUR: WindowFocusCallback(userData, 0); break;
-        case EMSCRIPTEN_EVENT_FOCUS: WindowFocusCallback(userData, 1); break;
+        case EMSCRIPTEN_EVENT_BLUR: WindowFocusCallback(static_cast<GLFWwindow *>(userData), 0); break;
+        case EMSCRIPTEN_EVENT_FOCUS: WindowFocusCallback(static_cast<GLFWwindow *>(userData), 1); break;
         default: consumed = 0; break;
     }
     return consumed;
@@ -1865,6 +1870,8 @@ static const char *GetCanvasId(void)
     static char *canvasId = nullptr;
     if (canvasId == nullptr) canvasId = GetCanvasIdJs();
     return canvasId;
+}
+
 }
 
 // EOF

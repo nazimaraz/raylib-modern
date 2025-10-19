@@ -581,7 +581,7 @@ Image LoadImageFromTexture(Texture2D texture)
             // NOTE: Data retrieved on OpenGL ES 2.0 should be RGBA,
             // coming from FBO color buffer attachment, but it seems
             // original texture format is retrieved on RPI...
-            image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+            image.format = PixelFormat::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
 #endif
             TRACELOG(TraceLogLevel::LOG_INFO, "TEXTURE: [ID %i] Pixel data retrieved successfully", texture.id);
         }
