@@ -89,6 +89,7 @@
 #include <utility>
 #include <numbers>
 #include <vector>
+#include "vector2.hpp"
 
 namespace raylib
 {
