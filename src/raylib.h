@@ -89,6 +89,7 @@
 #include <utility>
 #include <numbers>
 #include <vector>
+#include "raylib/color.h"
 #include "vector2.hpp"
 
 namespace raylib
@@ -162,14 +163,6 @@ static constexpr auto RAD2DEG = 180. / PI;
 #define RL_VECTOR4_TYPE
 #define RL_QUATERNION_TYPE
 #define RL_MATRIX_TYPE
-
-// Color, 4 components, R8G8B8A8 (32bit)
-struct Color {
-    unsigned char r;        // Color red value
-    unsigned char g;        // Color green value
-    unsigned char b;        // Color blue value
-    unsigned char a;        // Color alpha value
-};
 
 // Some Basic Colors
 // NOTE: Custom raylib color palette for amazing visuals on WHITE background
